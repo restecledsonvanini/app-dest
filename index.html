@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global.css">
+    <title>Sesp | Dest 2025 </title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img width="70" src="./logo-sesp-dest.png" alt="Logo Sesp DEST">
+        </div>
+        <nav>
+            <!-- <a href="#">Home</a>
+        <a href="#">Sobre</a>
+        <a href="#">Contato</a> -->
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Links Úteis</h2>
+
+            <!-- LISTA DE LINKS -->
+            <div class="link-row">
+                <span class="link-name">Protótipo / Contratos</span>
+                <button class="btn btn-open"
+                    onclick="openLink('https://drive.google.com/drive/folders/1o5csAZxFjw22ik-QYsSedujQN7zEvr5M?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://drive.google.com/drive/folders/1o5csAZxFjw22ik-QYsSedujQN7zEvr5M?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+            <div class="link-row">
+                <span class="link-name">Protótipo / Aditivos</span>
+                <button class="btn btn-open" onclick="openLink('https://docs.google.com/spreadsheets/d/1JNZhETlhHZazAqhJafOHHKNvTxkgdmwBjz1v9PVHfQw/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy" onclick="copyLink('https://docs.google.com/spreadsheets/d/1JNZhETlhHZazAqhJafOHHKNvTxkgdmwBjz1v9PVHfQw/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+            <div class="link-row">
+                <span class="link-name">Protótipo / Painel Gestão</span>
+                <button class="btn btn-open"
+                    onclick="openLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+        </div>
+    </div>
+    <script src="./app.js"></script>
+</body>
+
+</html>
