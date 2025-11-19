@@ -23,6 +23,8 @@ header .logo {
     font-size: 1.25rem;
     font-weight: bold;
     color: #333;
+    width: 80%;
+    margin: 0 auto;
 }
 .logo img {
     background-color: white;
@@ -82,7 +84,7 @@ header nav a:hover {
 .link-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     background: #f9fafb;
     padding: 10px 14px;
     border-radius: 10px;
