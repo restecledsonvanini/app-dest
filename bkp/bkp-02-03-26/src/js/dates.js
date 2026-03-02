@@ -52,6 +52,12 @@ function calculateDateValidity() {
     dateStartInput.focus();
 }
 
+function copyDateResult() {
+    const box = document.getElementById('date-result');
+    if (!box) return;
+    const value = box.dataset?.result || box.innerText || '';
+    if (value && value.includes('/')) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 function calculateDaysRemaining() {
     const startInput = document.getElementById('input-date-start-days');
@@ -124,6 +130,12 @@ function calculateDaysRemaining() {
     startInput.focus();
 }
 
+function copyDaysResult() {
+    const box = document.getElementById('days-result');
+    if (!box) return;
+    const value = box.dataset?.result || box.innerText || '';
+    if (value) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 // Enter key listeners for date tools
 ['input-date-start','input-duration'].forEach(id => {

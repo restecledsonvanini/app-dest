@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/styles/global.css">
+        <!-- icons for header/nav and tabs -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <header>
+        <div class="logo">
+            <img width="70" src="./src/images/logo-sesp-dest.png" alt="Logo Sesp DEST">
+        </div>
+        <nav>
+            <a href="./ferramentas/index.html" title="Ferramentas úteis para contratos" class="header-link">
+                <i class="bi bi-tools" aria-hidden="true"></i>
+                <span>Ferramentas</span>
+            </a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Links Úteis | Dest</h2>
+
+            <!-- LISTA DE LINKS -->
+            <div class="link-row">
+                <span class="link-name">Protótipo / Contratos</span>
+                <button class="btn btn-open"
+                    onclick="openLink('https://drive.google.com/drive/folders/1OmrlGYzXl7rgUVqiBhT0nqwTwqSS3__A?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://drive.google.com/drive/folders/1OmrlGYzXl7rgUVqiBhT0nqwTwqSS3__A?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+            <div class="link-row">
+                <span class="link-name">Protótipo / Aditivos</span>
+                <button class="btn btn-open" onclick="openLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy" onclick="copyLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+            <div class="link-row">
+                <span class="link-name">CIC / Painel do Gestor</span>
+                <button class="btn btn-open" onclick="openLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy" onclick="copyLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+
+            <div class="link-row">
+                <span class="link-name">Entroncamento Dados</span>
+                <button class="btn btn-open"
+                    onclick="openLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
+            </div>
+            <div class="link-row">
+            <div class="link-row">
+                <span class="link-name">Esquema Lógico</span>
+                <!-- link removed -->
+            </div>
+
+        </div>
+    </div>
+    <script src="./src/js/app.js"></script>
+</body>
+
+</html>

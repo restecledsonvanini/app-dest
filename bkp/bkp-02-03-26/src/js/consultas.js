@@ -53,6 +53,12 @@ async function searchCNPJ() {
     }
 }
 
+function copyCNPJResult() {
+    const box = document.getElementById('cnpj-result');
+    if (!box) return;
+    const value = box.dataset?.result || box.innerText || '';
+    if (value && value.length > 10) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 function isValidCNPJ(cnpj) {
     if (cnpj.length !== 14) return false;

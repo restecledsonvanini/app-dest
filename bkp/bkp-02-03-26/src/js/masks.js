@@ -23,6 +23,19 @@ function removeMask() {
     input.focus();
 }
 
+function copyRemoveMaskResult() {
+    const box = document.getElementById('remove-mask-result');
+    if (!box) return;
+    const value = box.dataset?.result || (() => {
+        const txt = box.innerText || '';
+        const idx = txt.indexOf('Saída:');
+        return idx >= 0 ? txt.slice(idx + 6).trim() : txt.trim();
+    })();
+    if (value && !value.includes('Digite') && !value.includes('Nenhum')) {
+        navigator.clipboard.writeText(value);
+        showCopyFeedback();
+    }
+}
 
 function addMaskEprotocolo() {
     const input = document.getElementById('input-eprotocolo');
@@ -47,6 +60,16 @@ function addMaskEprotocolo() {
     input.focus();
 }
 
+function copyEprotocoResult() {
+    const box = document.getElementById('eprotocolo-result');
+    if (!box) return;
+    const value = box.dataset?.result || (() => {
+        const txt = box.innerText || '';
+        const idx = txt.indexOf('Saída:');
+        return idx >= 0 ? txt.slice(idx + 6).trim() : txt.trim();
+    })();
+    if (value && value.includes('.')) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 function addMaskGMS() {
     const numberInput = document.getElementById('input-gms-number');
@@ -78,6 +101,16 @@ function addMaskGMS() {
     numberInput.focus();
 }
 
+function copyGMSResult() {
+    const box = document.getElementById('gms-result');
+    if (!box) return;
+    const value = box.dataset?.result || (() => {
+        const txt = box.innerText || '';
+        const idx = txt.indexOf('Saída:');
+        return idx >= 0 ? txt.slice(idx + 6).trim() : txt.trim();
+    })();
+    if (value && value.includes('/')) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 function addMaskCPF() {
     const input = document.getElementById('input-cpf');
@@ -101,6 +134,16 @@ function addMaskCPF() {
     input.focus();
 }
 
+function copyCPFResult() {
+    const box = document.getElementById('cpf-result');
+    if (!box) return;
+    const value = box.dataset?.result || (() => {
+        const txt = box.innerText || '';
+        const idx = txt.indexOf('Saída:');
+        return idx >= 0 ? txt.slice(idx + 6).trim() : txt.trim();
+    })();
+    if (value && value.includes('.')) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 function addMaskCNPJ() {
     const input = document.getElementById('input-cnpj-add');
@@ -124,6 +167,16 @@ function addMaskCNPJ() {
     input.focus();
 }
 
+function copyCNPJAddResult() {
+    const box = document.getElementById('cnpj-add-result');
+    if (!box) return;
+    const value = box.dataset?.result || (() => {
+        const txt = box.innerText || '';
+        const idx = txt.indexOf('Saída:');
+        return idx >= 0 ? txt.slice(idx + 6).trim() : txt.trim();
+    })();
+    if (value && value.includes('/')) { navigator.clipboard.writeText(value); showCopyFeedback(); }
+}
 
 // enter key handlers for mask section
 ['input-remove-mask','input-eprotocolo','input-gms-year','input-cpf','input-cnpj-add']

@@ -1,0 +1,210 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f4f6;
+    color: #222;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 24px;
+    background: #16c76b;
+    background: linear-gradient(321deg, rgba(22, 199, 107, 1) 1%, rgb(61, 74, 134) 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+header .logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    width: 80%;
+    margin: 0 auto;
+}
+.logo img {
+    background-color: white;
+    padding: 4px;
+    border-radius: 50%;
+}
+header nav a {
+    margin-left: 16px;
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+}
+header nav a i {
+    margin-right: 6px;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+header nav a:hover {
+    color: #000;
+}
+
+/* header link without button style */
+header nav a.header-link {
+    background: transparent;
+    padding: 0;
+    margin-left: 0;
+    color: white;
+    font-weight: 600;
+}
+header nav a.header-link:hover {
+    text-decoration: underline;
+}
+
+/* header button added on home page */
+header nav .header-btn {
+    margin-left: 12px;
+    background: white;
+    color: #16c76b;
+    border: 2px solid #16c76b;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+header nav .header-btn:hover {
+    background: #16c76b;
+    color: white;
+}
+
+/* responsive tweaks */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    header nav {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    header nav a,
+    header nav .header-btn {
+        margin: 4px 6px 0 0;
+    }
+    .container {
+        margin-top: 20px;
+        padding: 10px;
+    }
+    .card {
+        padding: 16px;
+        margin: 0 10px;
+    }
+    .input-row {
+        flex-direction: column;
+    }
+}
+
+
+/* CARD */
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+    padding: 20px;
+}
+
+.card {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card h2 {
+    margin: 0 0 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #444;
+}
+
+/* LINK ROW */
+.link-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #f9fafb;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.link-row:hover {
+    background: #eef0f2;
+}
+
+.link-name {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* BOTÕES */
+.btn {
+    margin-left: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+
+.btn-open {
+    background: #192a5a;
+    color: white;
+}
+
+.btn-open:hover {
+    background: #2c4383;
+}
+
+.btn-copy {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-copy:hover {
+    background: #4b5563;
+}
+
+/* Feedback de cópia */
+.copied {
+    font-size: 0.8rem;
+    color: green;
+    margin-left: 6px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.copied.show {
+    opacity: 1;
+}

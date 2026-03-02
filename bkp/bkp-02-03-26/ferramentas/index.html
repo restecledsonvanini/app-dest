@@ -54,28 +54,28 @@
                             <h3>Removedor de Máscara</h3>
                             <p class="tool-desc">Remove formatação de CPF, CNPJ, eProtocolo e números GMS</p>
                         </div>
-                        <form class="tool-body form-tool" data-tool="removeMask">
+                        <div class="tool-body">
                             <div class="input-group">
                                 <label for="input-remove-mask">Digite o valor com máscara:</label>
                                 <input 
                                     type="text" 
-                                    id="input-remove-mask" name="value" 
+                                    id="input-remove-mask" 
                                     placeholder="Ex: 123.456.789-00 ou 25.264.314-1"
                                     class="input-field"
                                     aria-label="Input para remover máscara"
                                 >
                             </div>
                             <div class="button-group">
-                                <button class="btn btn-primary"  title="Remover máscara do valor"><i class="bi bi-eraser-fill"></i><span class="btn-label">Remover</span></button>
-                                <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                                <button class="btn btn-primary" onclick="removeMask()" title="Remover máscara do valor"><i class="bi bi-eraser-fill"></i><span class="btn-label">Remover</span></button>
+                                <button class="btn btn-copy" disabled onclick="copyRemoveMaskResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                     <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                 </button>
-                                <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                                <button class="btn btn-clear" disabled onclick="clearResult('remove-mask-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                     <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                 </button>
                             </div>
                             <div id="remove-mask-result" class="result-box"></div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -86,12 +86,12 @@
                             <h3>Máscara eProtocolo</h3>
                             <p class="tool-desc">Formata para padrão: XX.XXX.XXX-X</p>
                         </div>
-                        <form class="tool-body form-tool" data-tool="addMaskEprotocolo">
+                        <div class="tool-body">
                             <div class="input-group">
                                 <label for="input-eprotocolo">Digite apenas números (9 dígitos):</label>
                                 <input 
                                     type="text" 
-                                    id="input-eprotocolo" name="value" 
+                                    id="input-eprotocolo" 
                                     placeholder="Ex: 252643141"
                                     class="input-field"
                                     inputmode="numeric"
@@ -100,16 +100,16 @@
                                     aria-label="Input para eProtocolo">
                             </div>
                             <div class="button-group">
-                                <button class="btn btn-primary"  title="Aplicar máscara eProtocolo"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
-                                <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                                <button class="btn btn-primary" onclick="addMaskEprotocolo()" title="Aplicar máscara eProtocolo"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                <button class="btn btn-copy" disabled onclick="copyEprotocoResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                     <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                 </button>
-                                <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                                <button class="btn btn-clear" disabled onclick="clearResult('eprotocolo-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                     <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                 </button>
                             </div>
                             <div id="eprotocolo-result" class="result-box"></div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -120,13 +120,13 @@
                         <h3>Adiciona Máscara Número GMS</h3>
                         <p class="tool-desc">Formata para padrão: XXX/XXXX (número variável/ano)</p>
                     </div>
-                    <form class="tool-body form-tool" data-tool="addMaskGMS">
+                    <div class="tool-body">
                         <div class="input-row">
                             <div class="input-group">
                                 <label for="input-gms-number">Número GMS:</label>
                                 <input 
                                     type="text" 
-                                    id="input-gms-number" name="gms_number" 
+                                    id="input-gms-number" 
                                     placeholder="Ex: 819"
                                     class="input-field"
                                     inputmode="numeric"
@@ -139,7 +139,7 @@
                                 <label for="input-gms-year">Ano:</label>
                                 <input 
                                     type="text" 
-                                    id="input-gms-year" name="gms_year" 
+                                    id="input-gms-year" 
                                     placeholder="Ex: 2025"
                                     class="input-field"
                                     maxlength="4"
@@ -151,16 +151,16 @@
                             </div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" ><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
-                            <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="addMaskGMS()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyGMSResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('gms-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
                         <div id="gms-result" class="result-box"></div>
-                    </form>
+                    </div>
                 </div>
                 </div> <!-- FECHAMENTO DO sub-gms faltante -->
 
@@ -182,22 +182,22 @@
                                     <h3>CPF</h3>
                                     <p class="tool-desc">Formata para padrão: XXX.XXX.XXX-XX (dados pessoais)</p>
                                 </div>
-                                <form class="tool-body form-tool" data-tool="addMaskCPF">
+                                <div class="tool-body">
                                     <div class="input-group">
                                         <label for="input-cpf">Digite apenas números (11 dígitos):</label>
-                                        <input type="text" id="input-cpf" name="cpf" placeholder="Ex: 12345678900" class="input-field" maxlength="14" title="Digite o CPF" aria-label="CPF">
+                                        <input type="text" id="input-cpf" placeholder="Ex: 12345678900" class="input-field" maxlength="14" title="Digite o CPF" aria-label="CPF">
                                     </div>
                                     <div class="button-group">
-                                        <button class="btn btn-primary" ><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
-                                        <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                                        <button class="btn btn-primary" onclick="addMaskCPF()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                        <button class="btn btn-copy" disabled onclick="copyCPFResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                             <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                         </button>
-                                        <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                                        <button class="btn btn-clear" disabled onclick="clearResult('cpf-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                             <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                         </button>
                                     </div>
                                     <div id="cpf-result" class="result-box"></div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -210,22 +210,22 @@
                                     <h3>CNPJ</h3>
                                     <p class="tool-desc">Formata para padrão: XX.XXX.XXX/0001-XX (dados empresa)</p>
                                 </div>
-                                <form class="tool-body form-tool" data-tool="addMaskCNPJ">
+                                <div class="tool-body">
                                     <div class="input-group">
                                         <label for="input-cnpj-add">Digite apenas números (14 dígitos):</label>
-                                        <input type="text" id="input-cnpj-add" name="cnpj" placeholder="Ex: 12345678000199" class="input-field" maxlength="18" title="Digite o CNPJ" aria-label="CNPJ empresa">
+                                        <input type="text" id="input-cnpj-add" placeholder="Ex: 12345678000199" class="input-field" maxlength="18" title="Digite o CNPJ" aria-label="CNPJ empresa">
                                     </div>
                                     <div class="button-group">
-                                        <button class="btn btn-primary" ><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
-                                        <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                                        <button class="btn btn-primary" onclick="addMaskCNPJ()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                        <button class="btn btn-copy" disabled onclick="copyCNPJAddResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                             <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                         </button>
-                                        <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                                        <button class="btn btn-clear" disabled onclick="clearResult('cnpj-add-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                             <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                         </button>
                                     </div>
                                     <div id="cnpj-add-result" class="result-box"></div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div> <!-- /category-group -->
@@ -251,7 +251,7 @@
                         <h3>Calcular Data Final de Vigência</h3>
                         <p class="tool-desc">Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade</p>
                     </div>
-                    <form class="tool-body form-tool" data-tool="calculateDateValidity">
+                    <div class="tool-body">
                         <div class="info-box" style="margin-bottom: 20px;">
                             <p><strong>Regras:</strong></p>
                             <ul>
@@ -264,7 +264,7 @@
                             <label for="input-date-start">Data de Início (DD/MM/YYYY):</label>
                             <input 
                                 type="text" 
-                                id="input-date-start" name="date_start" 
+                                id="input-date-start" 
                                 class="input-field"
                                 placeholder="01/01/2026"
                                 title="Digite a data no formato DD/MM/YYYY"
@@ -275,7 +275,7 @@
                         <div class="input-row">
                             <div class="input-group">
                                 <label for="select-unit">Unidade de Tempo:</label>
-                                <select id="select-unit" name="time_unit" class="input-field" aria-label="Unidade de tempo">
+                                <select id="select-unit" class="input-field" aria-label="Unidade de tempo">
                                     <option value="">Selecione...</option>
                                     <option value="months">Meses</option>
                                     <option value="years">Anos</option>
@@ -285,7 +285,7 @@
                                 <label for="input-duration">Duração:</label>
                                 <input 
                                     type="number" 
-                                    id="input-duration" name="duration" 
+                                    id="input-duration" 
                                     placeholder="Ex: 12"
                                     class="input-field"
                                     min="1"
@@ -295,16 +295,16 @@
                         </div>
 
                         <div class="button-group">
-                            <button class="btn btn-primary" ><i class="bi bi-calendar-check"></i><span class="btn-label">Calcular Data Final</span></button>
-                            <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="calculateDateValidity()"><i class="bi bi-calendar-check"></i><span class="btn-label">Calcular Data Final</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyDateResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('date-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
                         <div id="date-result" class="result-box"></div>
-                    </form>
+                    </div>
                 </div>
                 </div> <!-- /sub-data-final -->
 
@@ -314,28 +314,28 @@
                         <h3>Dias Restantes até Vencimento</h3>
                         <p class="tool-desc">Informe a data inicial e a data final do contrato e veja quantos dias há entre elas</p>
                     </div>
-                    <form class="tool-body form-tool" data-tool="calculateDaysRemaining">
+                    <div class="tool-body">
                         <div class="input-row">
                             <div class="input-group">
                                 <label for="input-date-start-days">Data Inicial (DD/MM/YYYY):</label>
-                                <input type="text" id="input-date-start-days" name="date_start" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data inicial">
+                                <input type="text" id="input-date-start-days" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data inicial">
                             </div>
                             <div class="input-group">
                                 <label for="input-date-final">Data Final (DD/MM/YYYY):</label>
-                                <input type="text" id="input-date-final" name="date_final" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data final">
+                                <input type="text" id="input-date-final" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data final">
                             </div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" ><i class="bi bi-calendar-range"></i><span class="btn-label">Calcular Dias</span></button>
-                            <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="calculateDaysRemaining()"><i class="bi bi-calendar-range"></i><span class="btn-label">Calcular Dias</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyDaysResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('days-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
                         <div id="days-result" class="result-box"></div>
-                    </form>
+                    </div>
                 </div>
                 </div> <!-- /sub-dias-restantes -->
                 </div> <!-- /subtab-contents -->
@@ -352,12 +352,12 @@
                         <h3>Pesquisar Empresa por CNPJ</h3>
                         <p class="tool-desc">Busca dados da empresa usando API pública de CNPJ</p>
                     </div>
-                    <form class="tool-body form-tool" data-tool="searchCNPJ">
+                    <div class="tool-body">
                         <div class="input-group">
                             <label for="input-cnpj">CNPJ:</label>
                             <input 
                                 type="text" 
-                                id="input-cnpj" name="cnpj" 
+                                id="input-cnpj" 
                                 placeholder="Ex: 76.564.624/0003-65 ou 76564624000365"
                                 class="input-field"
                                 maxlength="18"
@@ -369,17 +369,17 @@
                         </div>
                         
                         <div class="button-group">
-                            <button class="btn btn-primary" ><i class="bi bi-search"></i><span class="btn-label">Pesquisar</span></button>
-                            <button class="btn btn-copy" disabled  title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="searchCNPJ()"><i class="bi bi-search"></i><span class="btn-label">Pesquisar</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyCNPJResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" disabled data-action="clear" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('cnpj-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
                         <div id="cnpj-result" class="result-box"></div>
                         <div id="cnpj-loading" class="loading" style="display: none;">Buscando...</div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
@@ -412,12 +412,11 @@
     </div>
 
     <!-- scripts split for better organization -->
-    
-    
-    
-    
-    
-<script type="module" src="../src/js/main.js"></script>
+    <script src="../src/js/tabs.js"></script>
+    <script src="../src/js/utils.js"></script>
+    <script src="../src/js/masks.js"></script>
+    <script src="../src/js/dates.js"></script>
+    <script src="../src/js/consultas.js"></script>
 </body>
 
 </html>
