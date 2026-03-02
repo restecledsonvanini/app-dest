@@ -31,12 +31,14 @@ async function searchCNPJ() {
         }
         const data = await response.json();
         const resultado = `
-            <strong>${data.nome_fantasia || data.razao_social}</strong><br>
-            <strong>CNPJ:</strong> ${formatCNPJ(cleanCNPJ)}<br>
-            <strong>Situação:</strong> ${data.descricao_situacao || 'N/A'}<br>
-            <strong>Natureza Jurídica:</strong> ${data.descricao_natureza_juridica || 'N/A'}<br>
-            <strong>Endereço:</strong> ${data.logradouro || ''} ${data.numero || ''}, ${data.bairro || ''}<br>
-            ${data.municipio || ''} - ${data.uf || ''}
+            <div style="text-align:left; width: 100%; font-size: 0.95em; line-height: 1.5;">
+                <strong style="font-size: 1.1em; color: var(--primary);">${data.nome_fantasia || data.razao_social}</strong><br>
+                <strong>CNPJ:</strong> ${formatCNPJ(cleanCNPJ)}<br>
+                <strong>Situação:</strong> ${data.descricao_situacao || 'N/A'}<br>
+                <strong>Natureza Jurídica:</strong> ${data.descricao_natureza_juridica || 'N/A'}<br>
+                <strong>Endereço:</strong> ${data.logradouro || ''} ${data.numero || ''}, ${data.bairro || ''}<br>
+                ${data.municipio || ''} - ${data.uf || ''}
+            </div>
         `;
         resultBox.innerHTML = resultado;
         try { resultBox.dataset.result = (data.nome_fantasia || data.razao_social) + ' - ' + formatCNPJ(cleanCNPJ); } catch (e) {}

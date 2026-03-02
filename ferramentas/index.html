@@ -162,6 +162,7 @@
                         <div id="gms-result" class="result-box"></div>
                     </div>
                 </div>
+                </div> <!-- FECHAMENTO DO sub-gms faltante -->
 
                 </div> <!-- end subtab-contents -->
 
@@ -227,20 +228,38 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                
-                
+                    </div> <!-- /category-group -->
+                </div> <!-- /sub-cnpj -->
+            </div> <!-- /subtab-contents -->
+            </div> <!-- /mascaras -->
 
             <div id="datas" class="tab-content">
                 <div class="tab-title">Transformador de Data de Vigência</div>
                 
+                <!-- Subtab navigation: datas -->
+                <div class="subtab-nav" role="tablist" aria-label="Subtabs Datas">
+                    <button class="subtab-btn active" data-subtab="sub-data-final"><i class="bi bi-calendar-plus"></i><span>Data Final</span></button>
+                    <button class="subtab-btn" data-subtab="sub-dias-restantes"><i class="bi bi-calendar-range"></i><span>Dias Restantes</span></button>
+                </div>
+
+                <div class="subtab-contents">
+                
                 <!-- TRANSFORMADOR DE DATA -->
+                <div id="sub-data-final" class="subtab-content active">
                 <div class="tool-panel">
                     <div class="tool-header">
                         <h3>Calcular Data Final de Vigência</h3>
                         <p class="tool-desc">Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade</p>
                     </div>
                     <div class="tool-body">
+                        <div class="info-box" style="margin-bottom: 20px;">
+                            <p><strong>Regras:</strong></p>
+                            <ul>
+                                <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses - 1 dia (período inclusivo)</li>
+                                <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos (mesmo dia)</li>
+                            </ul>
+                        </div>
+
                         <div class="input-group">
                             <label for="input-date-start">Data de Início (DD/MM/YYYY):</label>
                             <input 
@@ -275,14 +294,6 @@
                             </div>
                         </div>
 
-                        <div class="info-box">
-                            <p><strong>Regras:</strong></p>
-                            <ul>
-                                <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses - 1 dia (período inclusivo)</li>
-                                <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos (mesmo dia)</li>
-                            </ul>
-                        </div>
-
                         <div class="button-group">
                             <button class="btn btn-primary" onclick="calculateDateValidity()"><i class="bi bi-calendar-check"></i><span class="btn-label">Calcular Data Final</span></button>
                             <button class="btn btn-copy" disabled onclick="copyDateResult()" title="Copiar resultado" aria-label="Copiar resultado">
@@ -295,7 +306,9 @@
                         <div id="date-result" class="result-box"></div>
                     </div>
                 </div>
+                </div> <!-- /sub-data-final -->
 
+                <div id="sub-dias-restantes" class="subtab-content">
                 <div class="tool-panel">
                     <div class="tool-header">
                         <h3>Dias Restantes até Vencimento</h3>
@@ -324,8 +337,10 @@
                         <div id="days-result" class="result-box"></div>
                     </div>
                 </div>
+                </div> <!-- /sub-dias-restantes -->
+                </div> <!-- /subtab-contents -->
 
-            </div>
+            </div> <!-- /datas -->
 
             <!-- ABA 3: CONSULTAS -->
             <div id="consultas" class="tab-content">
@@ -339,7 +354,7 @@
                     </div>
                     <div class="tool-body">
                         <div class="input-group">
-                            <label for="input-cnpj">CNPJ (apenas números):</label>
+                            <label for="input-cnpj">CNPJ:</label>
                             <input 
                                 type="text" 
                                 id="input-cnpj" 
@@ -358,6 +373,9 @@
                             <button class="btn btn-copy" disabled onclick="copyCNPJResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
+                            <button class="btn btn-clear" disabled onclick="clearResult('cnpj-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                            </button>
                         </div>
                         <div id="cnpj-result" class="result-box"></div>
                         <div id="cnpj-loading" class="loading" style="display: none;">Buscando...</div>
@@ -369,14 +387,23 @@
             <div id="help" class="tab-content">
                 <div class="tab-title">Ajuda Rápida</div>
                 <div class="tool-panel">
+                    <div class="tool-header">
+                        <h3>Dicas de Uso</h3>
+                        <p class="tool-desc">Entenda como aproveitar melhor as ferramentas de produtividade</p>
+                    </div>
                     <div class="tool-body">
-                        <p>Instruções gerais:</p>
-                        <ul>
-                            <li><strong>Somente números:</strong> campos aceitam apenas dígitos (datas permitem "/" para separar).</li>
-                            <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code> ou use o seletor quando disponível.</li>
-                            <li><strong>Enter:</strong> pressione em qualquer campo para acionar a ferramenta.</li>
-                        </ul>
-                        <p>Determinadas ferramentas possuem botões adicionais com ícones de <strong>copiar</strong> e <strong>lixeira</strong> para facilitar o uso (passe o cursor para ver a dica).</p>
+                        <div class="info-box">
+                            <p><strong>Instruções gerais:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas dígitos. As pontuações são removidas ou aplicadas inteligentemente.</li>
+                                <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code> ou use o seletor quando disponível.</li>
+                                <li><strong>Atalhos:</strong> pressione a tecla <strong>Enter</strong> em qualquer campo para acionar a ferramenta.</li>
+                            </ul>
+                        </div>
+                        <p style="margin-top: 16px; color: #4b5563; font-size: 0.95em;">
+                            <i class="bi bi-info-circle-fill" style="color: var(--primary); margin-right: 6px;"></i>
+                            Determinadas ferramentas possuem botões com ícones de <strong>Copiar</strong> (<i class="bi bi-clipboard"></i>) e <strong>Limpar</strong> (<i class="bi bi-x-circle"></i>) para facilitar sua rotina. Eles são ativados automaticamente após uso!
+                        </p>
                     </div>
                 </div>
             </div>
