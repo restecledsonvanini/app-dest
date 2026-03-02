@@ -37,11 +37,76 @@ header nav a {
     color: #555;
     font-weight: 500;
     transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+}
+header nav a i {
+    margin-right: 6px;
+    font-size: 1.2rem;
+    vertical-align: middle;
 }
 
 header nav a:hover {
     color: #000;
 }
+
+/* header link without button style */
+header nav a.header-link {
+    background: transparent;
+    padding: 0;
+    margin-left: 0;
+    color: white;
+    font-weight: 600;
+}
+header nav a.header-link:hover {
+    text-decoration: underline;
+}
+
+/* header button added on home page */
+header nav .header-btn {
+    margin-left: 12px;
+    background: white;
+    color: #16c76b;
+    border: 2px solid #16c76b;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+header nav .header-btn:hover {
+    background: #16c76b;
+    color: white;
+}
+
+/* responsive tweaks */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    header nav {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    header nav a,
+    header nav .header-btn {
+        margin: 4px 6px 0 0;
+    }
+    .container {
+        margin-top: 20px;
+        padding: 10px;
+    }
+    .card {
+        padding: 16px;
+        margin: 0 10px;
+    }
+    .input-row {
+        flex-direction: column;
+    }
+}
+
 
 /* CARD */
 .container {

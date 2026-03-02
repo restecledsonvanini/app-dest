@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../src/styles/ferramentas.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <header>
+        <div class="logo">
+            <a href="../index.html" style="display: flex; align-items: center; text-decoration: none;">
+                <img width="70" src="../src/images/logo-sesp-dest.png" alt="Logo Sesp DEST" style="margin-right: 12px;">
+                <span style="color: white; font-weight: bold;">Ferramentas</span>
+            </a>
+        </div>
+        <nav>
+            <a href="../index.html" title="Voltar para a Home" class="header-link">Voltar</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <!-- TAB NAVIGATION -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
+                <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i class="bi bi-calendar3 tab-icon" aria-hidden="true"></i>Datas</button>
+                <button class="tab-btn" data-tab="consultas" title="Consultas públicas (CNPJ)"><i class="bi bi-search tab-icon" aria-hidden="true"></i>Consultas</button>
+                <button class="tab-btn" data-tab="help" title="Ajuda rápida sobre como usar"><i class="bi bi-question-circle tab-icon" aria-hidden="true"></i>Ajuda</button>
+            </div>
+
+            <!-- ABA 1: MÁSCARAS -->
+            <div id="mascaras" class="tab-content active">
+                <div class="tab-title">Ferramentas de Máscaras</div>
+
+                <!-- Subtab navigation: ferramentas -->
+                <div class="subtab-nav" role="tablist" aria-label="Subtabs Ferramentas">
+                    <button class="subtab-btn active" data-subtab="sub-removedor"><i class="bi bi-eraser"></i><span>Remover Máscara</span></button>
+                    <button class="subtab-btn" data-subtab="sub-eprotocolo"><i class="bi bi-hash"></i><span>Máscara eProtocolo</span></button>
+                    <button class="subtab-btn" data-subtab="sub-gms"><i class="bi bi-slash-lg"></i><span>Máscara Núm. GMS</span></button>
+                </div>
+
+                <!-- Subtab contents -->
+                <div class="subtab-contents">
+                <!-- REMOVEDOR DE MÁSCARA -->
+                <div id="sub-removedor" class="subtab-content active">
+                    <div class="section-title">Diversos</div>
+                    <div class="tool-panel">
+                        <div class="tool-header">
+                            <h3>Removedor de Máscara</h3>
+                            <p class="tool-desc">Remove formatação de CPF, CNPJ, eProtocolo e números GMS</p>
+                        </div>
+                        <div class="tool-body">
+                            <div class="input-group">
+                                <label for="input-remove-mask">Digite o valor com máscara:</label>
+                                <input 
+                                    type="text" 
+                                    id="input-remove-mask" 
+                                    placeholder="Ex: 123.456.789-00 ou 25.264.314-1"
+                                    class="input-field"
+                                    aria-label="Input para remover máscara"
+                                >
+                            </div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" onclick="removeMask()" title="Remover máscara do valor">Remover Máscara</button>
+                                <button class="btn btn-copy" onclick="copyRemoveMaskResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                    <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                                </button>
+                                <button class="btn btn-clear" onclick="clearResult('remove-mask-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                    <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                                </button>
+                            </div>
+                            <div id="remove-mask-result" class="result-box"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EPROTOCOLO SUBTAB -->
+                <div id="sub-eprotocolo" class="subtab-content">
+                    <div class="tool-panel">
+                        <div class="tool-header">
+                            <h3>Adiciona Máscara eProtocolo</h3>
+                            <p class="tool-desc">Formata para padrão: XX.XXX.XXX-X</p>
+                        </div>
+                        <div class="tool-body">
+                            <div class="input-group">
+                                <label for="input-eprotocolo">Digite apenas números (9 dígitos):</label>
+                                <input 
+                                    type="text" 
+                                    id="input-eprotocolo" 
+                                    placeholder="Ex: 252643141"
+                                    class="input-field"
+                                    inputmode="numeric"
+                                    pattern="[0-9]*"
+                                    title="Digite apenas números" 
+                                    aria-label="Input para eProtocolo">
+                            </div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" onclick="addMaskEprotocolo()" title="Aplicar máscara eProtocolo">Adicionar Máscara</button>
+                                <button class="btn btn-copy" onclick="copyEprotocoResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                    <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                                </button>
+                                <button class="btn btn-clear" onclick="clearResult('eprotocolo-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                    <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                                </button>
+                            </div>
+                            <div id="eprotocolo-result" class="result-box"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADICIONA MÁSCARA GMS -->
+                <div id="sub-gms" class="subtab-content">
+                <div class="tool-panel">
+                    <div class="tool-header">
+                        <h3>Adiciona Máscara Número GMS</h3>
+                        <p class="tool-desc">Formata para padrão: XXX/XXXX (número variável/ano)</p>
+                    </div>
+                    <div class="tool-body">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="input-gms-number">Número GMS:</label>
+                                <input 
+                                    type="text" 
+                                    id="input-gms-number" 
+                                    placeholder="Ex: 819"
+                                    class="input-field"
+                                    inputmode="numeric"
+                                    pattern="[0-9]*"
+                                    title="Digite apenas números"
+                                    aria-label="Número GMS"
+                                >
+                            </div>
+                            <div class="input-group">
+                                <label for="input-gms-year">Ano:</label>
+                                <input 
+                                    type="text" 
+                                    id="input-gms-year" 
+                                    placeholder="Ex: 2025"
+                                    class="input-field"
+                                    maxlength="4"
+                                    inputmode="numeric"
+                                    pattern="[0-9]*"
+                                    title="Digite o ano com 4 dígitos"
+                                    aria-label="Ano GMS"
+                                >
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="addMaskGMS()">Adicionar Máscara</button>
+                            <button class="btn btn-copy" onclick="copyGMSResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                            </button>
+                            <button class="btn btn-clear" onclick="clearResult('gms-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                            </button>
+                        </div>
+                        <div id="gms-result" class="result-box"></div>
+                    </div>
+                </div>
+
+                </div> <!-- end subtab-contents -->
+
+                <!-- ADD MASKES POR CATEGORIA -->
+                <div class="section-title">Dados Pessoais / Empresa</div>
+                <div class="subtab-nav" role="tablist" aria-label="Subtabs Dados">
+                    <button class="subtab-btn active" data-subtab="sub-cpf"><i class="bi bi-person-badge"></i><span>CPF</span></button>
+                    <button class="subtab-btn" data-subtab="sub-cnpj"><i class="bi bi-building"></i><span>CNPJ</span></button>
+                </div>
+
+                <div class="subtab-contents">
+                <div id="sub-cpf" class="subtab-content active">
+                    <div class="category-group">
+                        <div class="mask-add-container">
+                            <div class="tool-panel">
+                                <div class="tool-header">
+                                    <h3>CPF</h3>
+                                    <p class="tool-desc">Formata para padrão: XXX.XXX.XXX-XX (dados pessoais)</p>
+                                </div>
+                                <div class="tool-body">
+                                    <div class="input-group">
+                                        <label for="input-cpf">Digite apenas números (11 dígitos):</label>
+                                        <input type="text" id="input-cpf" placeholder="Ex: 12345678900" class="input-field" maxlength="11" inputmode="numeric" pattern="[0-9]*" title="Digite apenas números" aria-label="CPF">
+                                    </div>
+                                    <div class="button-group">
+                                        <button class="btn btn-primary" onclick="addMaskCPF()">Adicionar Máscara</button>
+                                        <button class="btn btn-copy" onclick="copyCPFResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                            <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                                        </button>
+                                        <button class="btn btn-clear" onclick="clearResult('cpf-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                            <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                                        </button>
+                                    </div>
+                                    <div id="cpf-result" class="result-box"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="sub-cnpj" class="subtab-content">
+                    <div class="category-group">
+                        <div class="mask-add-container">
+                            <div class="tool-panel">
+                                <div class="tool-header">
+                                    <h3>CNPJ</h3>
+                                    <p class="tool-desc">Formata para padrão: XX.XXX.XXX/0001-XX (dados empresa)</p>
+                                </div>
+                                <div class="tool-body">
+                                    <div class="input-group">
+                                        <label for="input-cnpj-add">Digite apenas números (14 dígitos):</label>
+                                        <input type="text" id="input-cnpj-add" placeholder="Ex: 12345678000199" class="input-field" maxlength="18" inputmode="numeric" pattern="[0-9]*" title="Digite apenas números" aria-label="CNPJ empresa">
+                                    </div>
+                                    <div class="button-group">
+                                        <button class="btn btn-primary" onclick="addMaskCNPJ()">Adicionar Máscara</button>
+                                        <button class="btn btn-copy" onclick="copyCNPJAddResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                            <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                                        </button>
+                                        <button class="btn btn-clear" onclick="clearResult('cnpj-add-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                            <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                                        </button>
+                                    </div>
+                                    <div id="cnpj-add-result" class="result-box"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                
+
+            <div id="datas" class="tab-content">
+                <div class="tab-title">Transformador de Data de Vigência</div>
+                
+                <!-- TRANSFORMADOR DE DATA -->
+                <div class="tool-panel">
+                    <div class="tool-header">
+                        <h3>Calcular Data Final de Vigência</h3>
+                        <p class="tool-desc">Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade</p>
+                    </div>
+                    <div class="tool-body">
+                        <div class="input-group">
+                            <label for="input-date-start">Data de Início (DD/MM/YYYY):</label>
+                            <input 
+                                type="text" 
+                                id="input-date-start" 
+                                class="input-field"
+                                placeholder="01/01/2026"
+                                title="Digite a data no formato DD/MM/YYYY"
+                                aria-label="Data de início"
+                            >
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="select-unit">Unidade de Tempo:</label>
+                                <select id="select-unit" class="input-field" aria-label="Unidade de tempo">
+                                    <option value="">Selecione...</option>
+                                    <option value="months">Meses</option>
+                                    <option value="years">Anos</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="input-duration">Duração:</label>
+                                <input 
+                                    type="number" 
+                                    id="input-duration" 
+                                    placeholder="Ex: 12"
+                                    class="input-field"
+                                    min="1"
+                                    aria-label="Duração"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <p><strong>Regras:</strong></p>
+                            <ul>
+                                <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses - 1 dia (período inclusivo)</li>
+                                <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos (mesmo dia)</li>
+                            </ul>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="calculateDateValidity()">Calcular Data Final</button>
+                            <button class="btn btn-copy" onclick="copyDateResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                            </button>
+                            <button class="btn btn-clear" onclick="clearResult('date-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                            </button>
+                        </div>
+                        <div id="date-result" class="result-box"></div>
+                    </div>
+                </div>
+
+                <div class="tool-panel">
+                    <div class="tool-header">
+                        <h3>Dias Restantes até Vencimento</h3>
+                        <p class="tool-desc">Informe a data inicial e a data final do contrato e veja quantos dias há entre elas</p>
+                    </div>
+                    <div class="tool-body">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="input-date-start-days">Data Inicial (DD/MM/YYYY):</label>
+                                <input type="text" id="input-date-start-days" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data inicial">
+                            </div>
+                            <div class="input-group">
+                                <label for="input-date-final">Data Final (DD/MM/YYYY):</label>
+                                <input type="text" id="input-date-final" class="input-field" placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY" aria-label="Data final">
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="calculateDaysRemaining()">Calcular Dias</button>
+                            <button class="btn btn-copy" onclick="copyDaysResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                            </button>
+                            <button class="btn btn-clear" onclick="clearResult('days-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
+                            </button>
+                        </div>
+                        <div id="days-result" class="result-box"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ABA 3: CONSULTAS -->
+            <div id="consultas" class="tab-content">
+                <div class="tab-title">Ferramentas de Consulta</div>
+                
+                <!-- PESQUISAR EMPRESA POR CNPJ -->
+                <div class="tool-panel">
+                    <div class="tool-header">
+                        <h3>Pesquisar Empresa por CNPJ</h3>
+                        <p class="tool-desc">Busca dados da empresa usando API pública de CNPJ</p>
+                    </div>
+                    <div class="tool-body">
+                        <div class="input-group">
+                            <label for="input-cnpj">CNPJ (apenas números):</label>
+                            <input 
+                                type="text" 
+                                id="input-cnpj" 
+                                placeholder="Ex: 76.564.624/0003-65 ou 76564624000365"
+                                class="input-field"
+                                maxlength="18"
+                                inputmode="numeric"
+                                pattern="[0-9/.\-]*"
+                                title="Digite CNPJ com ou sem máscara"
+                                aria-label="CNPJ"
+                            >
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="searchCNPJ()">Pesquisar</button>
+                            <button class="btn btn-copy" onclick="copyCNPJResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
+                            </button>
+                        </div>
+                        <div id="cnpj-result" class="result-box"></div>
+                        <div id="cnpj-loading" class="loading" style="display: none;">Buscando...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA Ajuda -->
+            <div id="help" class="tab-content">
+                <div class="tab-title">Ajuda Rápida</div>
+                <div class="tool-panel">
+                    <div class="tool-body">
+                        <p>Instruções gerais:</p>
+                        <ul>
+                            <li><strong>Somente números:</strong> campos aceitam apenas dígitos (datas permitem "/" para separar).</li>
+                            <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code> ou use o seletor quando disponível.</li>
+                            <li><strong>Enter:</strong> pressione em qualquer campo para acionar a ferramenta.</li>
+                        </ul>
+                        <p>Determinadas ferramentas possuem botões adicionais com ícones de <strong>copiar</strong> e <strong>lixeira</strong> para facilitar o uso (passe o cursor para ver a dica).</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- scripts split for better organization -->
+    <script src="../src/js/tabs.js"></script>
+    <script src="../src/js/utils.js"></script>
+    <script src="../src/js/masks.js"></script>
+    <script src="../src/js/dates.js"></script>
+    <script src="../src/js/consultas.js"></script>
+</body>
+
+</html>
