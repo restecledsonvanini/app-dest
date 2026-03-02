@@ -50,7 +50,22 @@ function showCopyFeedback() {
     }, 1500);
 }
 
-// Limpa o conteúdo de uma caixa de resultado
+// Habilita/Desabilita os botões de ação após um resultado
+function enableActionButtons(id) {
+    const box = document.getElementById(id);
+    if (box) {
+        const panel = box.closest('.tool-panel');
+        if (panel) {
+            const isSuccess = box.classList.contains('info');
+            panel.querySelectorAll('.btn-clear').forEach(b => b.removeAttribute('disabled'));
+            panel.querySelectorAll('.btn-copy').forEach(b => {
+                if (isSuccess) b.removeAttribute('disabled');
+                else b.setAttribute('disabled', 'true');
+            });
+        }
+    }
+}
+
 function clearResult(id) {
     const box = document.getElementById(id);
     if (box) {
@@ -68,6 +83,8 @@ function clearResult(id) {
                 const first = inputs[0];
                 try { first.focus(); } catch (e) {}
             }
+            // disable copy/clear buttons
+            panel.querySelectorAll('.btn-copy, .btn-clear').forEach(b => b.setAttribute('disabled', 'true'));
         } else {
             // fallback: try common input ids derived from result id
             const map = {
@@ -98,9 +115,8 @@ function attachNumericSanitizer(id) {
 }
 
 // attach sanitization to the list of known numeric fields
-// NOTE: 'input-remove-mask' intentionally omitted so we preserve mask chars
-['input-eprotocolo', 'input-gms-number', 'input-gms-year', 'input-cnpj',
- 'input-cpf', 'input-cnpj-add']
+// NOTE: 'input-remove-mask', 'input-cpf', 'input-cnpj', 'input-cnpj-add' intentionally omitted so we preserve mask chars
+['input-eprotocolo', 'input-gms-number', 'input-gms-year']
      .forEach(id => attachNumericSanitizer(id));
 // date inputs are allowed only digits and slash to ease manual typing
 function attachDateSanitizer(id) {

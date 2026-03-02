@@ -14,14 +14,19 @@
             </a>
         </div>
         <nav>
-            <a href="../index.html" title="Voltar para a Home" class="header-link">Voltar</a>
+            <a href="../index.html" title="Voltar para a Home" class="header-link"><i class="bi bi-arrow-left-circle" style="margin-right:6px;"></i>Voltar</a>
         </nav>
     </header>
 
     <div class="container">
         <div class="card">
             <!-- TAB NAVIGATION -->
-            <div class="tab-nav">
+            <div class="mobile-tab-toggle">
+                <button id="hamburger-tab-btn" aria-expanded="false" aria-controls="main-tab-nav">
+                    <i class="bi bi-list"></i> Menu de Ferramentas
+                </button>
+            </div>
+            <div class="tab-nav" id="main-tab-nav">
                 <button class="tab-btn active" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
                 <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i class="bi bi-calendar3 tab-icon" aria-hidden="true"></i>Datas</button>
                 <button class="tab-btn" data-tab="consultas" title="Consultas públicas (CNPJ)"><i class="bi bi-search tab-icon" aria-hidden="true"></i>Consultas</button>
@@ -34,9 +39,9 @@
 
                 <!-- Subtab navigation: ferramentas -->
                 <div class="subtab-nav" role="tablist" aria-label="Subtabs Ferramentas">
-                    <button class="subtab-btn active" data-subtab="sub-removedor"><i class="bi bi-eraser"></i><span>Remover Máscara</span></button>
-                    <button class="subtab-btn" data-subtab="sub-eprotocolo"><i class="bi bi-hash"></i><span>Máscara eProtocolo</span></button>
-                    <button class="subtab-btn" data-subtab="sub-gms"><i class="bi bi-slash-lg"></i><span>Máscara Núm. GMS</span></button>
+                    <button class="subtab-btn active" data-subtab="sub-removedor"><i class="bi bi-eraser"></i><span>Genérico</span></button>
+                    <button class="subtab-btn" data-subtab="sub-eprotocolo"><i class="bi bi-hash"></i><span>eProtocolo</span></button>
+                    <button class="subtab-btn" data-subtab="sub-gms"><i class="bi bi-slash-lg"></i><span>N.GMS</span></button>
                 </div>
 
                 <!-- Subtab contents -->
@@ -61,11 +66,11 @@
                                 >
                             </div>
                             <div class="button-group">
-                                <button class="btn btn-primary" onclick="removeMask()" title="Remover máscara do valor">Remover Máscara</button>
-                                <button class="btn btn-copy" onclick="copyRemoveMaskResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <button class="btn btn-primary" onclick="removeMask()" title="Remover máscara do valor"><i class="bi bi-eraser-fill"></i><span class="btn-label">Remover</span></button>
+                                <button class="btn btn-copy" disabled onclick="copyRemoveMaskResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                     <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                 </button>
-                                <button class="btn btn-clear" onclick="clearResult('remove-mask-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <button class="btn btn-clear" disabled onclick="clearResult('remove-mask-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                     <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                 </button>
                             </div>
@@ -78,7 +83,7 @@
                 <div id="sub-eprotocolo" class="subtab-content">
                     <div class="tool-panel">
                         <div class="tool-header">
-                            <h3>Adiciona Máscara eProtocolo</h3>
+                            <h3>Máscara eProtocolo</h3>
                             <p class="tool-desc">Formata para padrão: XX.XXX.XXX-X</p>
                         </div>
                         <div class="tool-body">
@@ -95,11 +100,11 @@
                                     aria-label="Input para eProtocolo">
                             </div>
                             <div class="button-group">
-                                <button class="btn btn-primary" onclick="addMaskEprotocolo()" title="Aplicar máscara eProtocolo">Adicionar Máscara</button>
-                                <button class="btn btn-copy" onclick="copyEprotocoResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                <button class="btn btn-primary" onclick="addMaskEprotocolo()" title="Aplicar máscara eProtocolo"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                <button class="btn btn-copy" disabled onclick="copyEprotocoResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                     <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                 </button>
-                                <button class="btn btn-clear" onclick="clearResult('eprotocolo-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                <button class="btn btn-clear" disabled onclick="clearResult('eprotocolo-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                     <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                 </button>
                             </div>
@@ -146,11 +151,11 @@
                             </div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" onclick="addMaskGMS()">Adicionar Máscara</button>
-                            <button class="btn btn-copy" onclick="copyGMSResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="addMaskGMS()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyGMSResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" onclick="clearResult('gms-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('gms-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
@@ -179,14 +184,14 @@
                                 <div class="tool-body">
                                     <div class="input-group">
                                         <label for="input-cpf">Digite apenas números (11 dígitos):</label>
-                                        <input type="text" id="input-cpf" placeholder="Ex: 12345678900" class="input-field" maxlength="11" inputmode="numeric" pattern="[0-9]*" title="Digite apenas números" aria-label="CPF">
+                                        <input type="text" id="input-cpf" placeholder="Ex: 12345678900" class="input-field" maxlength="14" title="Digite o CPF" aria-label="CPF">
                                     </div>
                                     <div class="button-group">
-                                        <button class="btn btn-primary" onclick="addMaskCPF()">Adicionar Máscara</button>
-                                        <button class="btn btn-copy" onclick="copyCPFResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                        <button class="btn btn-primary" onclick="addMaskCPF()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                        <button class="btn btn-copy" disabled onclick="copyCPFResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                             <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                         </button>
-                                        <button class="btn btn-clear" onclick="clearResult('cpf-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                        <button class="btn btn-clear" disabled onclick="clearResult('cpf-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                             <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                         </button>
                                     </div>
@@ -207,14 +212,14 @@
                                 <div class="tool-body">
                                     <div class="input-group">
                                         <label for="input-cnpj-add">Digite apenas números (14 dígitos):</label>
-                                        <input type="text" id="input-cnpj-add" placeholder="Ex: 12345678000199" class="input-field" maxlength="18" inputmode="numeric" pattern="[0-9]*" title="Digite apenas números" aria-label="CNPJ empresa">
+                                        <input type="text" id="input-cnpj-add" placeholder="Ex: 12345678000199" class="input-field" maxlength="18" title="Digite o CNPJ" aria-label="CNPJ empresa">
                                     </div>
                                     <div class="button-group">
-                                        <button class="btn btn-primary" onclick="addMaskCNPJ()">Adicionar Máscara</button>
-                                        <button class="btn btn-copy" onclick="copyCNPJAddResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                                        <button class="btn btn-primary" onclick="addMaskCNPJ()"><i class="bi bi-magic"></i><span class="btn-label">Adicionar</span></button>
+                                        <button class="btn btn-copy" disabled onclick="copyCNPJAddResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                             <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                                         </button>
-                                        <button class="btn btn-clear" onclick="clearResult('cnpj-add-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                                        <button class="btn btn-clear" disabled onclick="clearResult('cnpj-add-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                             <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                                         </button>
                                     </div>
@@ -279,11 +284,11 @@
                         </div>
 
                         <div class="button-group">
-                            <button class="btn btn-primary" onclick="calculateDateValidity()">Calcular Data Final</button>
-                            <button class="btn btn-copy" onclick="copyDateResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="calculateDateValidity()"><i class="bi bi-calendar-check"></i><span class="btn-label">Calcular Data Final</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyDateResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" onclick="clearResult('date-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('date-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
@@ -308,11 +313,11 @@
                             </div>
                         </div>
                         <div class="button-group">
-                            <button class="btn btn-primary" onclick="calculateDaysRemaining()">Calcular Dias</button>
-                            <button class="btn btn-copy" onclick="copyDaysResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="calculateDaysRemaining()"><i class="bi bi-calendar-range"></i><span class="btn-label">Calcular Dias</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyDaysResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
-                            <button class="btn btn-clear" onclick="clearResult('days-result')" title="Limpar resultado" aria-label="Limpar resultado">
+                            <button class="btn btn-clear" disabled onclick="clearResult('days-result')" title="Limpar resultado" aria-label="Limpar resultado">
                                 <i class="bi bi-x-circle"></i><span class="btn-label">Limpar</span>
                             </button>
                         </div>
@@ -349,8 +354,8 @@
                         </div>
                         
                         <div class="button-group">
-                            <button class="btn btn-primary" onclick="searchCNPJ()">Pesquisar</button>
-                            <button class="btn btn-copy" onclick="copyCNPJResult()" title="Copiar resultado" aria-label="Copiar resultado">
+                            <button class="btn btn-primary" onclick="searchCNPJ()"><i class="bi bi-search"></i><span class="btn-label">Pesquisar</span></button>
+                            <button class="btn btn-copy" disabled onclick="copyCNPJResult()" title="Copiar resultado" aria-label="Copiar resultado">
                                 <i class="bi bi-clipboard"></i><span class="btn-label">Copiar</span>
                             </button>
                         </div>

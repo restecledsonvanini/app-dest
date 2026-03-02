@@ -1,5 +1,17 @@
 // Tab switching logic for ferramentas page
 
+// Menu Hamburguer Responsive
+const hamburgerBtn = document.getElementById('hamburger-tab-btn');
+const tabNav = document.getElementById('main-tab-nav');
+
+if (hamburgerBtn && tabNav) {
+    hamburgerBtn.addEventListener('click', () => {
+        tabNav.classList.toggle('show');
+        const isExpanded = tabNav.classList.contains('show');
+        hamburgerBtn.setAttribute('aria-expanded', isExpanded);
+    });
+}
+
 document.querySelectorAll('.tab-btn').forEach(button => {
     button.addEventListener('click', function () {
         const tabName = this.getAttribute('data-tab');
@@ -7,6 +19,12 @@ document.querySelectorAll('.tab-btn').forEach(button => {
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         this.classList.add('active');
         document.getElementById(tabName).classList.add('active');
+        
+        // Hide menu on mobile after selection
+        if (tabNav && tabNav.classList.contains('show')) {
+            tabNav.classList.remove('show');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
     });
 });
 

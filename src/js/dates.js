@@ -11,26 +11,26 @@ function calculateDateValidity() {
 
     if (!startValue) {
         resultBox.innerHTML = 'Digite a data de início';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
     const startDate = parseBRDate(startValue);
     if (!startDate) {
         resultBox.innerHTML = 'Data inicial inválida (formato DD/MM/YYYY)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
     if (!unit) {
         resultBox.innerHTML = 'Selecione a unidade de tempo (Meses ou Anos)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
     if (!duration || duration < 1) {
         resultBox.innerHTML = 'Digite uma duração válida (maior que 0)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
@@ -45,7 +45,7 @@ function calculateDateValidity() {
     const formattedResult = formatBRDate(endDate);
     resultBox.innerHTML = formattedResult;
     try { resultBox.dataset.result = formattedResult; } catch (e) {}
-    resultBox.className = 'result-box info';
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     dateStartInput.value = '';
     unitSelect.value = '';
     durationInput.value = '';
@@ -68,7 +68,7 @@ function calculateDaysRemaining() {
 
     if (!startVal || !finalVal) {
         resultBox.innerHTML = 'Selecione data inicial e final';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
@@ -76,7 +76,7 @@ function calculateDaysRemaining() {
     const finalDate = parseBRDate(finalVal);
     if (!startDate || !finalDate) {
         resultBox.innerHTML = 'Datas inválidas (use DD/MM/YYYY)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
 
@@ -86,10 +86,10 @@ function calculateDaysRemaining() {
     let resultHTML = '';
     if (daysDiff < 0) {
         resultHTML = `<strong>Período invertido (${Math.abs(daysDiff)} dias)</strong>`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
     } else {
         resultHTML = `<strong>${daysDiff} dia(s)</strong> de ${formatBRDate(startDate)} até ${formatBRDate(finalDate)}`;
-        resultBox.className = 'result-box info';
+        resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
         // apply color warnings
         if (daysDiff <= 30) resultBox.classList.add('warning-red');
         else if (daysDiff <= 60) resultBox.classList.add('warning-orange');

@@ -7,17 +7,17 @@ function removeMask() {
 
     if (!value) {
         resultBox.innerHTML = 'Digite um valor para remover a máscara';
-        resultBox.className = 'result-box empty';
+        resultBox.className = 'result-box empty'; enableActionButtons(resultBox.id);
         return;
     }
     const result = value.replace(/\D/g, '');
     if (!result) {
         resultBox.innerHTML = 'Nenhum número encontrado no valor digitado';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
-    resultBox.innerHTML = `<strong>Entrada:</strong> ${value} <br><strong>Saída:</strong> ${result}`;
-    resultBox.className = 'result-box info';
+    resultBox.innerHTML = `<div class="res-col"><small>Entrada:</small><strong>${value}</strong></div><div class="res-sep"></div><div class="res-col"><small>Saída:</small><strong>${result}</strong></div>`;
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     try { resultBox.dataset.result = result; } catch (e) {}
     input.value = '';
     input.focus();
@@ -44,17 +44,17 @@ function addMaskEprotocolo() {
 
     if (!cleanInput) {
         resultBox.innerHTML = 'Digite apenas números';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (cleanInput.length !== 9) {
         resultBox.innerHTML = `Digite 9 dígitos (você digitou ${cleanInput.length})`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     const formatted = `${cleanInput.substring(0, 2)}.${cleanInput.substring(2, 5)}.${cleanInput.substring(5, 8)}-${cleanInput.substring(8, 9)}`;
-    resultBox.innerHTML = `<strong>Entrada:</strong> ${cleanInput} <br><strong>Saída:</strong> ${formatted}`;
-    resultBox.className = 'result-box info';
+    resultBox.innerHTML = `<div class="res-col"><small>Entrada:</small><strong>${cleanInput}</strong></div><div class="res-sep"></div><div class="res-col"><small>Saída:</small><strong>${formatted}</strong></div>`;
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     try { resultBox.dataset.result = formatted; } catch (e) {}
     input.value = '';
     input.focus();
@@ -79,22 +79,22 @@ function addMaskGMS() {
     const cleanYear = yearInput.value.replace(/\D/g, '');
     if (!cleanNumber) {
         resultBox.innerHTML = 'Digite o número GMS';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (!cleanYear) {
         resultBox.innerHTML = 'Digite o ano';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (cleanYear.length !== 4) {
         resultBox.innerHTML = `Ano deve ter 4 dígitos (você digitou ${cleanYear.length})`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     const formatted = `${cleanNumber}/${cleanYear}`;
-    resultBox.innerHTML = `<strong>Entrada:</strong> ${cleanNumber} / ${cleanYear} <br><strong>Saída:</strong> ${formatted}`;
-    resultBox.className = 'result-box info';
+    resultBox.innerHTML = `<div class="res-col"><small>Entrada:</small><strong>${cleanNumber} / ${cleanYear}</strong></div><div class="res-sep"></div><div class="res-col"><small>Saída:</small><strong>${formatted}</strong></div>`;
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     try { resultBox.dataset.result = formatted; } catch (e) {}
     numberInput.value = '';
     yearInput.value = '';
@@ -118,17 +118,17 @@ function addMaskCPF() {
     const clean = input.value.replace(/\D/g, '');
     if (!clean) {
         resultBox.innerHTML = 'Digite apenas números';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (clean.length !== 11) {
         resultBox.innerHTML = `CPF deve ter 11 dígitos (você digitou ${clean.length})`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     const formatted = `${clean.substring(0,3)}.${clean.substring(3,6)}.${clean.substring(6,9)}-${clean.substring(9,11)}`;
-    resultBox.innerHTML = `<strong>Entrada:</strong> ${clean} <br><strong>Saída:</strong> ${formatted}`;
-    resultBox.className = 'result-box info';
+    resultBox.innerHTML = `<div class="res-col"><small>Entrada:</small><strong>${clean}</strong></div><div class="res-sep"></div><div class="res-col"><small>Saída:</small><strong>${formatted}</strong></div>`;
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     try { resultBox.dataset.result = formatted; } catch (e) {}
     input.value = '';
     input.focus();
@@ -151,17 +151,17 @@ function addMaskCNPJ() {
     const clean = input.value.replace(/\D/g, '');
     if (!clean) {
         resultBox.innerHTML = 'Digite apenas números';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (clean.length !== 14) {
         resultBox.innerHTML = `CNPJ deve ter 14 dígitos (você digitou ${clean.length})`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     const formatted = `${clean.substring(0,2)}.${clean.substring(2,5)}.${clean.substring(5,8)}/${clean.substring(8,12)}-${clean.substring(12,14)}`;
-    resultBox.innerHTML = `<strong>Entrada:</strong> ${clean} <br><strong>Saída:</strong> ${formatted}`;
-    resultBox.className = 'result-box info';
+    resultBox.innerHTML = `<div class="res-col"><small>Entrada:</small><strong>${clean}</strong></div><div class="res-sep"></div><div class="res-col"><small>Saída:</small><strong>${formatted}</strong></div>`;
+    resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     try { resultBox.dataset.result = formatted; } catch (e) {}
     input.value = '';
     input.focus();

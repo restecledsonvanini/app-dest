@@ -8,17 +8,17 @@ async function searchCNPJ() {
     const cleanCNPJ = cnpj.replace(/\D/g, '');
     if (!cleanCNPJ) {
         resultBox.innerHTML = 'Digite um CNPJ válido (14 dígitos)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (cleanCNPJ.length !== 14) {
         resultBox.innerHTML = `CNPJ deve ter 14 dígitos (você digitou ${cleanCNPJ.length})`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     if (!isValidCNPJ(cleanCNPJ)) {
         resultBox.innerHTML = 'CNPJ inválido (falha na validação)';
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
         return;
     }
     loading.style.display = 'block';
@@ -40,10 +40,10 @@ async function searchCNPJ() {
         `;
         resultBox.innerHTML = resultado;
         try { resultBox.dataset.result = (data.nome_fantasia || data.razao_social) + ' - ' + formatCNPJ(cleanCNPJ); } catch (e) {}
-        resultBox.className = 'result-box info';
+        resultBox.className = 'result-box info'; enableActionButtons(resultBox.id);
     } catch (error) {
         resultBox.innerHTML = `Erro: ${error.message}`;
-        resultBox.className = 'result-box error';
+        resultBox.className = 'result-box error'; enableActionButtons(resultBox.id);
     } finally {
         loading.style.display = 'none';
         cnpjInput.value = '';
