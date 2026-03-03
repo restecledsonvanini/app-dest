@@ -62,3 +62,20 @@ export function handleClearAction(button) {
     // Optionally trigger a custom event for specific cleanups if needed
     panel.dispatchEvent(new CustomEvent('tool::cleared', { bubbles: true }));
 }
+
+/**
+ * Habilita/desabilita os botões de ação (.btn-copy, .btn-clear) do painel
+ * com base na classe do resultBox (info = sucesso, qualquer outra = erro).
+ * Chamado pelos handlers de ferramenta após escrever no resultBox.
+ * @param {HTMLElement} resultBox
+ */
+export function updateActionButtons(resultBox) {
+    const panel = resultBox.closest('.tool-panel');
+    if (!panel) return;
+    const isSuccess = resultBox.classList.contains('info');
+    panel.querySelectorAll('.btn-clear').forEach(b => b.removeAttribute('disabled'));
+    panel.querySelectorAll('.btn-copy').forEach(b => {
+        if (isSuccess) b.removeAttribute('disabled');
+        else b.setAttribute('disabled', 'true');
+    });
+}
