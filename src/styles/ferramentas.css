@@ -44,6 +44,13 @@
     /* result-box text — precisam de override no dark */
     --result-info-color:  #0c4a6e;
     --result-error-color: #991b1b;
+    /* ui-controls-bar */
+    --ctrl-bar-bg:        #f1f5f9;
+    --ctrl-bar-border:    #e2e8f0;
+    --ctrl-btn-color:     #64748b;
+    --ctrl-btn-hover:     rgba(0, 0, 0, 0.06);
+    --ctrl-btn-active-bg: #e2e8f0;
+    --ctrl-group-bg:      #e2e8f0;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -89,10 +96,17 @@
     --hamburger-border: #334155;
     --result-info-color:  #7dd3fc;
     --result-error-color: #fca5a5;
+    --ctrl-bar-bg:        #111827;
+    --ctrl-bar-border:    #334155;
+    --ctrl-btn-color:     #94a3b8;
+    --ctrl-btn-hover:     rgba(255, 255, 255, 0.06);
+    --ctrl-btn-active-bg: #334155;
+    --ctrl-group-bg:      #1e293b;
 }
 
 html {
     color-scheme: light dark;
+    overflow-x: hidden;
 }
 
 body {
@@ -146,16 +160,33 @@ header nav {
 header nav a {
     margin-left: 0;
     text-decoration: none;
-    color: #e2e8f0;
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 500;
-    transition: 0.3s;
+    transition: 0.2s;
     display: inline-flex;
     align-items: center;
 }
 
-header nav a:hover {
-    color: #ffffff;
-    text-decoration: underline;
+header nav a.header-link {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 5px 9px;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+header nav a.header-link:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-label {
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 /* CONTAINER */
@@ -758,28 +789,30 @@ select.input-field {
         height: 50px;
     }
 
-    .header-controls {
-        margin-left: 0;
-        margin-top: 6px;
-    }
+    .nav-label { display: none; }
+    header nav a.header-link { font-size: 1.4rem; padding: 6px 8px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HEADER CONTROLS — font size scaler + light/dark toggle
+   UI CONTROLS BAR — abaixo do header, fonte + tema
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.header-controls {
+.ui-controls-bar {
     display: flex;
+    justify-content: flex-end;
     align-items: center;
     gap: 6px;
-    margin-left: 0;
+    padding: 5px 20px;
+    background: var(--ctrl-bar-bg);
+    border-bottom: 1px solid var(--ctrl-bar-border);
+    transition: background 0.25s, border-color 0.25s;
 }
 
 .font-size-group {
     display: flex;
     align-items: center;
     gap: 2px;
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--ctrl-group-bg);
     border-radius: 8px;
     padding: 3px 4px;
 }
@@ -787,7 +820,7 @@ select.input-field {
 .ctrl-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--ctrl-btn-color);
     cursor: pointer;
     border-radius: 6px;
     padding: 3px 7px;
@@ -800,14 +833,14 @@ select.input-field {
 }
 
 .ctrl-btn:hover {
-    background: rgba(255, 255, 255, 0.22);
-    color: #fff;
+    background: var(--ctrl-btn-hover);
+    color: var(--text);
 }
 
 .ctrl-btn.active {
-    background: rgba(255, 255, 255, 0.28);
-    color: #fff;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+    background: var(--ctrl-btn-active-bg);
+    color: var(--text);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .font-btn-sm { font-size: 0.72rem; }
@@ -815,19 +848,65 @@ select.input-field {
 .font-btn-lg { font-size: 1.05rem; }
 
 .theme-toggle {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--ctrl-group-bg);
     border-radius: 8px;
     padding: 5px 8px;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ctrl-btn-color);
     border: none;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, color 0.15s;
     display: flex;
     align-items: center;
 }
 
 .theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.22);
-    color: #fff;
+    background: var(--ctrl-btn-hover);
+    color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PLANILHAS — sheet cards grid
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    padding: 8px 0 4px;
+}
+
+.sheet-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 12px 16px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--secondary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s, color 0.2s;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.sheet-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 14px rgba(11, 61, 145, 0.12);
+    transform: translateY(-2px);
+    color: var(--primary);
+}
+
+.sheet-card svg {
+    width: 38px;
+    height: 38px;
+    color: var(--primary);
+    flex-shrink: 0;
+    transition: color 0.2s;
 }

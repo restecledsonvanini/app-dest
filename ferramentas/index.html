@@ -8,8 +8,10 @@
 
     <!-- ═══ SEO & Identidade Institucional ══════════════════════════════════ -->
     <title>Ferramentas | DEST · SESP</title>
-    <meta name="description" content="Ferramentas de produtividade para a equipe DEST — máscaras de documentos (CPF, CNPJ, eProtocolo, GMS), cálculos de vigência contratual e consulta pública de CNPJ. Desenvolvido pela Diretoria de Estratégia e Tecnologia da SESP-PR para o uso responsável e eficiente de recursos públicos.">
-    <meta name="keywords" content="SESP, DEST, Secretaria de Segurança Pública, Paraná, SESP-PR, ferramentas, máscara CPF, máscara CNPJ, eProtocolo, GMS, vigência de contrato, consulta CNPJ, BrasilAPI, transparência pública, gestão pública">
+    <meta name="description"
+        content="Ferramentas de produtividade para a equipe DEST — máscaras de documentos (CPF, CNPJ, eProtocolo, GMS), cálculos de vigência contratual e consulta pública de CNPJ. Desenvolvido pela Diretoria de Estratégia e Tecnologia da SESP-PR para o uso responsável e eficiente de recursos públicos.">
+    <meta name="keywords"
+        content="SESP, DEST, Secretaria de Segurança Pública, Paraná, SESP-PR, ferramentas, máscara CPF, máscara CNPJ, eProtocolo, GMS, vigência de contrato, consulta CNPJ, BrasilAPI, transparência pública, gestão pública">
     <meta name="author" content="Diretoria de Estratégia e Tecnologia — DEST · SESP-PR">
     <meta name="application-name" content="Ferramentas DEST">
     <meta name="generator" content="Vanilla JS — sem frameworks">
@@ -25,7 +27,8 @@
     <!-- ═══ Open Graph — compartilhamento interno (Teams, e-mail, etc.) ════ -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Ferramentas | DEST · SESP">
-    <meta property="og:description" content="Máscaras, cálculos de vigência e consulta de CNPJ — ferramentas internas para gestão responsável de contratos públicos. DEST · SESP-PR.">
+    <meta property="og:description"
+        content="Máscaras, cálculos de vigência e consulta de CNPJ — ferramentas internas para gestão responsável de contratos públicos. DEST · SESP-PR.">
     <meta property="og:image" content="../src/images/logo-sesp-dest.png">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Ferramentas DEST · SESP-PR">
@@ -53,19 +56,25 @@
             </a>
         </div>
         <nav>
-            <a href="../index.html" title="Voltar para a Home" class="header-link"><i class="bi bi-arrow-left-circle" aria-hidden="true"></i></a>
-            <div class="header-controls" aria-label="Preferências de exibição">
-                <div class="font-size-group" role="group" aria-label="Tamanho da fonte">
-                    <button class="ctrl-btn font-btn-sm" data-font="sm" title="Fonte pequena" aria-label="Fonte pequena">A</button>
-                    <button class="ctrl-btn font-btn-md" data-font="md" title="Fonte média" aria-label="Fonte média">A</button>
-                    <button class="ctrl-btn font-btn-lg" data-font="lg" title="Fonte grande" aria-label="Fonte grande">A</button>
-                </div>
-                <button class="ctrl-btn theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
-                    <i class="bi bi-sun-fill" aria-hidden="true"></i>
-                </button>
-            </div>
+            <a href="../index.html" title="Voltar para a Home" class="header-link">
+                <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+                <span class="nav-label">Voltar</span>
+            </a>
         </nav>
     </header>
+    <div class="ui-controls-bar" aria-label="Preferências de exibição">
+        <div class="font-size-group" role="group" aria-label="Tamanho da fonte">
+            <button class="ctrl-btn font-btn-sm" data-font="sm" title="Fonte pequena"
+                aria-label="Fonte pequena">A</button>
+            <button class="ctrl-btn font-btn-md" data-font="md" title="Fonte média" aria-label="Fonte média">A</button>
+            <button class="ctrl-btn font-btn-lg" data-font="lg" title="Fonte grande"
+                aria-label="Fonte grande">A</button>
+        </div>
+        <button class="ctrl-btn theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro"
+            title="Alternar tema claro/escuro">
+            <i class="bi bi-sun-fill" aria-hidden="true"></i>
+        </button>
+    </div>
 
     <div class="container">
         <div class="card">
@@ -76,7 +85,9 @@
                 </button>
             </div>
             <div class="tab-nav" id="main-tab-nav">
-                <button class="tab-btn active" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i
+                <button class="tab-btn active" data-tab="planilhas" title="Planilhas de trabalho"><i
+                        class="bi bi-file-earmark-spreadsheet tab-icon" aria-hidden="true"></i>Planilhas</button>
+                <button class="tab-btn" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i
                         class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
                 <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i
                         class="bi bi-calendar3 tab-icon" aria-hidden="true"></i>Datas</button>
@@ -86,8 +97,225 @@
                         class="bi bi-question-circle tab-icon" aria-hidden="true"></i>Ajuda</button>
             </div>
 
+            <!-- ABA 0: PLANILHAS -->
+            <div id="planilhas" class="tab-content active">
+                <div class="tab-title">Planilhas de Trabalho</div>
+                <div class="subtab-nav" role="tablist" aria-label="Ano de referência">
+                    <button class="subtab-btn active" data-subtab="sub-plan-2026">
+                        <i class="bi bi-calendar-check" aria-hidden="true"></i><span>2026</span>
+                    </button>
+                    <button class="subtab-btn" data-subtab="sub-plan-2025">
+                        <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
+                    </button>
+                    <button class="subtab-btn" data-subtab="sub-plan-arquivo">
+                        <i class="bi bi-archive" aria-hidden="true"></i><span>Arquivo</span>
+                    </button>
+                </div>
+                <div class="subtab-contents">
+
+                    <!-- SUBTAB 2026 -->
+                    <div id="sub-plan-2026" class="subtab-content active">
+                        <div class="sheet-grid">
+                            <a href="https://docs.google.com/spreadsheets/d/1ItGNNJEVMwp8DMgM_lHY2E3ed5NZkEwaLwd3YlwLOKs/edit?usp=sharing"
+                                target="_blank" class="sheet-card" title="Contratos 2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Contratos_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1QuBuvqYfUK8kwhdvoQSYH5IhywKgbRE-8A7z6iVgARM/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Facilities 2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Facilities_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1py9ETKnLv8EiNh96ShoZpdSNk1512MXeG3l3tsLG1uQ/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Locação de Imóveis 2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Loc_Imov_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1tf94uOFBiGKXhhEEwMvFYZU8z8cWlru46zjIOZJiiVU/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Convênios_2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Convênios_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1xF8mvzJx7ADsKsWBdyRb9jCNv80dt8ZJt6uSC2REN0Q/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Controle de Publicação_2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Cont_Public_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1Vm0ygu0EAMaHG9t75ppGtNCmBMDlijm83N_05Ijsb_A/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Documentos Numerados 2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Doc_Numerados_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1Qj9FnStbVExg59QUuSL257xbbBB3lL4YzbP6htbnPpg/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Recisões 2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Recisões_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1euBtNMAFPlaiTHjUrQlDk0If-5qtFgVi5cvfsvo52a4/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Aditivos_2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Aditivos_2026</span>
+                            </a>
+                            <a href="https://docs.google.com/spreadsheets/d/1WxiYsXIUceM9wtlHxBiMJMrlDoQGu2QFqsSx06YwKJk/edit?usp=drive_link"
+                                target="_blank" class="sheet-card" title="Apostilamentos_2026">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Apostilamentos_2026</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB 2025 -->
+                    <div id="sub-plan-2025" class="subtab-content">
+                        <div class="sheet-grid">
+                            <a href="#" class="sheet-card" title="Contratos">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Contratos_2025</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Convênios">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Convênios</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Facilities">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Facilities</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Locação">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Locação</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Viaturas">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Viaturas</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SUBTAB ARQUIVO -->
+                    <div id="sub-plan-arquivo" class="subtab-content">
+                        <div class="sheet-grid">
+                            <a href="#" class="sheet-card" title="Contratos">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Contratos</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Convênios">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Convênios</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Facilities">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Facilities</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Locação">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Locação</span>
+                            </a>
+                            <a href="#" class="sheet-card" title="Viaturas">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="2" y="3" width="20" height="18" rx="2" />
+                                    <path d="M8 3v18M2 9h20M2 15h20" />
+                                </svg>
+                                <span>Viaturas</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- ABA 1: MÁSCARAS -->
-            <div id="mascaras" class="tab-content active">
+            <div id="mascaras" class="tab-content">
                 <div class="tab-title">Ferramentas de Máscaras</div>
 
                 <!-- Subtab navigation: ferramentas -->
@@ -457,7 +685,8 @@
                                 <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas dígitos.
                                     As pontuações são removidas ou aplicadas inteligentemente.</li>
                                 <li><strong>Formatos de data:</strong> digite no padrão brasileiro
-                                    <code>DD/MM/YYYY</code> ou use o seletor quando disponível.</li>
+                                    <code>DD/MM/YYYY</code> ou use o seletor quando disponível.
+                                </li>
                                 <li><strong>Atalhos:</strong> pressione a tecla <strong>Enter</strong> em qualquer campo
                                     para acionar a ferramenta.</li>
                             </ul>
