@@ -3,6 +3,11 @@ import { initTabs } from './modules/tabs.js';
 import { initInputBehaviors } from './modules/inputBehaviors.js';
 import { toolHandlerMap } from './modules/toolHandlers.js';
 import { initUIControls } from './uiControls.js';
+import { registerComponents } from './modules/components/index.js';
+
+// Registra Custom Elements antes do DOMContentLoaded para que o upgrade
+// de elementos já no DOM ocorra com children disponíveis.
+registerComponents();
 
 document.addEventListener('DOMContentLoaded', () => {
 

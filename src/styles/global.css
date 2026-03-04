@@ -1,3 +1,10 @@
+/* Todas as regras estão dentro de @layer global.
+   Quando importado por ferramentas.css, que declara camadas adicionais
+   com prioridade maior, as regras da página de ferramentas sobrescrevem
+   corretamente as regras base aqui definidas.
+   Em index.html (sem outras camadas), tudo aplica normalmente. */
+@layer global {
+
 :root {
     --body-bg:      #f3f4f6;
     --body-text:    #222222;
@@ -56,8 +63,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 8px 24px;
-    background: #16c76b;
-    background: linear-gradient(321deg, rgba(22, 199, 107, 1) 1%, rgb(61, 74, 134) 100%);
+    background: linear-gradient(160deg, #0b3d91 0%, #1252b3 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -313,3 +319,5 @@ header nav .header-btn:hover {
     background: var(--ctrl-btn-hover);
     color: var(--body-text);
 }
+
+} /* /@layer global */

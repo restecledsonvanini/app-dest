@@ -1,6 +1,44 @@
-* {
-    box-sizing: border-box;
+@import './global.css';
+
+/* ── Cascade layers — ordem de prioridade crescente ──────────────────────────
+   global = menor prioridade (regras de global.css via @import).
+   Estilos em camadas posteriores têm MAIOR prioridade.
+   ─────────────────────────────────────────────────────────────────────────── */
+@layer global, reset, tokens, base, layout, navigation, components, responsive;
+
+/* ══ reset ══════════════════════════════════════════════════════════════════ */
+@layer reset {
+    *, *::before, *::after {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+    /* Remove browser outline padrão; restaura via :focus-visible com estilo próprio */
+    :focus:not(:focus-visible) { outline: none; }
+    :focus-visible {
+        outline: 2px solid var(--primary, #0b3d91);
+        outline-offset: 2px;
+        border-radius: 3px;
+    }
 }
+
+/* ══ tokens ═════════════════════════════════════════════════════════════════
+   Custom properties — modo claro (padrão) e modo escuro
+   ════════════════════════════════════════════════════════════════════════ */
+@layer tokens {
+
+/* ── @property — registra tipo e valor inicial dos tokens de cor ─
+   Habilita: transitions em custom properties, color-mix() seguro,
+   e valores inválidos com fallback para initial-value.
+   ────────────────────────────────────────────────────────────── */
+@property --bg           { syntax: '<color>'; inherits: true; initial-value: #f3f4f6; }
+@property --text         { syntax: '<color>'; inherits: true; initial-value: #0f172a; }
+@property --primary      { syntax: '<color>'; inherits: true; initial-value: #0b3d91; }
+@property --secondary    { syntax: '<color>'; inherits: true; initial-value: #475569; }
+@property --card-bg      { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
+@property --panel-bg     { syntax: '<color>'; inherits: true; initial-value: #f9fafb; }
+@property --panel-border { syntax: '<color>'; inherits: true; initial-value: #e5e7eb; }
+@property --input-bg     { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
+@property --tab-active   { syntax: '<color>'; inherits: true; initial-value: #192a5a; }
 
 :root {
     --bg:           #f3f4f6;
@@ -30,9 +68,9 @@
     --res-col-small:  #64748b;
     --res-col-strong: #1e293b;
     --res-sep:        #cbd5e1;
-    --info-box-bg:    #fef3c7;
-    --info-box-border:#f59e0b;
-    --info-box-text:  #78350f;
+    --info-box-bg:    #eef2fb;
+    --info-box-border:#c8d5e8;
+    --info-box-text:  #1e3a5f;
     --copy-btn-bg:    #e5e7eb;
     --copy-btn-text:  #16c76b;
     --clear-btn-text: #dc2626;
@@ -44,13 +82,7 @@
     /* result-box text — precisam de override no dark */
     --result-info-color:  #0c4a6e;
     --result-error-color: #991b1b;
-    /* ui-controls-bar */
-    --ctrl-bar-bg:        #f1f5f9;
-    --ctrl-bar-border:    #e2e8f0;
-    --ctrl-btn-color:     #64748b;
-    --ctrl-btn-hover:     rgba(0, 0, 0, 0.06);
-    --ctrl-btn-active-bg: #e2e8f0;
-    --ctrl-group-bg:      #e2e8f0;
+    /* ui-controls-bar — variáveis definidas em global.css */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -83,9 +115,9 @@
     --res-col-small:  #94a3b8;
     --res-col-strong: #e2e8f0;
     --res-sep:        #334155;
-    --info-box-bg:    #1c1600;
-    --info-box-border:#d97706;
-    --info-box-text:  #fde68a;
+    --info-box-bg:    #1a2740;
+    --info-box-border:#334155;
+    --info-box-text:  #c8d5e8;
     --copy-btn-bg:    #1e293b;
     --copy-btn-text:  #34d399;
     --clear-btn-text: #f87171;
@@ -96,13 +128,14 @@
     --hamburger-border: #334155;
     --result-info-color:  #7dd3fc;
     --result-error-color: #fca5a5;
-    --ctrl-bar-bg:        #111827;
-    --ctrl-bar-border:    #334155;
-    --ctrl-btn-color:     #94a3b8;
-    --ctrl-btn-hover:     rgba(255, 255, 255, 0.06);
-    --ctrl-btn-active-bg: #334155;
-    --ctrl-group-bg:      #1e293b;
 }
+
+} /* /@layer tokens */
+
+/* ══ base ════════════════════════════════════════════════════════════════════
+   Estilos fundamentais de html e body
+   ════════════════════════════════════════════════════════════════════════ */
+@layer base {
 
 html {
     color-scheme: light dark;
@@ -117,14 +150,35 @@ body {
     transition: background 0.25s, color 0.25s;
 }
 
+/* Transiciona os tokens tipados com @property ao mudar de tema */
+:root {
+    transition:
+        --bg           0.25s ease,
+        --text         0.25s ease,
+        --primary      0.25s ease,
+        --secondary    0.25s ease,
+        --card-bg      0.25s ease,
+        --panel-bg     0.25s ease,
+        --panel-border 0.25s ease,
+        --input-bg     0.25s ease;
+}
+
+} /* /@layer base */
+
+/* ══ layout ═══════════════════════════════════════════════════════════════════
+   Estrutura da página: header, container, card
+   ════════════════════════════════════════════════════════════════════════ */
+@layer layout {
+
 /* HEADER */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 24px;
-    background: linear-gradient(321deg, rgba(11,61,145,0.95) 1%, rgba(61,74,134,0.95) 100%);
+    background: linear-gradient(160deg, #0b3d91 0%, #1252b3 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid rgba(188, 213, 255, 0.2);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -193,7 +247,7 @@ header nav a.header-link:hover {
 .container {
     /* full width with padding; card inside will limit width */
     width: 100%;
-    margin: 30px auto 40px;
+    margin: 8px auto 40px;
     padding: 20px;
 }
 
@@ -201,7 +255,7 @@ header nav a.header-link:hover {
 .card {
     background: var(--card-bg);
     width: 100%;
-    max-width: 900px; /* comfortable reading width */
+    max-width: 1100px;
     margin: 0 auto;
     border-radius: 14px;
     padding: 24px;
@@ -227,39 +281,17 @@ header nav a.header-link:hover {
 }
 
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+} /* /@layer layout */
+
+/* ══ navigation ═════════════════════════════════════════════════════════════
+   Tabs, subtabs e menu hambúrguer
+   ════════════════════════════════════════════════════════════════════════ */
+@layer navigation {
 
 /* TAB NAVIGATION */
-.mobile-tab-toggle {
+/* No desktop, <details> fica totalmente oculto; tab-nav é sibling e aparece normalmente */
+#mobile-tab-details {
     display: none;
-}
-#hamburger-tab-btn {
-    width: 100%;
-    padding: 12px 16px;
-    background: transparent;
-    color: var(--hamburger-text);
-    border: 1px solid var(--hamburger-border);
-    border-radius: 8px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-    transition: background 0.3s;
-}
-#hamburger-tab-btn:hover {
-    background: var(--tab-hover-bg);
 }
 
 .tab-nav {
@@ -283,31 +315,31 @@ header nav a.header-link:hover {
     display: flex;
     align-items: center;
     gap: 8px;
-}
 
-.tab-btn:hover {
-    color: var(--tab-active);
-    background: var(--tab-hover-bg);
-}
+    &:hover {
+        color: var(--tab-active);
+        background: var(--tab-hover-bg);
+    }
 
-.tab-btn.active {
-    color: var(--tab-active);
-    border-bottom-color: var(--primary);
-}
+    &.active {
+        color: var(--tab-active);
+        border-bottom-color: var(--primary);
+    }
 
-.tab-btn svg {
-    width: 20px;
-    height: 20px;
+    & svg {
+        width: 20px;
+        height: 20px;
+    }
 }
 
 /* TAB CONTENT */
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease-out;
-}
 
-.tab-content.active {
-    display: block;
+    &.active {
+        display: block;
+    }
 }
 
 .tab-title {
@@ -337,18 +369,41 @@ header nav a.header-link:hover {
     cursor: pointer;
     color: var(--secondary);
     font-weight: 600;
-}
-.subtab-btn i { font-size: 1.05rem; }
-.subtab-btn.active {
-    background: var(--subtab-active-bg);
-    border-color: var(--subtab-active-border);
-    box-shadow: 0 2px 6px rgba(11,61,145,0.06);
-    color: var(--primary);
+
+    & i { font-size: 1.05rem; }
+
+    &.active {
+        background: var(--subtab-active-bg);
+        border-color: var(--subtab-active-border);
+        box-shadow: 0 2px 6px rgba(11,61,145,0.06);
+        color: var(--primary);
+    }
 }
 
 .subtab-contents { margin-top: 12px; }
 .subtab-content { display: none; }
 .subtab-content.active { display: block; }
+
+/* Wrapper de padding para tabs sem tool-panel direto (ex: Planilhas) */
+.tab-panel-body {
+    padding: 0 16px 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CUSTOM ELEMENTS — display padrão
+   Elementos desconhecidos recebem display:inline pelo browser; corrige aqui.
+   ═══════════════════════════════════════════════════════════════════════════ */
+tool-panel  { display: block; }
+tool-result { display: block; }
+/* sheet-card usa display:contents para que o <a> interno seja o grid item */
+sheet-card  { display: contents; }
+
+} /* /@layer navigation */
+
+/* ══ components ════════════════════════════════════════════════════════════
+   Painéis, inputs, botões, caixas de resultado
+   ════════════════════════════════════════════════════════════════════════ */
+@layer components {
 
 /* TOOL PANEL */
 .tool-panel {
@@ -358,6 +413,11 @@ header nav a.header-link:hover {
     margin-bottom: 24px;
     border: 1px solid var(--panel-border);
     transition: 0.2s;
+
+    &:hover {
+        border-color: #d1d5db;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
 }
 
 /* grid layout used to display groups of panels side-by-side */
@@ -375,20 +435,15 @@ header nav a.header-link:hover {
     gap: 16px;
 }
 
-.tool-panel:hover {
-    border-color: #d1d5db;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 .tool-header {
     margin-bottom: 16px;
-}
 
-.tool-header h3 {
-    margin: 0 0 4px;
-    font-size: 1rem;
-    color: var(--tool-h3);
-    font-weight: 600;
+    & h3 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        color: var(--tool-h3);
+        font-weight: 600;
+    }
 }
 
 .tool-desc {
@@ -435,16 +490,16 @@ label {
     background: var(--input-bg);
     color: var(--text);
     transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
 
-.input-field:focus {
-    outline: none;
-    border-color: #16c76b;
-    box-shadow: 0 0 0 3px rgba(22, 199, 107, 0.1);
-}
+    &:focus {
+        outline: none;
+        border-color: #16c76b;
+        box-shadow: 0 0 0 3px rgba(22, 199, 107, 0.1);
+    }
 
-.input-field::placeholder {
-    color: #9ca3af;
+    &::placeholder {
+        color: #9ca3af;
+    }
 }
 
 select.input-field {
@@ -469,11 +524,15 @@ select.input-field {
 /* Copy / Clear specific styles */
 .btn-label { margin-left: 8px; display: inline-block; }
 
-.btn-copy { background: var(--copy-btn-bg); color: var(--copy-btn-text); border: 1px solid var(--btn-border); font-weight: 600; }
-.btn-copy:hover:not(:disabled) { filter: brightness(0.92); }
+.btn-copy {
+    background: var(--copy-btn-bg); color: var(--copy-btn-text); border: 1px solid var(--btn-border); font-weight: 600;
+    &:hover:not(:disabled) { filter: brightness(0.92); }
+}
 
-.btn-clear { background: var(--copy-btn-bg); color: var(--clear-btn-text); border: 1px solid var(--btn-border); font-weight: 600; }
-.btn-clear:hover:not(:disabled) { filter: brightness(0.92); }
+.btn-clear {
+    background: var(--copy-btn-bg); color: var(--clear-btn-text); border: 1px solid var(--btn-border); font-weight: 600;
+    &:hover:not(:disabled) { filter: brightness(0.92); }
+}
 
 .btn-copy:disabled,
 .btn-clear:disabled {
@@ -522,6 +581,9 @@ select.input-field {
     color: white;
     font-weight: 600; /* Texto Bold */
     padding: 12px 20px; /* Um pouco mais de padding */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-primary:hover {
@@ -560,47 +622,32 @@ select.input-field {
     word-break: break-word;
     max-height: 220px;
     overflow: auto;
-}
 
-/* hide box when there is no content */
-.result-box:empty {
-    display: none;
-}
+    /* oculta quando vazio */
+    &:empty { display: none; }
 
+    &.error {
+        background: var(--error-bg);
+        border-color: var(--error-border);
+        color: var(--result-error-color);
+    }
 
-.result-box.error {
-    background: var(--error-bg);
-    border-color: var(--error-border);
-    color: var(--result-error-color);
-}
+    &.info {
+        background: var(--info-bg);
+        border-color: var(--info-border);
+        color: var(--result-info-color);
+    }
 
-.result-box.info {
-    background: var(--info-bg);
-    border-color: var(--info-border);
-    color: var(--result-info-color);
-}
+    /* semáforo de vigência */
+    &.warning-red    { border-left: 4px solid #c44569; background: rgba(196, 69, 105, 0.1); }
+    &.warning-orange { border-left: 4px solid #ff9500; background: rgba(255, 149, 0, 0.1); }
+    &.warning-yellow { border-left: 4px solid #ffc107; background: rgba(255, 193, 7, 0.1); }
+    &.warning-green  { border-left: 4px solid #16c76b; background: rgba(22, 199, 107, 0.1); }
 
-/* color warnings for days remaining */
-.result-box.warning-red {
-    border-left: 4px solid #c44569;
-    background: rgba(196, 69, 105, 0.1);
-}
-.result-box.warning-orange {
-    border-left: 4px solid #ff9500;
-    background: rgba(255, 149, 0, 0.1);
-}
-.result-box.warning-yellow {
-    border-left: 4px solid #ffc107;
-    background: rgba(255, 193, 7, 0.1);
-}
-.result-box.warning-green {
-    border-left: 4px solid #16c76b;
-    background: rgba(22, 199, 107, 0.1);
-}
-
-.result-box.empty {
-    color: #9ca3af;
-    font-style: italic;
+    &.empty {
+        color: #9ca3af;
+        font-style: italic;
+    }
 }
 
 /* Result columns for masks */
@@ -655,6 +702,216 @@ select.input-field {
     margin: 4px 0;
 }
 
+.info-box code {
+    font-size: 0.88em;
+    background: color-mix(in srgb, var(--info-box-border) 18%, transparent);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: inherit;
+}
+
+/* FEEDBACK TOAST — Popover API nativa */
+#feedback-toast {
+    /* Override do centramento padrão do popover */
+    inset: unset;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+
+    /* Aparência */
+    background: #16c76b;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    /* Animação de entrada/saída com @starting-style */
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        display 0.25s allow-discrete,
+        overlay 0.25s allow-discrete;
+}
+
+/* Estado "fechado" — usado na saída */
+#feedback-toast:not(:popover-open) {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+/* Estado inicial da abertura (animação de entrada) */
+@starting-style {
+    #feedback-toast:popover-open {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+/* BOTÃO INFO (abre popovers centrados) */
+.btn-info-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--info-box-bg);
+    color: var(--info-box-text);
+    border: 1px solid var(--info-box-border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    transition: filter 0.2s;
+
+    &:hover { filter: brightness(0.94); }
+
+    & i { font-size: 1rem; }
+}
+
+/* No desktop, o botão Regras não aparece — a info-box já está visível */
+#sub-data-final .btn-info-toggle {
+    display: none;
+}
+
+/* No desktop, as instruções de Ajuda ficam expandidas inline */
+#help .btn-info-toggle {
+    display: none;
+}
+
+/* POPOVER CENTRALIZADO (Regras / Ajuda) */
+.info-popover {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(90vw, 440px);
+    max-height: 80vh;
+    overflow-y: auto;
+
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    padding: 24px 24px 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+
+    /* Animação de abertura */
+    opacity: 1;
+    transform: scale(1);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        display 0.2s allow-discrete,
+        overlay 0.2s allow-discrete;
+
+    &:not(:popover-open) {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(2px);
+    }
+
+    & ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+    }
+
+    & li {
+        margin: 8px 0;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+}
+
+@starting-style {
+    .info-popover:popover-open {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.info-popover-title {
+    margin: 0 0 12px;
+    padding-right: 36px; /* espaço para botão fechar */
+    font-size: 1rem;
+}
+
+.popover-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 1rem;
+    padding: 6px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: var(--tab-hover-bg);
+        color: var(--text);
+    }
+}
+
+/* HELP NOTE — nota sobre botões de ação */
+.help-note {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--info-box-bg);
+    border: 1px solid var(--info-box-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--info-box-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.6;
+
+    & > div > p { margin: 0 0 6px; font-weight: 500; }
+    & > div > ul { margin: 0; padding-left: 0; list-style: none; }
+    & > div > ul > li { margin: 4px 0; }
+}
+
+.help-note-icon {
+    color: var(--primary);
+    flex-shrink: 0;
+    font-size: 1.1em;
+    margin-top: 2px;
+}
+
+/* INSTRUÇÕES AJUDA — lista expandida no desktop, oculta no mobile */
+.ajuda-instrucoes {
+    margin: 0 0 16px;
+    padding-left: 20px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+}
+
+.ajuda-instrucoes li {
+    margin-bottom: 8px;
+}
+
+.ajuda-instrucoes code {
+    font-size: 0.88em;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 3px;
+    padding: 1px 5px;
+}
+
 /* LOADING */
 .loading {
     text-align: center;
@@ -673,14 +930,49 @@ select.input-field {
     }
 }
 
+} /* /@layer components */
+
+/* ══ responsive ════════════════════════════════════════════════════════════
+   Media queries — adaptações para tablet e mobile
+   ════════════════════════════════════════════════════════════════════════ */
+@layer responsive {
+
 /* RESPONSIVO TABLET E MOBILE (TABS) */
 @media (max-width: 768px) {
-    .mobile-tab-toggle {
+    /* Exibe o widget hamburger no mobile */
+    #mobile-tab-details {
         display: block;
     }
-    
-    .tab-nav {
+    /* Estiliza o summary */
+    #mobile-tab-details > summary {
+        display: flex;
+        list-style: none;
+        width: 100%;
+        padding: 12px 16px;
+        background: transparent;
+        color: var(--hamburger-text);
+        border: 1px solid var(--hamburger-border);
+        border-radius: 8px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        transition: background 0.3s;
+    }
+    #mobile-tab-details > summary::-webkit-details-marker { display: none; }
+    #mobile-tab-details > summary::marker { display: none; }
+    #mobile-tab-details > summary:hover { background: var(--tab-hover-bg); }
+
+    /* tab-nav escondida por padrão no mobile via sibling oculto */
+    #main-tab-nav {
         display: none;
+    }
+
+    /* Quando details[open], o sibling imediato #main-tab-nav aparece */
+    #mobile-tab-details[open] + #main-tab-nav {
+        display: flex;
         flex-direction: column;
         gap: 0;
         background: var(--card-bg);
@@ -689,10 +981,6 @@ select.input-field {
         padding: 8px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         margin-bottom: 24px;
-    }
-
-    .tab-nav.show {
-        display: flex;
         animation: fadeIn 0.2s ease-out;
     }
 
@@ -712,19 +1000,47 @@ select.input-field {
         background: var(--tab-hover-bg);
         border-left-color: var(--primary);
     }
+
+    /* Ajuda: no mobile mostra botão toggle e oculta a lista inline */
+    #help .btn-info-toggle { display: inline-flex; }
+    .ajuda-instrucoes { display: none; }
 }
 
 /* RESPONSIVO MOBILE */
 @media (max-width: 600px) {
-    .card {
-        max-width: 100%;
-        padding: 16px;
+    /* Elimina margens laterais do container para maximizar a área útil */
+    .container {
+        margin-top: 8px;
+        margin-bottom: 16px;
+        padding: 0;
     }
 
-    .container {
-        margin-top: 20px;
+    .card {
+        max-width: 100%;
         padding: 12px;
+        border-radius: 8px;
+        box-shadow: none;
     }
+
+    .tab-panel-body {
+        padding: 0 4px 8px;
+    }
+
+    /* 2 colunas fixas para os cards de planilha no mobile */
+    .sheet-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    /* Cards de planilha menores no mobile */
+    .sheet-card {
+        padding: 14px 8px 12px;
+        font-size: 0.65rem;
+    }
+
+    /* Regras: no mobile mostra botão de info e oculta a caixa */
+    #sub-data-final .btn-info-toggle { display: inline-flex; }
+    .regras-box { display: none; }
 
     .tab-nav {
         gap: 4px;
@@ -792,6 +1108,13 @@ select.input-field {
     .nav-label { display: none; }
     header nav a.header-link { font-size: 1.4rem; padding: 6px 8px; }
 }
+
+} /* /@layer responsive */
+
+/* ══ components (continuação) ══════════════════════════════════════════════
+   UI Controls Bar, Planilhas
+   ════════════════════════════════════════════════════════════════════════ */
+@layer components {
 
 /* ═══════════════════════════════════════════════════════════════════════════
    UI CONTROLS BAR — abaixo do header, fonte + tema
@@ -894,19 +1217,21 @@ select.input-field {
     cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
+
+    &:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 14px rgba(11, 61, 145, 0.12);
+        transform: translateY(-2px);
+        color: var(--primary);
+    }
+
+    & svg {
+        width: 38px;
+        height: 38px;
+        color: var(--primary);
+        flex-shrink: 0;
+        transition: color 0.2s;
+    }
 }
 
-.sheet-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 4px 14px rgba(11, 61, 145, 0.12);
-    transform: translateY(-2px);
-    color: var(--primary);
-}
-
-.sheet-card svg {
-    width: 38px;
-    height: 38px;
-    color: var(--primary);
-    flex-shrink: 0;
-    transition: color 0.2s;
-}
+} /* /@layer components */

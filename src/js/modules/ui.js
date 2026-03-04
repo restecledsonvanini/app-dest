@@ -1,28 +1,16 @@
+/** Toast de feedback usando a Popover API nativa (Baseline 2024).
+ *  O elemento #feedback-toast já existe no HTML com popover="manual".
+ *  @param {string} text — Mensagem exibida no toast.
+ */
 export function showGenericFeedback(text) {
-    const existing = document.querySelector('[data-feedback]');
-    if (existing) existing.remove();
+    const toast = document.getElementById('feedback-toast');
+    if (!toast) return;
 
-    const feedback = document.createElement('div');
-    feedback.setAttribute('data-feedback', 'true');
-    feedback.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #16c76b;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
-    feedback.innerText = text;
-    document.body.appendChild(feedback);
+    toast.textContent = text;
+    toast.showPopover();
 
-    setTimeout(() => {
-        feedback.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => feedback.remove(), 300);
-    }, 1500);
+    // Auto-esconde após 1 800 ms
+    setTimeout(() => toast.hidePopover(), 1800);
 }
 
 export function handleCopyAction(button) {
