@@ -1,8 +1,8 @@
 const CACHE = 'dest-v1';
 const SHELL = [
-  '/app-dest/', '/app-dest/ferramentas/',
-  '/app-dest/src/js/main.js',
-  '/app-dest/src/styles/global.css', '/app-dest/src/styles/ferramentas.css'
+  './', './ferramentas/',
+  './src/js/main.js',
+  './src/styles/global.css', './src/styles/ferramentas.css'
 ];
 
 self.addEventListener('install',  e => e.waitUntil(

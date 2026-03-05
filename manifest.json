@@ -2,16 +2,16 @@
   "name": "Ferramentas DEST · SESP-PR",
   "short_name": "DEST",
   "description": "Máscaras, vigência contratual e consulta CNPJ",
-  "start_url": "/app-dest/ferramentas/",
-  "scope": "/app-dest/",
+  "start_url": "ferramentas/",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0d3b6e",
   "background_color": "#f3f4f6",
   "lang": "pt-BR",
   "icons": [
-    { "src": "/app-dest/src/images/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/app-dest/src/images/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/app-dest/src/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "src/images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "src/images/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "src/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

@@ -51,11 +51,12 @@
     <!-- em index.html -->
     <link rel="manifest" href="./manifest.json">
 
-    <!-- Configuração para Safari -->
+    <!-- Configuração para instalação como PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DEST">
-    <link rel="apple-touch-icon" href="/app-dest/src/images/icon-192.png">
+    <link rel="apple-touch-icon" href="./src/images/icon-192.png">
 
     <header>
         <div class="logo">
@@ -134,7 +135,7 @@
             import { initUIControls } from './src/js/uiControls.js';
             document.addEventListener('DOMContentLoaded', () => initUIControls());
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/app-dest/sw.js').catch(err =>
+                navigator.serviceWorker.register('./sw.js').catch(err =>
                     console.warn('[SW] Registro falhou:', err)
                 );
             }

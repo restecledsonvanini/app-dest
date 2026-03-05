@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handler(new FormData(form), resultBox);
     });
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/app-dest/sw.js').catch(err =>
+        navigator.serviceWorker.register('../sw.js').catch(err =>
             console.warn('[SW] Registro falhou:', err)
         );
     }
