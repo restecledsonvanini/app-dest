@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!btn || btn.disabled) return;
 
         const action = btn.dataset.action || (btn.classList.contains('btn-copy') ? 'copy' : null);
-        if (action === 'copy')  handleCopyAction(btn);
+        if (action === 'copy') handleCopyAction(btn);
         else if (action === 'clear') handleClearAction(btn);
     });
 
@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         handler(new FormData(form), resultBox);
     });
-
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/app-dest/sw.js').catch(err =>
+            console.warn('[SW] Registro falhou:', err)
+        );
+    }
     console.log('[App] Core initialized (Vanilla JS 2026)');
 });

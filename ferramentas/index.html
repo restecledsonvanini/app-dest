@@ -47,6 +47,14 @@
     </script>
     <link rel="stylesheet" href="../src/styles/ferramentas.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- em ferramentas/index.html -->
+    <link rel="manifest" href="../manifest.json">
+
+    <!-- Configuração para Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DEST">
+    <link rel="apple-touch-icon" href="/app-dest/src/images/icon-192.png">
 
     <header>
         <div class="logo">
@@ -100,57 +108,75 @@
             <div id="planilhas" class="tab-content active">
                 <div class="tab-title">Planilhas de Trabalho</div>
                 <div class="tab-panel-body">
-                <div class="subtab-nav" role="tablist" aria-label="Ano de referência">
-                    <button class="subtab-btn active" data-subtab="sub-plan-2026">
-                        <i class="bi bi-calendar-check" aria-hidden="true"></i><span>2026</span>
-                    </button>
-                    <button class="subtab-btn" data-subtab="sub-plan-2025">
-                        <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
-                    </button>
-                    <button class="subtab-btn" data-subtab="sub-plan-arquivo">
-                        <i class="bi bi-archive" aria-hidden="true"></i><span>Arquivo</span>
-                    </button>
-                </div>
-                <div class="subtab-contents">
-
-                    <!-- SUBTAB 2026 -->
-                    <div id="sub-plan-2026" class="subtab-content active">
-                        <div class="sheet-grid">
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1ItGNNJEVMwp8DMgM_lHY2E3ed5NZkEwaLwd3YlwLOKs/edit?usp=sharing" label="Contratos_2026" title="Contratos 2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1QuBuvqYfUK8kwhdvoQSYH5IhywKgbRE-8A7z6iVgARM/edit?usp=drive_link" label="Facilities_2026" title="Facilities 2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1py9ETKnLv8EiNh96ShoZpdSNk1512MXeG3l3tsLG1uQ/edit?usp=drive_link" label="Loc_Imov_2026" title="Locação de Imóveis 2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1tf94uOFBiGKXhhEEwMvFYZU8z8cWlru46zjIOZJiiVU/edit?usp=drive_link" label="Convênios_2026" title="Convênios_2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1xF8mvzJx7ADsKsWBdyRb9jCNv80dt8ZJt6uSC2REN0Q/edit?usp=drive_link" label="Cont_Public_2026" title="Controle de Publicação_2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1Vm0ygu0EAMaHG9t75ppGtNCmBMDlijm83N_05Ijsb_A/edit?usp=drive_link" label="Doc_Numerados_2026" title="Documentos Numerados 2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1Qj9FnStbVExg59QUuSL257xbbBB3lL4YzbP6htbnPpg/edit?usp=drive_link" label="Recisões_2026" title="Recisões 2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1euBtNMAFPlaiTHjUrQlDk0If-5qtFgVi5cvfsvo52a4/edit?usp=drive_link" label="Aditivos_2026" title="Aditivos_2026"></sheet-card>
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1WxiYsXIUceM9wtlHxBiMJMrlDoQGu2QFqsSx06YwKJk/edit?usp=drive_link" label="Apostilamentos_2026" title="Apostilamentos_2026"></sheet-card>
-                        </div>
+                    <div class="subtab-nav" role="tablist" aria-label="Ano de referência">
+                        <button class="subtab-btn active" data-subtab="sub-plan-2026">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i><span>2026</span>
+                        </button>
+                        <button class="subtab-btn" data-subtab="sub-plan-2025">
+                            <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
+                        </button>
+                        <button class="subtab-btn" data-subtab="sub-plan-arquivo">
+                            <i class="bi bi-archive" aria-hidden="true"></i><span>Arquivo</span>
+                        </button>
                     </div>
+                    <div class="subtab-contents">
 
-                    <!-- SUBTAB 2025 -->
-                    <div id="sub-plan-2025" class="subtab-content">
-                        <div class="sheet-grid">
-                            <sheet-card href="#" label="Contratos_2025" title="Contratos"></sheet-card>
-                            <sheet-card href="#" label="Convênios" title="Convênios"></sheet-card>
-                            <sheet-card href="#" label="Facilities" title="Facilities"></sheet-card>
-                            <sheet-card href="#" label="Locação" title="Locação"></sheet-card>
-                            <sheet-card href="#" label="Viaturas" title="Viaturas"></sheet-card>
+                        <!-- SUBTAB 2026 -->
+                        <div id="sub-plan-2026" class="subtab-content active">
+                            <div class="sheet-grid">
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1ItGNNJEVMwp8DMgM_lHY2E3ed5NZkEwaLwd3YlwLOKs/edit?usp=sharing"
+                                    label="Contratos_2026" title="Contratos 2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1QuBuvqYfUK8kwhdvoQSYH5IhywKgbRE-8A7z6iVgARM/edit?usp=drive_link"
+                                    label="Facilities_2026" title="Facilities 2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1py9ETKnLv8EiNh96ShoZpdSNk1512MXeG3l3tsLG1uQ/edit?usp=drive_link"
+                                    label="Loc_Imov_2026" title="Locação de Imóveis 2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1tf94uOFBiGKXhhEEwMvFYZU8z8cWlru46zjIOZJiiVU/edit?usp=drive_link"
+                                    label="Convênios_2026" title="Convênios_2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1xF8mvzJx7ADsKsWBdyRb9jCNv80dt8ZJt6uSC2REN0Q/edit?usp=drive_link"
+                                    label="Cont_Public_2026" title="Controle de Publicação_2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1Vm0ygu0EAMaHG9t75ppGtNCmBMDlijm83N_05Ijsb_A/edit?usp=drive_link"
+                                    label="Doc_Numerados_2026" title="Documentos Numerados 2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1Qj9FnStbVExg59QUuSL257xbbBB3lL4YzbP6htbnPpg/edit?usp=drive_link"
+                                    label="Recisões_2026" title="Recisões 2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1euBtNMAFPlaiTHjUrQlDk0If-5qtFgVi5cvfsvo52a4/edit?usp=drive_link"
+                                    label="Aditivos_2026" title="Aditivos_2026"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1WxiYsXIUceM9wtlHxBiMJMrlDoQGu2QFqsSx06YwKJk/edit?usp=drive_link"
+                                    label="Apostilamentos_2026" title="Apostilamentos_2026"></sheet-card>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- SUBTAB ARQUIVO -->
-                    <div id="sub-plan-arquivo" class="subtab-content">
-                        <div class="sheet-grid">
-                            <sheet-card href="#" label="Contratos" title="Contratos"></sheet-card>
-                            <sheet-card href="#" label="Convênios" title="Convênios"></sheet-card>
-                            <sheet-card href="#" label="Facilities" title="Facilities"></sheet-card>
-                            <sheet-card href="#" label="Locação" title="Locação"></sheet-card>
-                            <sheet-card href="#" label="Viaturas" title="Viaturas"></sheet-card>
+                        <!-- SUBTAB 2025 -->
+                        <div id="sub-plan-2025" class="subtab-content">
+                            <div class="sheet-grid">
+                                <sheet-card href="#" label="Contratos_2025" title="Contratos"></sheet-card>
+                                <sheet-card href="#" label="Convênios" title="Convênios"></sheet-card>
+                                <sheet-card href="#" label="Facilities" title="Facilities"></sheet-card>
+                                <sheet-card href="#" label="Locação" title="Locação"></sheet-card>
+                                <sheet-card href="#" label="Viaturas" title="Viaturas"></sheet-card>
+                            </div>
                         </div>
-                    </div>
 
-                </div>
+                        <!-- SUBTAB ARQUIVO -->
+                        <div id="sub-plan-arquivo" class="subtab-content">
+                            <div class="sheet-grid">
+                                <sheet-card href="#" label="Contratos" title="Contratos"></sheet-card>
+                                <sheet-card href="#" label="Convênios" title="Convênios"></sheet-card>
+                                <sheet-card href="#" label="Facilities" title="Facilities"></sheet-card>
+                                <sheet-card href="#" label="Locação" title="Locação"></sheet-card>
+                                <sheet-card href="#" label="Viaturas" title="Viaturas"></sheet-card>
+                            </div>
+                        </div>
+
+                    </div>
                 </div><!-- /tab-panel-body -->
             </div>
 
@@ -173,7 +199,8 @@
                     <!-- REMOVEDOR DE MÁSCARA -->
                     <div id="sub-removedor" class="subtab-content active">
                         <div class="section-title">Diversos</div>
-                        <tool-panel heading="Removedor de Máscara" desc="Remove formatação de CPF, CNPJ, eProtocolo e números GMS">
+                        <tool-panel heading="Removedor de Máscara"
+                            desc="Remove formatação de CPF, CNPJ, eProtocolo e números GMS">
                             <form class="tool-body form-tool" data-tool="removeMask">
                                 <div class="input-group">
                                     <label for="input-remove-mask">Digite o valor com máscara:</label>
@@ -181,7 +208,8 @@
                                         placeholder="Ex: 123.456.789-00 ou 25.264.314-1" class="input-field"
                                         aria-label="Input para remover máscara">
                                 </div>
-                                <tool-result primary-icon="bi bi-eraser-fill" primary-label="Remover" result-id="remove-mask-result"></tool-result>
+                                <tool-result primary-icon="bi bi-eraser-fill" primary-label="Remover"
+                                    result-id="remove-mask-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div>
@@ -196,14 +224,16 @@
                                         class="input-field" inputmode="numeric" pattern="[0-9]*"
                                         title="Digite apenas números" aria-label="Input para eProtocolo">
                                 </div>
-                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar" result-id="eprotocolo-result"></tool-result>
+                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar"
+                                    result-id="eprotocolo-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div>
 
                     <!-- ADICIONA MÁSCARA GMS -->
                     <div id="sub-gms" class="subtab-content">
-                        <tool-panel heading="Adiciona Máscara Número GMS" desc="Formata para padrão: XXX/XXXX (número variável/ano)">
+                        <tool-panel heading="Adiciona Máscara Número GMS"
+                            desc="Formata para padrão: XXX/XXXX (número variável/ano)">
                             <form class="tool-body form-tool" data-tool="addMaskGMS">
                                 <div class="input-row">
                                     <div class="input-group">
@@ -219,7 +249,8 @@
                                             title="Digite o ano com 4 dígitos" aria-label="Ano GMS">
                                     </div>
                                 </div>
-                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar" result-id="gms-result"></tool-result>
+                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar"
+                                    result-id="gms-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div> <!-- FECHAMENTO DO sub-gms faltante -->
@@ -242,10 +273,10 @@
                                 <div class="input-group">
                                     <label for="input-cpf">Digite apenas números (11 dígitos):</label>
                                     <input type="text" id="input-cpf" name="cpf" placeholder="Ex: 12345678900"
-                                        class="input-field" maxlength="14" title="Digite o CPF"
-                                        aria-label="CPF">
+                                        class="input-field" maxlength="14" title="Digite o CPF" aria-label="CPF">
                                 </div>
-                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar" result-id="cpf-result"></tool-result>
+                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar"
+                                    result-id="cpf-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div>
@@ -254,11 +285,12 @@
                             <form class="tool-body form-tool" data-tool="addMaskCNPJ">
                                 <div class="input-group">
                                     <label for="input-cnpj-add">Digite apenas números (14 dígitos):</label>
-                                    <input type="text" id="input-cnpj-add" name="cnpj"
-                                        placeholder="Ex: 12345678000199" class="input-field" maxlength="18"
-                                        title="Digite o CNPJ" aria-label="CNPJ empresa">
+                                    <input type="text" id="input-cnpj-add" name="cnpj" placeholder="Ex: 12345678000199"
+                                        class="input-field" maxlength="18" title="Digite o CNPJ"
+                                        aria-label="CNPJ empresa">
                                 </div>
-                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar" result-id="cnpj-add-result"></tool-result>
+                                <tool-result primary-icon="bi bi-magic" primary-label="Adicionar"
+                                    result-id="cnpj-add-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div>
@@ -280,7 +312,8 @@
 
                     <!-- TRANSFORMADOR DE DATA -->
                     <div id="sub-data-final" class="subtab-content active">
-                        <tool-panel heading="Calcular Data Final de Vigência" desc="Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade">
+                        <tool-panel heading="Calcular Data Final de Vigência"
+                            desc="Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade">
                             <form class="tool-body form-tool" data-tool="calculateDateValidity">
 
                                 <!-- Botão info só no mobile — abre popover centralizado -->
@@ -325,13 +358,15 @@
                                     </div>
                                 </div>
 
-                                <tool-result primary-icon="bi bi-calendar-check" primary-label="Calcular" result-id="date-result"></tool-result>
+                                <tool-result primary-icon="bi bi-calendar-check" primary-label="Calcular"
+                                    result-id="date-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div> <!-- /sub-data-final -->
 
                     <div id="sub-dias-restantes" class="subtab-content">
-                        <tool-panel heading="Dias Restantes até Vencimento" desc="Informe a data inicial e a data final do contrato e veja quantos dias há entre elas">
+                        <tool-panel heading="Dias Restantes até Vencimento"
+                            desc="Informe a data inicial e a data final do contrato e veja quantos dias há entre elas">
                             <form class="tool-body form-tool" data-tool="calculateDaysRemaining">
                                 <div class="input-row">
                                     <div class="input-group">
@@ -347,7 +382,8 @@
                                             aria-label="Data final">
                                     </div>
                                 </div>
-                                <tool-result primary-icon="bi bi-calendar-range" primary-label="Calcular Dias" result-id="days-result"></tool-result>
+                                <tool-result primary-icon="bi bi-calendar-range" primary-label="Calcular Dias"
+                                    result-id="days-result"></tool-result>
                             </form>
                         </tool-panel>
                     </div> <!-- /sub-dias-restantes -->
@@ -360,7 +396,8 @@
                 <div class="tab-title">Ferramentas de Consulta</div>
 
                 <!-- PESQUISAR EMPRESA POR CNPJ -->
-                <tool-panel heading="Pesquisar Empresa por CNPJ" desc="Busca dados da empresa usando API pública de CNPJ">
+                <tool-panel heading="Pesquisar Empresa por CNPJ"
+                    desc="Busca dados da empresa usando API pública de CNPJ">
                     <form class="tool-body form-tool" data-tool="searchCNPJ">
                         <div class="input-group">
                             <label for="input-cnpj">CNPJ:</label>
@@ -370,7 +407,8 @@
                                 title="Digite CNPJ com ou sem máscara" aria-label="CNPJ">
                         </div>
 
-                        <tool-result primary-icon="bi bi-search" primary-label="Pesquisar" result-id="cnpj-result"></tool-result>
+                        <tool-result primary-icon="bi bi-search" primary-label="Pesquisar"
+                            result-id="cnpj-result"></tool-result>
                         <div id="cnpj-loading" class="loading" style="display: none;">Buscando...</div>
                     </form>
                 </tool-panel>
@@ -394,19 +432,24 @@
                             <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas
                                 dígitos. As pontuações são removidas ou aplicadas automaticamente.</li>
                             <li><strong>Formatos de data:</strong> digite no padrão brasileiro
-                                <code>DD/MM/YYYY</code>.</li>
+                                <code>DD/MM/YYYY</code>.
+                            </li>
                             <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer
                                 campo para acionar a ferramenta.</li>
                         </ul>
 
                         <!-- Nota sobre botões de ação -->
                         <div class="help-note">
-                            <span class="help-note-icon"><i class="bi bi-info-circle-fill" aria-hidden="true"></i></span>
+                            <span class="help-note-icon"><i class="bi bi-info-circle-fill"
+                                    aria-hidden="true"></i></span>
                             <div>
-                                <p>Determinadas ferramentas possuem botões de ação ativados automaticamente após o uso:</p>
+                                <p>Determinadas ferramentas possuem botões de ação ativados automaticamente após o uso:
+                                </p>
                                 <ul>
-                                    <li><i class="bi bi-clipboard" aria-hidden="true"></i> <strong>Copiar</strong> — copia o resultado para a área de transferência</li>
-                                    <li><i class="bi bi-x-circle" aria-hidden="true"></i> <strong>Limpar</strong> — apaga o resultado e reseta o formulário</li>
+                                    <li><i class="bi bi-clipboard" aria-hidden="true"></i> <strong>Copiar</strong> —
+                                        copia o resultado para a área de transferência</li>
+                                    <li><i class="bi bi-x-circle" aria-hidden="true"></i> <strong>Limpar</strong> —
+                                        apaga o resultado e reseta o formulário</li>
                                 </ul>
                             </div>
                         </div>
@@ -423,21 +466,20 @@
 
     <!-- Popover centralizado: Regras de cálculo (aba Datas) -->
     <div id="regras-popover" popover class="info-popover" role="dialog" aria-label="Regras de cálculo">
-        <button class="popover-close-btn" popovertarget="regras-popover" popovertargetaction="hide"
-            aria-label="Fechar">
+        <button class="popover-close-btn" popovertarget="regras-popover" popovertargetaction="hide" aria-label="Fechar">
             <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
         <p class="info-popover-title"><strong>Regras de Cálculo</strong></p>
         <ul>
-            <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses − 1 dia (período inclusivo)</li>
+            <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses − 1 dia (período
+                inclusivo)</li>
             <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos (mesmo dia)</li>
         </ul>
     </div>
 
     <!-- Popover centralizado: Instruções de uso (aba Ajuda) -->
     <div id="ajuda-popover" popover class="info-popover" role="dialog" aria-label="Instruções de uso">
-        <button class="popover-close-btn" popovertarget="ajuda-popover" popovertargetaction="hide"
-            aria-label="Fechar">
+        <button class="popover-close-btn" popovertarget="ajuda-popover" popovertargetaction="hide" aria-label="Fechar">
             <i class="bi bi-x-lg" aria-hidden="true"></i>
         </button>
         <p class="info-popover-title"><strong>Instruções de Uso</strong></p>
@@ -445,7 +487,8 @@
             <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas dígitos.
                 As pontuações são removidas ou aplicadas automaticamente.</li>
             <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code>.</li>
-            <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer campo para acionar a ferramenta.</li>
+            <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer campo para acionar a ferramenta.
+            </li>
         </ul>
     </div>
 

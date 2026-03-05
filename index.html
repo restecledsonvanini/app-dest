@@ -8,8 +8,10 @@
 
     <!-- ═══ SEO & Identidade Institucional ══════════════════════════════════ -->
     <title>Links Úteis | DEST · SESP</title>
-    <meta name="description" content="Painel interno de acesso rápido a documentos, planilhas e recursos da Diretoria de Estratégia e Tecnologia (DEST) — Secretaria de Estado de Segurança Pública do Paraná (SESP-PR). Desenvolvido para otimizar o uso eficiente de recursos públicos.">
-    <meta name="keywords" content="SESP, DEST, Secretaria de Segurança Pública, Paraná, SESP-PR, gestão de contratos, recursos públicos, links úteis, diretoria de estratégia e tecnologia, transparência pública">
+    <meta name="description"
+        content="Painel interno de acesso rápido a documentos, planilhas e recursos da Diretoria de Estratégia e Tecnologia (DEST) — Secretaria de Estado de Segurança Pública do Paraná (SESP-PR). Desenvolvido para otimizar o uso eficiente de recursos públicos.">
+    <meta name="keywords"
+        content="SESP, DEST, Secretaria de Segurança Pública, Paraná, SESP-PR, gestão de contratos, recursos públicos, links úteis, diretoria de estratégia e tecnologia, transparência pública">
     <meta name="author" content="Diretoria de Estratégia e Tecnologia — DEST · SESP-PR">
     <meta name="application-name" content="Ferramentas DEST">
     <meta name="generator" content="Vanilla JS — sem frameworks">
@@ -25,7 +27,8 @@
     <!-- ═══ Open Graph — compartilhamento interno (Teams, e-mail, etc.) ════ -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Links Úteis | DEST · SESP">
-    <meta property="og:description" content="Acesso rápido a documentos e planilhas da equipe DEST — Secretaria de Segurança Pública do Paraná.">
+    <meta property="og:description"
+        content="Acesso rápido a documentos e planilhas da equipe DEST — Secretaria de Segurança Pública do Paraná.">
     <meta property="og:image" content="./src/images/logo-sesp-dest.png">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Ferramentas DEST · SESP-PR">
@@ -43,8 +46,17 @@
         })();
     </script>
     <link rel="stylesheet" href="./src/styles/global.css">
-        <!-- icons for header/nav and tabs -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- icons for header/nav and tabs -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- em index.html -->
+    <link rel="manifest" href="./manifest.json">
+
+    <!-- Configuração para Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DEST">
+    <link rel="apple-touch-icon" href="/app-dest/src/images/icon-192.png">
+
     <header>
         <div class="logo">
             <img width="70" src="./src/images/logo-sesp-dest.png" alt="Logo Sesp DEST">
@@ -57,11 +69,14 @@
     </header>
     <div class="ui-controls-bar" aria-label="Preferências de exibição">
         <div class="font-size-group" role="group" aria-label="Tamanho da fonte">
-            <button class="ctrl-btn font-btn-sm" data-font="sm" title="Fonte pequena" aria-label="Fonte pequena">A</button>
+            <button class="ctrl-btn font-btn-sm" data-font="sm" title="Fonte pequena"
+                aria-label="Fonte pequena">A</button>
             <button class="ctrl-btn font-btn-md" data-font="md" title="Fonte média" aria-label="Fonte média">A</button>
-            <button class="ctrl-btn font-btn-lg" data-font="lg" title="Fonte grande" aria-label="Fonte grande">A</button>
+            <button class="ctrl-btn font-btn-lg" data-font="lg" title="Fonte grande"
+                aria-label="Fonte grande">A</button>
         </div>
-        <button class="ctrl-btn theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
+        <button class="ctrl-btn theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro"
+            title="Alternar tema claro/escuro">
             <i class="bi bi-sun-fill" aria-hidden="true"></i>
         </button>
     </div>
@@ -82,15 +97,19 @@
 
             <div class="link-row">
                 <span class="link-name">Protótipo / Aditivos</span>
-                <button class="btn btn-open" onclick="openLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing')">Abrir</button>
-                <button class="btn btn-copy" onclick="copyLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing', this)">Copiar</button>
+                <button class="btn btn-open"
+                    onclick="openLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://docs.google.com/spreadsheets/d/15qBBfd109dD1vOwUU5DBe5KcsH69t-QIVsptLISmt4I/edit?usp=sharing', this)">Copiar</button>
                 <span class="copied">Copiado!</span>
             </div>
 
             <div class="link-row">
                 <span class="link-name">CIC / Painel do Gestor</span>
-                <button class="btn btn-open" onclick="openLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing')">Abrir</button>
-                <button class="btn btn-copy" onclick="copyLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing', this)">Copiar</button>
+                <button class="btn btn-open"
+                    onclick="openLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://docs.google.com/spreadsheets/d/1wOdFqRcVQlKlhiQmitjQUiFmkhO3yOlP41Zzpe065nE/edit?usp=sharing', this)">Copiar</button>
                 <span class="copied">Copiado!</span>
             </div>
 
@@ -103,18 +122,23 @@
                 <span class="copied">Copiado!</span>
             </div>
             <div class="link-row">
-            <div class="link-row">
-                <span class="link-name">Esquema Lógico</span>
-                <!-- link removed -->
-            </div>
+                <div class="link-row">
+                    <span class="link-name">Esquema Lógico</span>
+                    <!-- link removed -->
+                </div>
 
+            </div>
         </div>
-    </div>
-    <script src="./src/js/links.js"></script>
-    <script type="module">
-        import { initUIControls } from './src/js/uiControls.js';
-        document.addEventListener('DOMContentLoaded', () => initUIControls());
-    </script>
-</body>
+        <script src="./src/js/links.js"></script>
+        <script type="module">
+            import { initUIControls } from './src/js/uiControls.js';
+            document.addEventListener('DOMContentLoaded', () => initUIControls());
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/app-dest/sw.js').catch(err =>
+                    console.warn('[SW] Registro falhou:', err)
+                );
+            }
+        </script>
+        </body>
 
 </html>
