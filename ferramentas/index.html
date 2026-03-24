@@ -45,7 +45,7 @@
             if (f) { var m = { sm: '14px', md: '16px', lg: '18px' }; document.documentElement.style.fontSize = m[f] || '16px'; }
         })();
     </script>
-    <link rel="stylesheet" href="../src/styles/ferramentas.css">
+    <link rel="stylesheet" href="../src/styles/ferramentas.css?v=20260324">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- em ferramentas/index.html -->
     <link rel="manifest" href="../manifest.json">
@@ -95,6 +95,8 @@
             <div class="tab-nav" id="main-tab-nav" role="tablist">
                 <button class="tab-btn active" data-tab="planilhas" title="Planilhas de trabalho"><i
                         class="bi bi-file-earmark-spreadsheet tab-icon" aria-hidden="true"></i>Planilhas</button>
+                <button class="tab-btn" data-tab="documentos" title="Modelos de documentos"><i
+                        class="bi bi-folder tab-icon" aria-hidden="true"></i>Documentos</button>
                 <button class="tab-btn" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i
                         class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
                 <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i
@@ -116,9 +118,9 @@
                         <button class="subtab-btn" data-subtab="sub-plan-2025">
                             <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
                         </button>
-                        <button class="subtab-btn" data-subtab="sub-plan-arquivo">
-                            <i class="bi bi-archive" aria-hidden="true"></i><span>Arquivo</span>
-                        </button>
+                        <!-- <button class="subtab-btn" data-subtab="sub-plan-arquivo">
+                            <i class="bi bi-archive" aria-hidden="true"></i><span>Convênios</span>
+                        </button> -->
                     </div>
                     <div class="subtab-contents">
 
@@ -164,26 +166,184 @@
                         <!-- SUBTAB 2025 -->
                         <div id="sub-plan-2025" class="subtab-content">
                             <div class="sheet-grid">
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1aO11ZcWYhSLfV2nLPAUq6_8rwYD2o6yD3jr8bebyfRc/edit?usp=drive_link"          target="_blank" label="Contratos_2025" title="Contratos"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1lJhwg8f2C965TFhOQXL0RE1a9aWzpTqO_vfbbSfp6IQ/edit?usp=drive_link" target="_blank" label="Convênios_2025" title="Convênios 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/19Mgypz4nsbnGjLVm8Mka1_sr0FOH6dgH5h7-OJMRlvo/edit?usp=drive_link" target="_blank" label="Cont.Convênios_2025" title="Controle de Convênios 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1r1G5QjlMbTaS3AHOUFXwMMjxL3JBOgWp_PkYDUeTXaU/edit?usp=drive_link" target="_blank" label="Cont.Loc_2025" title="Controle de Locação 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1C0zHZkd67TKJ81yZ0zcAN03a0uMAStV85y-1lk9ABFs/edit?usp=drive_link" target="_blank" label="Cont.Public_2025" title="Controle de Publicações 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1okliYB9lC9LHn49CROPXAjj7yDiggOl1tijRbz_BLEA/edit?usp=drive_link" target="_blank" label="Recisões_2025" title="Recisões 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1CsJH55x6vvvk7yc_JB-EUGuLNzrrIipjB1w3lTiSuUY/edit?usp=drive_link" target="_blank" label="Aditivos_2025" title="Aditivos 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/10qPDz7ohDxjuMwN0XUru9B4Q_USwkTLrX9e1oLvHgP4/edit?usp=drive_link" target="_blank" label="Apostilamentos_2025" title="Apostilamentos 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1aO11ZcWYhSLfV2nLPAUq6_8rwYD2o6yD3jr8bebyfRc/edit?usp=drive_link" 
+                                label="Contratos_2025" title="Contratos"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1lJhwg8f2C965TFhOQXL0RE1a9aWzpTqO_vfbbSfp6IQ/edit?usp=drive_link"  
+                                label="Convênios_2025" title="Convênios 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/19Mgypz4nsbnGjLVm8Mka1_sr0FOH6dgH5h7-OJMRlvo/edit?usp=drive_link"
+                                label="Cont.Convênios_2025" title="Controle de Convênios 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1r1G5QjlMbTaS3AHOUFXwMMjxL3JBOgWp_PkYDUeTXaU/edit?usp=drive_link"
+                                label="Cont.Loc_2025" title="Controle de Locação 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1C0zHZkd67TKJ81yZ0zcAN03a0uMAStV85y-1lk9ABFs/edit?usp=drive_link"
+                                label="Cont.Public_2025" title="Controle de Publicações 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1okliYB9lC9LHn49CROPXAjj7yDiggOl1tijRbz_BLEA/edit?usp=drive_link"
+                                label="Recisões_2025" title="Recisões 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/1CsJH55x6vvvk7yc_JB-EUGuLNzrrIipjB1w3lTiSuUY/edit?usp=drive_link"
+                                label="Aditivos_2025" title="Aditivos 2025"></sheet-card>
+                                <sheet-card href="https://docs.google.com/spreadsheets/d/10qPDz7ohDxjuMwN0XUru9B4Q_USwkTLrX9e1oLvHgP4/edit?usp=drive_link"
+                                label="Apostilamentos_2025" title="Apostilamentos 2025"></sheet-card>
                             </div>
                         </div>
-
-                        <!-- SUBTAB ARQUIVO -->
-                        <div id="sub-plan-arquivo" class="subtab-content">
+                    </div>
+                </div><!-- /tab-panel-body -->
+            </div>
+            <!-- ABA 1: DOCUMENTOS -->
+            <div id="documentos" class="tab-content">
+                <div class="tab-title">Modelos de Documentos</div>
+                <div class="tab-panel-body">
+                    <div class="subtab-nav" role="tablist" aria-label="Ano de referência">
+                        <button class="subtab-btn active" data-subtab="sub-doc-2026">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i><span>2026</span>
+                        </button>
+                        <button class="subtab-btn" data-subtab="sub-doc-2025">
+                            <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
+                        </button>
+                          <button class="subtab-btn" data-subtab="sub-doc-diversos">
+                            <i class="bi bi-archive" aria-hidden="true"></i><span>Docs Diversos</span>
+                        </button>                        
+                          <button class="subtab-btn" data-subtab="sub-doc-instituc">
+                            <i class="bi bi-archive" aria-hidden="true"></i><span>Institucional</span>
+                        </button>                        
+                    </div>
+                    <div class="subtab-contents">
+                        <!-- SUBTAB 2026 -->
+                        <div id="sub-doc-2026" class="subtab-content active">
                             <div class="sheet-grid">
-                                <!-- <sheet-card href="" label="Contratos" title="Contratos"></sheet-card>
-                                <sheet-card href="" label="Convênios" title="Convênios"></sheet-card>
-                                <sheet-card href="" label="Facilities" title="Facilities"></sheet-card>
-                                <sheet-card href="" label="Locação" title="Locação"></sheet-card>
-                                <sheet-card href="#" label="Viaturas" title="Viaturas"></sheet-card> -->
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1Bn52xRxRczpaa49S_PbHKd3T_bJFVT9w?usp=sharing"
+                                    label="ADITIVOS" title="Termos Aditivos: Contratos 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1DlIeD79dzNunsnFYrCAECHLgS1JrUGdR?usp=sharing"
+                                    label="APOSTILAMENTOS" title="Apostilamentos: Contratos 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1vd84HTo1v9EiXFWrdxk6LH7BeBXwns8e?usp=sharing"
+                                    label="CHECK-LIST" title="Checklist conforme Lei 15.608-2007 e 14.133-2021">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1w0JkVxDVIDpR1f1j8W3j3AZbINg4G96H?usp=sharing"
+                                    label="CONTRATOS" title="Modelo de Contratos 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1KrYBndyUXw1krLTEqdK1t6XkRxkiGVjz?usp=sharing"
+                                    label="CONVÊNIOS" title="Modelo de Convênios 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1FS2rxBrMUethnU6TvPjpsh_IUBGnJ5jS?usp=sharing"
+                                    label="CREDENCIAMENTOS" title="Modelo de Contratos 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/16YkZqhMYgVJ5xtCcnO1lILRNoSCFPRNw?usp=sharing"
+                                    label="DEC.AUTENT." title="Declaração de Autenticidade Padrão 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/189VgqJ4R2eegaTeEhHxAA5cA6kzth07q?usp=sharing"
+                                    label="DESPACHOS" title="Modelo de Despacho 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1BAriUcGq3Uoaq_EGMuPWFyTEnMhLH7QV?usp=sharing"
+                                    label="LOC.IMÓVEL" title="Modelo de Locação de Imóveis 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1mg1vruUjdnGp9yq7nDat3uCLvWjJemXs?usp=sharing"
+                                    label="MINUTAS" title="Modelo de Minuta Padrão - Nova Lei">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1zJRurNSgnc6KHpifKpt12FstS6oz4MBk?usp=sharing"
+                                    label="MODELOS DOCs" title="Modelos Documentos Variados 2026">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1ojxrdOtHkHNtwn62qZEX-tsDoSK_AYsc?usp=sharing"
+                                    label="RESCISÕES" title="Modelos de Recisão Contratual 2026">
+                                </folder-card>                                
+                               
                             </div>
+                        </div>
+                        <!-- SUBTAB 2025 -->
+                        <div id="sub-doc-2025" class="subtab-content">
+                            <div class="sheet-grid">
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1dAETRi92V0tTZV28hqOF5lwSvB0ShT3Y?usp=sharing"
+                                    label="ADITIVOS" title="Termos Aditivos: Contratos 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1-92sttjtPcR8IK0P_sgmJjcOmTAVgWQ3?usp=sharing"
+                                    label="APOSTILAMENTOS" title="Apostilamentos: Contratos 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1HvRcwLy1MHJchgN7k0t3hvuVPxRrpiNC?usp=sharing"
+                                    label="REPACTUAÇÃO" title="Avisos de Repactuação 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1UqaCnnHp5qNc8w6jYP5Mee09_PtAtdcY?usp=sharing"
+                                    label="CHECKLIST" title="Checklist Conforme Lei 15.608-2007 e 14-133-2021">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1C9NTUJmUk5jkqger9JgUkYXfVF_Bz4Gt?usp=sharing"
+                                    label="CONTRATOS" title="Modelo de Contratos 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1CvtXgGIUYeLr2BkJSKvYDTvBt3p06G-D?usp=sharing"
+                                    label="CONVÊNIOS" title="Modelo de Convênios 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1PmBZq93THDZN8bDrwy-wtmei_xLg3vbm?usp=sharing"
+                                    label="CREDENCIAMENTOS" title="Modelos de Credenciamento 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1DZT8lWefnnESdnK2N3RNgwcIv7WFfeDA?usp=sharing"
+                                    label="DEC.AUTENT" title="Modelo de Declaração de Autenticidade 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1MJ8SQv4E2Qgkd6YHVBc9fTzzt8NmUvwo?usp=sharing"
+                                    label="DESPACHOS" title="Modelo de Despachos 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/15JhtXnBZvp-ZCC1t_F3kGsXNoQeyE8zx?usp=sharing"
+                                    label="LOC.IMOVÉIS" title="Locação de Imóveis 2025">
+                                </folder-card>
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1sRCdnhzMIUnmrFUF2M0O7bMVP7GiMTa6?usp=sharing"
+                                    label="RECISÕES" title="Modelos de Recisões 2025">
+                                </folder-card>                                                              
+                               
+                            </div>
+                        </div>
+                        <!-- SUBTAB ARQUIVO -->
+                        <div id="sub-doc-diversos" class="subtab-content">
+                          <div class="sheet-grid">
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1S-du9D3tj6zIIWq-6X_B76kp7lf0FYPR?usp=sharing"
+                                    label="CONVÊNIOS" title="Modelos de Contratos de Convênios">
+                                </folder-card>  
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1xOVL65nAFhoPwwuiwKT7GMvYXOPZiNoJ?usp=sharing"
+                                    label="DIVERSOS" title="Modelos de Documentos Diversos">
+                                </folder-card>  
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1XePohZAvcHcvrwtWv_Ah6keDdhR6F1F9?usp=sharing"
+                                    label="OFÍCIOS" title="Modelos de Ofícios">
+                                </folder-card>  
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1vJE8axl3S0spV1m3Nw64s6jlKov4NAQz?usp=sharing"
+                                    label="RELATÓRIOS" title="Modelos de Relatórios de Contratos por Força">
+                                </folder-card>  
+                            </div> 
+                        </div>
+                        <!-- SUBTAB ORGANIZACIONAL -->
+                        <div id="sub-doc-instituc" class="subtab-content">
+                          <div class="sheet-grid">
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/1I11-sXcWpa8b-PCCVwMgB6K2mcsMF1LC?usp=sharing"
+                                    label="ORGANOGRAMAS" title="Organograma e Hierarquia Institucionais SESP">
+                                </folder-card>  
+                                <folder-card
+                                    href="https://drive.google.com/drive/folders/19y7QsyYp8ZktSDjfbPe4zy36fUD1gRiq?usp=sharing"
+                                    label="DECRETOS" title="Decretos estaduais relacionados à SESP">
+                                </folder-card>  
+                                
+                            </div> 
                         </div>
 
                     </div>
@@ -503,7 +663,7 @@
     </div>
 
     <!-- scripts split for better organization -->
-    <script type="module" src="../src/js/main.js"></script>
+    <script type="module" src="../src/js/main.js?v=20260324"></script>
     </body>
 
 </html>

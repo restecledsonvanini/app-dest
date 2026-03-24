@@ -3,11 +3,21 @@
  * Chamar registerComponents() uma vez em main.js antes do DOMContentLoaded.
  */
 import { SheetCard }  from './SheetCard.js';
+import { FolderCard } from './FolderCard.js';
 import { ToolResult } from './ToolResult.js';
 import { ToolPanel }  from './ToolPanel.js';
 
 export function registerComponents() {
-    customElements.define('sheet-card',  SheetCard);
-    customElements.define('tool-result', ToolResult);
-    customElements.define('tool-panel',  ToolPanel);
+    if (!customElements.get('sheet-card')) {
+        customElements.define('sheet-card', SheetCard);
+    }
+    if (!customElements.get('folder-card')) {
+        customElements.define('folder-card', FolderCard);
+    }
+    if (!customElements.get('tool-result')) {
+        customElements.define('tool-result', ToolResult);
+    }
+    if (!customElements.get('tool-panel')) {
+        customElements.define('tool-panel', ToolPanel);
+    }
 }
