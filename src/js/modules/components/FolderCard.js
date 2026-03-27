@@ -17,7 +17,7 @@ const FOLDER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
 export class FolderCard extends HTMLElement {
     connectedCallback() {
         // Cache dos atributos para evitar múltiplas chamadas getAttribute
-        const href  = this.getAttribute('href')  || '#';
+        const href = this.getAttribute('href') || '#';
         const label = this.getAttribute('label') || '';
         const title = this.getAttribute('title') || label;
 
