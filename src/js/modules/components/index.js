@@ -2,10 +2,11 @@
  * components/index.js — Registro central de Custom Elements.
  * Chamar registerComponents() uma vez em main.js antes do DOMContentLoaded.
  */
-import { SheetCard }  from './SheetCard.js';
+import { SheetCard } from './SheetCard.js';
 import { FolderCard } from './FolderCard.js';
 import { ToolResult } from './ToolResult.js';
-import { ToolPanel }  from './ToolPanel.js';
+import { ToolPanel } from './ToolPanel.js';
+import { DocumentEditorPanel } from '../documentEditor/DocumentEditorPanel.js';
 
 export function registerComponents() {
     if (!customElements.get('sheet-card')) {
@@ -19,5 +20,8 @@ export function registerComponents() {
     }
     if (!customElements.get('tool-panel')) {
         customElements.define('tool-panel', ToolPanel);
+    }
+    if (!customElements.get('document-editor-panel')) {
+        customElements.define('document-editor-panel', DocumentEditorPanel);
     }
 }

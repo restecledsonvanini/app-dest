@@ -45,8 +45,12 @@
             if (f) { var m = { sm: '14px', md: '16px', lg: '18px' }; document.documentElement.style.fontSize = m[f] || '16px'; }
         })();
     </script>
-    <link rel="stylesheet" href="../src/styles/ferramentas.css?v=20260324">
+    <link rel="stylesheet" href="../src/styles/ferramentas.css?v=20260330">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- em ferramentas/index.html -->
     <link rel="manifest" href="../manifest.json">
 
@@ -97,6 +101,8 @@
                         class="bi bi-file-earmark-spreadsheet tab-icon" aria-hidden="true"></i>Planilhas</button>
                 <button class="tab-btn" data-tab="documentos" title="Modelos de documentos"><i
                         class="bi bi-folder tab-icon" aria-hidden="true"></i>Documentos</button>
+                <button class="tab-btn" data-tab="editor" title="Editor de documentos com parâmetros"><i
+                        class="bi bi-file-earmark-text tab-icon" aria-hidden="true"></i>Editor</button>
                 <button class="tab-btn" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i
                         class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
                 <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i
@@ -358,7 +364,15 @@
                 </div><!-- /tab-panel-body -->
             </div>
 
-            <!-- ABA 1: MÁSCARAS -->
+            <!-- ABA 1.5: EDITOR -->
+            <div id="editor" class="tab-content">
+                <div class="tab-title">Editor de Documentos</div>
+                <div class="tab-panel-body">
+                    <document-editor-panel></document-editor-panel>
+                </div>
+            </div>
+
+            <!-- ABA 2: MÁSCARAS -->
             <div id="mascaras" class="tab-content">
                 <div class="tab-title">Ferramentas de Máscaras</div>
 
@@ -671,7 +685,7 @@
     </div>
 
     <!-- scripts split for better organization -->
-    <script type="module" src="../src/js/main.js?v=20260324"></script>
+    <script type="module" src="../src/js/main.js?v=20260330"></script>
     </body>
 
 </html>

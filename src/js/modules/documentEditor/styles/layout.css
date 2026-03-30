@@ -1,0 +1,285 @@
+.document-editor__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+}
+.document-editor__editor-panel {
+    min-width: 0;
+}
+
+.document-editor__dropzone {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    padding: 1.2rem;
+    border: 2px dashed color-mix(in srgb, var(--primary, #0b3d91) 22%, var(--panel-border, #dbe3ee));
+    border-radius: 14px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--panel-bg, #f8fafc) 80%, white), color-mix(in srgb, var(--info-bg, #eef2fb) 55%, white));
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.document-editor__dropzone.is-dragover {
+    border-color: var(--primary, #0b3d91);
+    background: color-mix(in srgb, var(--info-bg, #eef2fb) 80%, white);
+    transform: translateY(-1px);
+}
+
+.document-editor__dropzone.is-disabled {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.document-editor__dropzone-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary, #0b3d91) 14%, transparent);
+    color: var(--primary, #0b3d91);
+}
+
+.document-editor__dropzone-icon svg {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.document-editor__dropzone-copy {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.document-editor__dropzone-copy strong {
+    font-size: 1rem;
+    color: var(--text, #0f172a);
+}
+
+.document-editor__dropzone-copy span,
+.document-editor__hint,
+.document-editor__status,
+.document-editor__form-intro,
+.document-editor__empty-state,
+.document-editor__settings-note,
+.document-editor__settings-empty {
+    color: var(--muted, #64748b);
+    line-height: 1.5;
+}
+
+.document-editor__dropzone-copy code,
+.document-editor__empty-state code,
+.document-editor__settings-note code,
+.document-editor__form-intro code {
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--panel-border, #dbe3ee);
+    border-radius: 4px;
+    padding: 1px 5px;
+}
+
+.document-editor__file-input {
+    display: none;
+}
+
+.document-editor__status {
+    margin: 0.85rem 0 1rem;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid var(--panel-border, #dbe3ee);
+    border-radius: 10px;
+    background: var(--panel-bg, #f8fafc);
+    font-size: 0.9rem;
+}
+
+.document-editor__status[data-kind="success"] {
+    background: rgba(22, 199, 107, 0.08);
+    border-color: rgba(22, 199, 107, 0.35);
+    color: #0f7a44;
+}
+
+.document-editor__status[data-kind="warning"] {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #9a5a00;
+}
+
+.document-editor__status[data-kind="info"] {
+    background: color-mix(in srgb, var(--info-bg, #eef2fb) 88%, white);
+    border-color: color-mix(in srgb, var(--info-border, #c8d5e8) 80%, white);
+    color: var(--info-box-text, #1e3a5f);
+}
+
+.document-editor__form-container {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.document-editor__form-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.document-editor__form-toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.document-editor__form-intro,
+.document-editor__empty-state {
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    background: var(--panel-bg, #f8fafc);
+    border: 1px solid var(--panel-border, #dbe3ee);
+    font-size: 0.9rem;
+}
+
+.document-editor__form-intro {
+    flex: 1 1 320px;
+}
+
+.document-editor__empty-state {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: start;
+    border-style: dashed;
+}
+
+.document-editor__empty-state p,
+.document-editor__settings-note {
+    margin: 0;
+}
+
+.document-editor__empty-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--primary, #0b3d91);
+}
+
+.document-editor__empty-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.document-editor__settings-popover[hidden] {
+    display: none;
+}
+
+.document-editor__settings-popover {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+}
+
+.document-editor__settings-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.document-editor__settings-card {
+    position: relative;
+    z-index: 1;
+    width: min(820px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    overflow: auto;
+    margin: 16px auto;
+    border: 1px solid var(--panel-border, #dbe3ee);
+    border-radius: 14px;
+    background: var(--card-bg, #fff);
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
+}
+
+.document-editor__settings-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.5rem;
+}
+
+.document-editor__settings-card-header h3 {
+    margin: 0;
+    color: var(--tool-h3, #192a5a);
+}
+
+.document-editor__settings-body {
+    display: grid;
+    gap: 0.9rem;
+    padding: 0 1rem 1rem;
+}
+
+.document-editor__settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem 1rem;
+}
+
+.document-editor__settings-field {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--label-color, #374151);
+}
+
+.document-editor__settings-field--wide {
+    grid-column: 1 / -1;
+}
+
+.document-editor__settings-empty {
+    padding: 0.8rem 0.9rem;
+    border-radius: 10px;
+    border: 1px dashed var(--panel-border, #dbe3ee);
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.document-editor__settings-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.document-editor__form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem 1rem;
+}
+
+.document-editor__field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.document-editor__label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--label-color, #374151);
+}
+
+.document-editor__label--required::after {
+    content: ' *';
+    color: #dc2626;
+}
+
+.document-editor__control {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--input-border, #d1d5db);
+    border-radius: 10px;
+    background: var(--input-bg, #fff);
+    color: var(--text, #0f172a);
+    font-size: 0.95rem;
+}
+
+.document-editor__control--textarea {
+    min-height: 92px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.document-editor__control:focus {
+    outline: none;
+    border-color: #16c76b;
+    box-shadow: 0 0 0 3px rgba(22, 199, 107, 0.12);
+}

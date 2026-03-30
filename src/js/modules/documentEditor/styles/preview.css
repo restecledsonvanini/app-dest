@@ -1,0 +1,204 @@
+.document-editor__sidepanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(50vw, 760px);
+    min-width: 420px;
+    max-width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg, #fff);
+    border-left: 1px solid var(--panel-border, #dbe3ee);
+    box-shadow: -16px 0 40px rgba(15, 23, 42, 0.16);
+    transform: translateX(104%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 50;
+}
+
+.document-editor--preview-open .document-editor__sidepanel {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.document-editor__sidepanel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--panel-border, #dbe3ee);
+}
+
+.document-editor__sidepanel-title {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--tool-h3, #192a5a);
+}
+
+.document-editor__sidepanel-subtitle {
+    margin: 0.3rem 0 0;
+    color: var(--muted, #64748b);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.document-editor__sidepanel-tools {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.document-editor__zoom-label,
+.document-editor__zoom-value {
+    color: var(--secondary, #475569);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.document-editor__zoom-range {
+    width: 120px;
+    accent-color: var(--primary, #0b3d91);
+}
+
+.document-editor__preview-container {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: #eef2f7;
+    padding: 1rem;
+}
+
+.document-editor__preview-content {
+    min-height: 100%;
+    color: var(--muted, #64748b);
+}
+
+.document-editor__preview-pages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: max-content;
+    min-width: 100%;
+    align-items: center;
+}
+
+.document-editor__preview-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: #fff;
+    color: #0f172a;
+    box-sizing: border-box;
+    padding: 16mm 14mm;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.document-editor__preview-page-body {
+    width: 100%;
+    min-height: 100%;
+    line-height: 1.65;
+}
+
+.document-editor__preview-page-body h1,
+.document-editor__preview-page-body h2,
+.document-editor__preview-page-body h3 {
+    color: #0b3d91;
+}
+
+.document-editor__preview-page-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+}
+
+.document-editor__preview-page-body td,
+.document-editor__preview-page-body th {
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    padding: 0.45rem 0.55rem;
+    vertical-align: top;
+}
+
+.document-editor__fallback-header {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.document-editor__fallback-logo {
+    width: 68px;
+    height: auto;
+    object-fit: contain;
+}
+
+.document-editor__fallback-title p {
+    margin: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.document-editor__preamble {
+    width: 50%;
+    margin: 0.75rem 0 1rem auto;
+    text-align: justify;
+}
+
+.document-editor__preamble p {
+    margin: 0;
+    font-weight: 700;
+}
+
+.document-editor__placeholder {
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0 4px;
+}
+
+.document-editor__placeholder--filled {
+    background: rgba(22, 199, 107, 0.12);
+    color: #0f7a44;
+    border-bottom: 2px solid #16c76b;
+}
+
+.document-editor__placeholder--empty {
+    background: rgba(255, 193, 7, 0.18);
+    color: #b45309;
+    border-bottom: 2px dashed #f59e0b;
+    user-select: none;
+    pointer-events: none;
+}
+
+.document-editor__preview-page-body p {
+    cursor: text;
+    transition: background-color 0.15s ease;
+    border-radius: 4px;
+    padding: 0.15rem 0.2rem;
+}
+
+.document-editor__preview-page-body p:hover {
+    background: rgba(11, 61, 145, 0.06);
+}
+
+.document-editor__paragraph--editing {
+    background: rgba(11, 61, 145, 0.08);
+    outline: 2px solid rgba(11, 61, 145, 0.25);
+}
+
+.document-editor--expanded {
+    position: fixed;
+    inset: 16px;
+    z-index: 60;
+    background: var(--card-bg, #fff);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
+    overflow: auto;
+}
