@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Teste de Bibliotecas</title>
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <h1>Teste de Carregamento de Bibliotecas</h1>
+    <div id="results"></div>
+
+    <script>
+        function testLibraries() {
+            const results = document.getElementById('results');
+            const tests = [
+                { name: 'Mammoth.js', check: () => typeof window.mammoth !== 'undefined' },
+                { name: 'PizZip', check: () => typeof window.PizZip !== 'undefined' },
+                { name: 'DocxTemplater', check: () => typeof window.DocxTemplater !== 'undefined' },
+                { name: 'html2pdf', check: () => typeof window.html2pdf !== 'undefined' }
+            ];
+
+            let html = '<ul>';
+            tests.forEach(test => {
+                const passed = test.check();
+                html += `<li style="color: ${passed ? 'green' : 'red'};">${test.name}: ${passed ? '✅ OK' : '❌ FALHA'}</li>`;
+            });
+            html += '</ul>';
+
+            results.innerHTML = html;
+        }
+
+        // Testar imediatamente
+        testLibraries();
+
+        // Testar após um delay para garantir carregamento
+        setTimeout(testLibraries, 2000);
+    </script>
+</body>
+
+</html>
+</content>
+<parameter name="filePath">c:\_dev\app-dest\teste-bibliotecas.html

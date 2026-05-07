@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Erros - Demonstração</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+
+        .form-group input.warning {
+            border-color: #f57c00;
+            background-color: #fff3e0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #eee;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .preview {
+            background: #f9f9f9;
+            border: 1px dashed #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .preview-empty {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-message {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .status-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .status-warning {
+            background: #fff3e0;
+            color: #f57c00;
+            border-left: 4px solid #f57c00;
+        }
+
+        .status-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .test-cases {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-cases h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .test-case {
+            background: #f9f9f9;
+            border-left: 4px solid #1976d2;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .test-case:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .test-case strong {
+            display: block;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+
+        .test-case small {
+            color: #666;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+
+        .diagnostic-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .diagnostic-item-preview {
+            background: #f9f9f9;
+            border-left: 4px solid #999;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 2px;
+            font-size: 13px;
+        }
+
+        .diagnostic-item-preview.error {
+            border-left-color: #d32f2f;
+            background: #ffebee;
+        }
+
+        .diagnostic-item-preview.warning {
+            border-left-color: #f57c00;
+            background: #fff3e0;
+        }
+
+        .diagnostic-item-preview.info {
+            border-left-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .diagnostic-item-preview strong {
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🛡️ Sistema Robusto de Tratamento de Erros</h1>
+            <p>
+                Demonstração do sistema completo de diagnósticos para:
+                <strong>placeholders malformados</strong>,
+                <strong>uploads de arquivo</strong>,
+                <strong>validação de templates</strong> e
+                <strong>tratamento de erros de exportação</strong>
+            </p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Upload Panel -->
+            <div class="panel">
+                <h2>📤 Upload de Template</h2>
+
+                <div class="form-group">
+                    <label for="file-input">Selecione um arquivo:</label>
+                    <input type="file" id="file-input" accept=".docx,.odt,.html,.htm,.doc" />
+                </div>
+
+                <div id="upload-status" style="display: none;"></div>
+
+                <div class="form-group" id="file-info" style="display: none;">
+                    <strong>Arquivo selecionado:</strong>
+                    <p id="file-name"></p>
+                    <p id="file-size"></p>
+                    <p id="file-format"></p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" id="upload-btn">Carregar e Validar</button>
+                    <button class="btn-secondary" id="clear-btn">Limpar</button>
+                </div>
+            </div>
+
+            <!-- Form Panel -->
+            <div class="panel">
+                <h2>📋 Preencher Campos</h2>
+
+                <div class="form-group">
+                    <label for="tipo-termo">Tipo do Termo:</label>
+                    <input type="text" id="tipo-termo" placeholder="Ex: APOSTILAMENTO" />
+                </div>
+
+                <div class="form-group">
+                    <label for="num-termo">Número do Termo:</label>
+                    <input type="text" id="num-termo" placeholder="Ex: 12345" />
+                </div>
+
+                <div class="form-group">
+                    <label for="data-inicio">Data de Início:</label>
+                    <input type="date" id="data-inicio" />
+                </div>
+
+                <div class="form-group">
+                    <label for="observacoes">Observações:</label>
+                    <textarea id="observacoes" placeholder="Digite as observações..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" id="preview-btn">Atualizar Prévia</button>
+                    <button class="btn-danger" id="export-btn">Exportar DOCX</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview & Diagnostics -->
+        <div class="main">
+            <!-- Preview Panel -->
+            <div class="panel">
+                <h2>👁️ Prévia do Documento</h2>
+                <div class="preview" id="preview">
+                    <div class="preview-empty">
+                        Carregue um template para visualizar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostics Panel -->
+            <div class="panel">
+                <h2>⚠️ Diagnósticos</h2>
+                <div id="diagnostics-summary">
+                    <p style="color: #999;">Nenhum diagnóstico ainda</p>
+                </div>
+                <div class="diagnostic-list" id="diagnostics-list"></div>
+                <div class="button-group" style="margin-top: 15px;">
+                    <button class="btn-secondary" id="export-diagnostics-btn">📥 Exportar Relatório</button>
+                    <button class="btn-secondary" id="clear-diagnostics-btn">Limpar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Cases -->
+        <div class="test-cases">
+            <h2>🧪 Casos de Teste</h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Clique em um caso para testar o sistema:
+            </p>
+
+            <div class="test-case" id="test-case-1">
+                <strong>1. Template com Placeholder Malformado</strong>
+                <small>{{tipo_termo}} OK, mas {{num_termo (não-fechado)</small>
+            </div>
+
+            <div class="test-case" id="test-case-2">
+                <strong>2. Template com Campo Vazio</strong>
+                <small>Contém {{}} e [{{}}] placeholders vazios</small>
+            </div>
+
+            <div class="test-case" id="test-case-3">
+                <strong>3. Template Válido</strong>
+                <small>Todos os placeholders bem-formados e válidos</small>
+            </div>
+
+            <div class="test-case" id="test-case-4">
+                <strong>4. Template com Caracteres Inválidos</strong>
+                <small>{{campo
+                    <script>}} - tenta injetar conteúdo malicioso</small >
+            </div >
+
+                            <div class="test-case" id="test-case-5">
+                                <strong>5. Campos Obrigatórios Faltando</strong>
+                                <small>{{ nome: text }}, {{ email?}} - valida tipos e obrigatoriedade</small>
+                            </div>
+        </div >
+    </div >
+
+                            <!-- Scripts -->
+                            <script type="module">
+                                import {DiagnosticsService} from './src/js/services/DiagnosticsService.js';
+                                import {TemplateValidator} from './src/js/services/TemplateValidator.js';
+                                import {UploadValidator} from './src/js/services/UploadValidator.js';
+                                import {EnhancedDocumentParser} from './src/js/modules/documentEditor/EnhancedDocumentParser.js';
+
+                                // Inicializar serviços
+                                const diagnostics = new DiagnosticsService();
+                                const templateValidator = new TemplateValidator(diagnostics);
+                                const uploadValidator = new UploadValidator(diagnostics);
+
+                                // State
+                                let currentParser = null;
+                                let currentFile = null;
+
+                                // ===== Event Listeners =====
+
+                                // Upload
+                                document.getElementById('upload-btn').addEventListener('click', handleUpload);
+                                document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+                                // Form
+                                document.getElementById('preview-btn').addEventListener('click', updatePreview);
+                                document.getElementById('export-btn').addEventListener('click', exportDocument);
+
+                                // Diagnostics
+                                document.getElementById('export-diagnostics-btn').addEventListener('click', exportDiagnostics);
+                                document.getElementById('clear-diagnostics-btn').addEventListener('click', clearDiagnostics);
+
+        // File input
+        document.getElementById('file-input').addEventListener('change', (e) => {
+                                    currentFile = e.target.files[0];
+                                if (currentFile) {
+                                    document.getElementById('file-name').textContent = `Nome: ${currentFile.name}`;
+                                document.getElementById('file-size').textContent = `Tamanho: ${(currentFile.size / 1024).toFixed(2)} KB`;
+                                document.getElementById('file-info').style.display = 'block';
+            }
+        });
+
+        // Test cases
+        document.getElementById('test-case-1').addEventListener('click', () => loadTestTemplate(1));
+        document.getElementById('test-case-2').addEventListener('click', () => loadTestTemplate(2));
+        document.getElementById('test-case-3').addEventListener('click', () => loadTestTemplate(3));
+        document.getElementById('test-case-4').addEventListener('click', () => loadTestTemplate(4));
+        document.getElementById('test-case-5').addEventListener('click', () => loadTestTemplate(5));
+
+                                // ===== Functions =====
+
+                                async function handleUpload() {
+            if (!currentFile) {
+                                    showStatus('Selecione um arquivo primeiro', 'error');
+                                return;
+            }
+
+                                diagnostics.clear();
+                                updateDiagnosticsUI();
+
+                                try {
+                                    showStatus('Validando arquivo...', 'info');
+
+                                // 1. Validar upload
+                                const uploadResult = await uploadValidator.validateFile(currentFile);
+                                if (!uploadResult.isValid) {
+                                    showStatus('Arquivo inválido!', 'error');
+                                return;
+                }
+
+                                // 2. Ler conteúdo
+                                const content = await currentFile.text();
+
+                                // 3. Validar template
+                                const templateResult = templateValidator.validateTemplate(content);
+
+                                // 4. Criar parser
+                                currentParser = new EnhancedDocumentParser(content, diagnostics);
+
+                                showStatus(`✅ Template carregado: ${currentParser.getPlaceholders().length} campos encontrados`, 'success');
+
+                                if (currentParser.hasErrors()) {
+                                    showStatus(`⚠️ ${currentParser.getMalformedPlaceholders().length} campo(s) malformado(s)!`, 'warning');
+                }
+
+                                updateDiagnosticsUI();
+                                updatePreview();
+            } catch (error) {
+                                    showStatus(`Erro: ${error.message}`, 'error');
+            }
+        }
+
+                                function updatePreview() {
+            if (!currentParser) {
+                                    showStatus('Carregue um template primeiro', 'error');
+                                return;
+            }
+
+                                try {
+                const data = {
+                                    'tipo_termo': document.getElementById('tipo-termo').value,
+                                'num_termo': document.getElementById('num-termo').value,
+                                'data_inicio': document.getElementById('data-inicio').value,
+                                'observacoes': document.getElementById('observacoes').value,
+                };
+
+                                const html = currentParser.render(data);
+                                document.getElementById('preview').innerHTML = html || '<p style="color: #999;">Template vazio</p>';
+            } catch (error) {
+                                    showStatus(`Erro ao renderizar: ${error.message}`, 'error');
+            }
+        }
+
+                                function exportDocument() {
+            if (!currentParser) {
+                                    showStatus('Carregue um template primeiro', 'error');
+                                return;
+            }
+                                showStatus('Exportação ainda não implementada (próxima fase)', 'info');
+        }
+
+                                function exportDiagnostics() {
+            const report = diagnostics.generateReport('json');
+                                const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json' });
+                                downloadFile(blob, 'diagnosticos.json');
+        }
+
+                                function updateDiagnosticsUI() {
+            const summary = diagnostics.getSummary();
+                                const list = document.getElementById('diagnostics-list');
+                                list.innerHTML = '';
+
+                                document.getElementById('diagnostics-summary').innerHTML = `
+                                <p><strong style="color: #d32f2f;">🔴 Erros:</strong> ${summary.errors}</p>
+                                <p><strong style="color: #f57c00;">🟠 Avisos:</strong> ${summary.warnings}</p>
+                                <p><strong style="color: #1976d2;">🔵 Info:</strong> ${summary.infos}</p>
+                                `;
+
+            diagnostics.diagnostics.forEach(diag => {
+                const item = document.createElement('div');
+                                item.className = `diagnostic-item-preview ${diag.level}`;
+                                item.innerHTML = `
+                                <strong>${diag.type}</strong>
+                                <p>${diag.message}</p>
+                                ${diag.suggestion ? `<small>💡 ${diag.suggestion}</small>` : ''}
+                                `;
+                                list.appendChild(item);
+            });
+        }
+
+                                function loadTestTemplate(caseNum) {
+                                    diagnostics.clear();
+                                updateDiagnosticsUI();
+
+                                const templates = {
+                                    1: `<p>Termo <strong>{{ tipo_termo }}</strong> Nº <strong>{{ num_termo</strong></p>`,
+                                2: `<p>{{}}</p><p>[{{}}]</p><p>{{ campo_ok }}</p>`,
+                                3: `<p>Termo {{ tipo_termo }} Nº {{ num_termo }}</p><p>Data: {{ data_inicio }}</p>`,
+                                4: `<p>{{ tipo_termo }}</p><p>{{ campo<script>alert('xss')</script>}}</p>`,
+                    5: `<p>{{nome:text}}</p>
+                    <p>{{email?}}</p>
+                    <p>{{cpf:number}}</p>`
+                    };
+
+                    const html = templates[caseNum];
+                    const result = templateValidator.validateTemplate(html);
+                    const parser = new EnhancedDocumentParser(html, diagnostics);
+                    currentParser = parser;
+
+                    showStatus(`✅ Teste ${caseNum} carregado`, 'success');
+                    updateDiagnosticsUI();
+                    updatePreview();
+                    }
+
+                    function showStatus(message, type) {
+                    const status = document.getElementById('upload-status');
+                    status.className = `status-message status-${type}`;
+                    status.textContent = message;
+                    status.style.display = 'block';
+
+                    if (type === 'success') {
+                    setTimeout(() => { status.style.display = 'none'; }, 3000);
+                    }
+                    }
+
+                    function clearAll() {
+                    currentParser = null;
+                    currentFile = null;
+                    diagnostics.clear();
+
+                    document.getElementById('file-input').value = '';
+                    document.getElementById('file-info').style.display = 'none';
+                    document.getElementById('preview').innerHTML = '<div class="preview-empty">Carregue um template para
+                        visualizar</div>';
+                    document.getElementById('upload-status').style.display = 'none';
+
+                    updateDiagnosticsUI();
+                    }
+
+                    function clearDiagnostics() {
+                    diagnostics.clear();
+                    updateDiagnosticsUI();
+                    }
+
+                    function downloadFile(blob, filename) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    }
+                    </script>
+</body>
+
+</html>

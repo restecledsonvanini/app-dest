@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Teste de Upload DOCX com Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #0052a3;
+        }
+
+        #logs {
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+        }
+
+        .log-error {
+            color: #ff6b6b;
+        }
+
+        .log-warn {
+            color: #ffa500;
+        }
+
+        .log-success {
+            color: #51cf66;
+        }
+
+        .log-info {
+            color: #74c0fc;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status.loading {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+    <!-- Carregar bibliotecas Mammoth, PizZip, etc. -->
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Upload DOCX com Debug</h1>
+
+        <section>
+            <h2>📋 Status das Bibliotecas</h2>
+            <div id="libraryStatus">Verificando...</div>
+        </section>
+
+        <section>
+            <h2>📄 Upload de Arquivo</h2>
+            <input type="file" id="fileInput" accept=".docx" />
+            <button onclick="testFileUpload()">Testar Upload</button>
+        </section>
+
+        <section>
+            <h2>📊 Console de Debug</h2>
+            <div id="logs"></div>
+            <button onclick="clearLogs()">Limpiar Logs</button>
+        </section>
+    </div>
+
+    <script>
+        const logsElement = document.getElementById('logs');
+        const logHistory = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            const logClass = `log-${type}`;
+            const entry = `[${timestamp}] ${message}`;
+            logHistory.push({ message: entry, type: logClass });
+
+            const div = document.createElement('div');
+            div.className = `log-entry ${logClass}`;
+            div.textContent = entry;
+            logsElement.appendChild(div);
+            logsElement.scrollTop = logsElement.scrollHeight;
+        }
+
+        function clearLogs() {
+            logsElement.innerHTML = '';
+            logHistory.length = 0;
+            log('Logs limpos', 'info');
+        }
+
+        function checkLibraries() {
+            const status = {
+                'Mammoth.js': typeof window.mammoth !== 'undefined' && typeof window.mammoth.convertToHtml === 'function',
+                'PizZip': typeof window.PizZip !== 'undefined',
+                'DocxTemplater': typeof window.DocxTemplater !== 'undefined',
+                'File API': typeof File !== 'undefined' && typeof FileReader !== 'undefined',
+            };
+
+            const statusDiv = document.getElementById('libraryStatus');
+            let html = '<ul>';
+            Object.entries(status).forEach(([name, available]) => {
+                const icon = available ? '✅' : '❌';
+                const color = available ? 'green' : 'red';
+                html += `<li style="color: ${color};">${icon} ${name}</li>`;
+            });
+            html += '</ul>';
+            statusDiv.innerHTML = html;
+
+            log('=== VERIFICAÇÃO DE BIBLIOTECAS ===', 'info');
+            Object.entries(status).forEach(([name, available]) => {
+                const type = available ? 'success' : 'error';
+                log(`${name}: ${available ? 'OK' : 'NÃO DISPONÍVEL'}`, type);
+            });
+        }
+
+        async function testFileUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                log('Erro: nenhum arquivo selecionado', 'error');
+                return;
+            }
+
+            log(`=== INICIANDO TESTE DE UPLOAD ===`, 'info');
+            log(`Arquivo: ${file.name} (${file.size} bytes)`, 'info');
+
+            try {
+                // Validação
+                const ext = file.name.split('.').pop().toLowerCase();
+                log(`Extensão: .${ext}`, 'info');
+
+                if (ext !== 'docx') {
+                    log(`Erro: formato inválido. Esperado .docx, recebido .${ext}`, 'error');
+                    return;
+                }
+
+                // Obter ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                log(`ArrayBuffer obtido: ${arrayBuffer.byteLength} bytes`, 'success');
+
+                // Testar Mammoth
+                if (typeof window.mammoth === 'undefined') {
+                    log('Erro: window.mammoth não definido', 'error');
+                    return;
+                }
+
+                if (typeof window.mammoth.convertToHtml !== 'function') {
+                    log('Erro: window.mammoth.convertToHtml não é uma função', 'error');
+                    return;
+                }
+
+                log('Chamando window.mammoth.convertToHtml()...', 'info');
+                const result = await window.mammoth.convertToHtml({ arrayBuffer });
+                const html = result?.value || '';
+
+                log(`Mammoth retornou: ${html.length} caracteres de HTML`, 'success');
+
+                if (result?.messages?.length) {
+                    log(`Mensagens do Mammoth: ${result.messages.length}`, 'warn');
+                    result.messages.forEach((msg, i) => {
+                        log(`  [${i + 1}] ${msg.message}`, 'warn');
+                    });
+                }
+
+                if (!html) {
+                    log('Aviso: Mammoth retornou HTML vazio', 'warn');
+                    const fallback = '<h1>Template Fallback</h1><p>{{campo1}}</p>';
+                    log(`Usando fallback: ${fallback.length} caracteres`, 'info');
+                } else {
+                    // Procurar por placeholders
+                    const placeholderRegex = /\{\{([^}]+)\}\}/g;
+                    const placeholders = [];
+                    let match;
+                    while ((match = placeholderRegex.exec(html)) !== null) {
+                        placeholders.push(match[1]);
+                    }
+                    log(`Placeholders encontrados: ${placeholders.length}`, 'success');
+                    placeholders.forEach(p => log(`  - {{${p}}}`, 'info'));
+                }
+
+                log('=== TESTE CONCLUÍDO COM SUCESSO ===', 'success');
+
+            } catch (error) {
+                log(`Erro durante teste: ${error.message}`, 'error');
+                if (error.stack) {
+                    log(`Stack: ${error.stack}`, 'error');
+                }
+            }
+        }
+
+        // Inicializar ao carregar
+        window.addEventListener('load', () => {
+            log('Página carregada. Verificando bibliotecas...', 'info');
+            checkLibraries();
+        });
+
+        // Capturar console.log/error globais
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = function (...args) {
+            const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            log(message, 'info');
+            originalLog.apply(console, args);
+        };
+
+        console.error = function (...args) {
+            const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            log(message, 'error');
+            originalError.apply(console, args);
+        };
+
+        console.warn = function (...args) {
+            const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            log(message, 'warn');
+            originalWarn.apply(console, args);
+        };
+    </script>
+</body>
+
+</html>

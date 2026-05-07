@@ -1,0 +1,19 @@
+{
+    "editor.fontSize": 20,
+    "editor.formatOnSave": true,
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/",
+    "liveServer.settings.file": "index.html",
+    "liveServer.settings.wait": 100,
+    "liveServer.settings.fullReload": true,
+    "liveServer.settings.https": {
+        "enable": false
+    },
+    "liveServer.settings.proxy": {
+        "enable": false
+    },
+    "liveServer.settings.cors": true,
+    "liveServer.settings.host": "127.0.0.1",
+    "liveServer.settings.mount": [],
+    "liveServer.settings.middleware": []
+}
