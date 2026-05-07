@@ -1,5 +1,6 @@
-import { applyFieldMask, formatFieldLabel, getFieldOptions, getFieldPlaceholder } from '../utils/fieldHelpers.js';
+import { applyFieldMask, formatFieldLabel, getFieldMask, getFieldOptions, getFieldPlaceholder } from '../utils/fieldHelpers.js';
 import { getDocumentEditorIcon } from './iconSet.js';
+import { INSTITUTION } from '../../../config/institution.js';
 
 export function renderDynamicForm(container, placeholders, settingsStore, onFieldValueChange) {
     const headerFallback = settingsStore.getHeaderFallback();
@@ -28,20 +29,23 @@ export function renderDynamicForm(container, placeholders, settingsStore, onFiel
                     <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--icon" data-action="close-settings">${getDocumentEditorIcon('close')}</button>
                 </div>
                 <div class="document-editor__settings-body">
-                    <p class="document-editor__settings-note">Configure as opções dos campos <code>[{{nome}}]</code> e o cabeçalho parametrizado da prévia.</p>
+                    <div class="document-editor__settings-header-row">
+                        <p class="document-editor__settings-note">Configure as opções dos campos <code>[{{nome}}]</code> e o cabeçalho parametrizado da prévia.</p>
+                        <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--small" data-action="toggle-configured-parameters">+ Mostrar parâmetros configurados</button>
+                    </div>
+                    <div class="document-editor__settings-parameters" hidden>
+                        <p class="document-editor__settings-note" style="margin-bottom:8px;">Parâmetros configurados internamente:</p>
+                        <pre id="configuredParametersList" style="margin:0;padding:12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;white-space:pre-wrap;word-break:break-word;">Nenhum parâmetro detectado.</pre>
+                    </div>
                     <div class="document-editor__settings-grid">
                         ${renderSelectSettings(selectFields, settingsStore)}
-                        <label class="document-editor__settings-field">
-                            <span>Logo do cabeçalho</span>
-                            <input type="text" class="document-editor__control" data-setting-header="logoUrl" value="${escapeHtml(headerFallback.logoUrl || '')}" placeholder="/src/images/brasao_do_Parana.svg.png">
-                        </label>
                         <label class="document-editor__settings-field document-editor__settings-field--wide">
                             <span>Texto do cabeçalho</span>
-                            <textarea class="document-editor__control document-editor__control--textarea" data-setting-header="headerText" rows="4" placeholder="SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA&#10;CENTRO DE CONTRATOS E CONVÊNIOS – TERMO {{tipo_termo}} Nº {{num_termo}}">${escapeHtml(headerFallback.headerText || '')}</textarea>
+                            <textarea class="document-editor__control document-editor__control--textarea" data-setting-header="headerText" rows="4" placeholder="${INSTITUTION.defaultHeader.mainText}&#10;${INSTITUTION.defaultHeader.subtitle}">${escapeHtml(headerFallback.headerText || '')}</textarea>
                         </label>
                         <label class="document-editor__settings-field document-editor__settings-field--wide">
                             <span>Preâmbulo auxiliar (opcional)</span>
-                            <textarea class="document-editor__control document-editor__control--textarea" data-setting-header="preambleText" rows="4" placeholder="Cole aqui o texto do preâmbulo, se quiser reforçar o bloco da primeira página.">${escapeHtml(headerFallback.preambleText || '')}</textarea>
+                            <textarea class="document-editor__control document-editor__control--textarea" data-setting-header="preambleText" rows="4" placeholder="Cole aqui o texto do preâmbulo, se quiser substituir o padrão inicial.">${escapeHtml(headerFallback.preambleText || '')}</textarea>
                         </label>
                     </div>
                     <div class="document-editor__settings-actions">
@@ -95,7 +99,9 @@ function createField(field, settingsStore, onFieldValueChange) {
 
     const control = field.kind === 'select'
         ? createSelect(field, settingsStore)
-        : createInput(field);
+        : field.type === 'textarea'
+            ? createTextarea(field)
+            : createInput(field);
 
     control.addEventListener(control.tagName === 'SELECT' ? 'change' : 'input', () => {
         if (control.tagName === 'INPUT') {
@@ -110,12 +116,38 @@ function createField(field, settingsStore, onFieldValueChange) {
 
 function createInput(field) {
     const input = document.createElement('input');
-    input.type = field.type;
+    const mask = getFieldMask(field.name);
+    const isDateField = field.type === 'date' || field.name.toLowerCase().includes('data') || field.name.toLowerCase().includes('vigencia');
+
+    input.type = 'text';
     input.className = 'document-editor__control';
     input.placeholder = getFieldPlaceholder(field);
     input.required = field.required;
     input.dataset.fieldName = field.name;
+
+    const isNumericInput = ['cpf', 'cnpj', 'protocol'].includes(mask) || isDateField;
+    input.inputMode = mask === 'currency' ? 'decimal' : isNumericInput ? 'numeric' : 'text';
+
+    if (mask) {
+        input.dataset.mask = mask;
+    }
+    if (isDateField && !mask) {
+        input.dataset.mask = 'date';
+    }
+    if (mask === 'cpf') input.maxLength = 14;
+    if (mask === 'cnpj') input.maxLength = 18;
+
     return input;
+}
+
+function createTextarea(field) {
+    const textarea = document.createElement('textarea');
+    textarea.className = 'document-editor__control document-editor__control--textarea';
+    textarea.placeholder = getFieldPlaceholder(field);
+    textarea.required = field.required;
+    textarea.dataset.fieldName = field.name;
+    textarea.rows = 4;
+    return textarea;
 }
 
 function createSelect(field, settingsStore) {

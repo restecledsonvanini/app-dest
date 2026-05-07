@@ -30,12 +30,12 @@ function initTabARIA(btns, panels, getPanelId) {
 }
 
 export function initTabs() {
-    const detailsEl     = document.getElementById('mobile-tab-details');
-    const tabNav       = document.getElementById('main-tab-nav');
+    const detailsEl = document.getElementById('mobile-tab-details');
+    const tabNav = document.getElementById('main-tab-nav');
 
     // ── Inicialização ARIA — Main Tabs ────────────────────────────────────────
-    const mainTabBtns    = document.querySelectorAll('.tab-btn');
-    const mainTabPanels  = document.querySelectorAll('.tab-content');
+    const mainTabBtns = document.querySelectorAll('.tab-btn');
+    const mainTabPanels = document.querySelectorAll('.tab-content');
     if (tabNav) tabNav.setAttribute('role', 'tablist');
     initTabARIA(mainTabBtns, mainTabPanels, btn => btn.dataset.tab);
 
@@ -54,14 +54,14 @@ export function initTabs() {
     // ── Navegação por teclado no tablist principal (WAI-ARIA) ─────────────────
     tabNav?.addEventListener('keydown', (e) => {
         const tabs = [...document.querySelectorAll('.tab-btn')];
-        const idx  = tabs.indexOf(document.activeElement);
+        const idx = tabs.indexOf(document.activeElement);
         if (idx === -1) return;
 
         let next = -1;
         if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
-        if (e.key === 'ArrowLeft')  next = (idx - 1 + tabs.length) % tabs.length;
-        if (e.key === 'Home')       next = 0;
-        if (e.key === 'End')        next = tabs.length - 1;
+        if (e.key === 'ArrowLeft') next = (idx - 1 + tabs.length) % tabs.length;
+        if (e.key === 'Home') next = 0;
+        if (e.key === 'End') next = tabs.length - 1;
 
         if (next !== -1) {
             e.preventDefault();
@@ -72,7 +72,6 @@ export function initTabs() {
 
     // ── Event Delegation global ───────────────────────────────────────────────
     document.addEventListener('click', (e) => {
-
 
         // Main Tabs
         const tabBtn = e.target.closest('.tab-btn');
@@ -100,7 +99,7 @@ export function initTabs() {
         const subtabBtn = e.target.closest('.subtab-btn');
         if (subtabBtn) {
             const targetId = subtabBtn.getAttribute('data-subtab');
-            const target   = document.getElementById(targetId);
+            const target = document.getElementById(targetId);
             if (!target) return;
 
             const contents = target.closest('.subtab-contents');

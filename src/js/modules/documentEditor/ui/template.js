@@ -13,7 +13,7 @@ export function getDocumentEditorTemplate() {
                         <button type="button" class="document-editor__btn document-editor__btn--ghost" id="toggleExpandBtn">${getDocumentEditorIcon('expand')}<span>Ampliar</span></button>
                         <button type="button" class="document-editor__btn document-editor__btn--secondary" id="togglePreviewBtn" disabled>${getDocumentEditorIcon('eye')}<span>Abrir prévia</span></button>
                         <button type="button" class="document-editor__btn document-editor__btn--secondary" id="downloadWordBtn" disabled>${getDocumentEditorIcon('word')}<span>Baixar Word</span></button>
-                        <button type="button" class="document-editor__btn document-editor__btn--secondary" id="downloadPdfBtn" disabled>${getDocumentEditorIcon('pdf')}<span>Baixar PDF</span></button>
+                        <button type="button" class="document-editor__btn document-editor__btn--secondary" id="downloadPdfBtn" disabled>${getDocumentEditorIcon('external')}<span>Salvar no Drive</span></button>
                     </div>
                 </header>
 
@@ -27,20 +27,17 @@ export function getDocumentEditorTemplate() {
                             </div>
                             <button type="button" class="document-editor__btn document-editor__btn--primary" id="pickFileBtn">${getDocumentEditorIcon('folder')}<span>Selecionar arquivo</span></button>
                             <input type="file" id="docUpload" class="document-editor__file-input" accept=".docx,.odt">
-                            <small id="docSupportHint" class="document-editor__hint">Compatível com <strong>.docx</strong>. Suporte a <strong>.odt</strong> segue em avaliação.</small>
+                            <small id="docSupportHint" class="document-editor__hint">Compatível com <strong>.docx</strong> e <strong>.odt</strong>.</small>
                         </div>
 
                         <div class="document-editor__status" id="statusBox" aria-live="polite">Nenhum documento carregado.</div>
 
-                        <div class="document-editor__form-container" id="dynamicForm">
-                            <div class="document-editor__empty-state">
-                                <div class="document-editor__empty-icon">${getDocumentEditorIcon('braces')}</div>
-                                <p>Carregue um modelo para gerar automaticamente os campos do formulário.</p>
-                            </div>
-                        </div>
+                        <div class="document-editor__form-container" id="dynamicForm"></div>
                     </section>
 
-                    <aside class="document-editor__sidepanel" id="previewDrawer" aria-hidden="true">
+                    <div class="document-editor__splitter" id="previewSplitter" role="separator" aria-orientation="vertical" tabindex="0" title="Arraste para ajustar a largura da prévia" hidden></div>
+
+                    <aside class="document-editor__sidepanel document-editor__sidepanel--hidden" id="previewDrawer" aria-hidden="true">
                         <div class="document-editor__sidepanel-header">
                             <div>
                                 <h3 class="document-editor__sidepanel-title">Pré-visualização</h3>
@@ -48,8 +45,8 @@ export function getDocumentEditorTemplate() {
                             </div>
                             <div class="document-editor__sidepanel-tools">
                                 <label for="zoomRange" class="document-editor__zoom-label">Zoom</label>
-                                <input type="range" id="zoomRange" class="document-editor__zoom-range" min="50" max="150" step="5" value="100">
-                                <span id="zoomValue" class="document-editor__zoom-value">100%</span>
+                                <input type="range" id="zoomRange" class="document-editor__zoom-range" min="50" max="150" step="5" value="75">
+                                <span id="zoomValue" class="document-editor__zoom-value">75%</span>
                                 <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--icon" id="closePreviewBtn">${getDocumentEditorIcon('close')}</button>
                             </div>
                         </div>

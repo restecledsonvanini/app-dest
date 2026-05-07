@@ -47,10 +47,12 @@
     </script>
     <link rel="stylesheet" href="../src/styles/ferramentas.css?v=20260330">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Mammoth: converter DOCX → HTML -->
     <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <!-- PizZip: manipular ZIP/DOCX (necessário para DocxTemplater e headers/footers) -->
     <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js"></script>
+    <!-- DocxTemplater: preencher placeholders mantendo formatação DOCX original -->
     <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- em ferramentas/index.html -->
     <link rel="manifest" href="../manifest.json">
 
@@ -60,7 +62,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DEST">
     <link rel="apple-touch-icon" href="../src/images/icon-192.png">
+</head>
 
+<body>
     <header>
         <div class="logo">
             <a href="../index.html" style="display: flex; align-items: center; text-decoration: none;">
@@ -101,19 +105,19 @@
                         class="bi bi-file-earmark-spreadsheet tab-icon" aria-hidden="true"></i>Planilhas</button>
                 <button class="tab-btn" data-tab="documentos" title="Modelos de documentos"><i
                         class="bi bi-folder tab-icon" aria-hidden="true"></i>Documentos</button>
-                <button class="tab-btn" data-tab="editor" title="Editor de documentos com parâmetros"><i
-                        class="bi bi-file-earmark-text tab-icon" aria-hidden="true"></i>Editor</button>
+                <button class="tab-btn" data-tab="editor" title="Editor de documentos com parâmetros"
+                    style="display: none;"><i class="bi bi-file-earmark-text tab-icon"
+                        aria-hidden="true"></i>Editor</button>
                 <button class="tab-btn" data-tab="mascaras" title="Máscaras - remover e aplicar máscaras"><i
                         class="bi bi-tools tab-icon" aria-hidden="true"></i>Máscaras</button>
-                <button class="tab-btn" data-tab="datas" title="Cálculos de vigência"><i
-                        class="bi bi-calendar3 tab-icon" aria-hidden="true"></i>Datas</button>
+                <button class="tab-btn" data-tab="datas" title="Conversões e cálculos"><i
+                        class="bi bi-arrow-repeat tab-icon" aria-hidden="true"></i>Conversor</button>
                 <button class="tab-btn" data-tab="consultas" title="Consultas públicas (CNPJ)"><i
                         class="bi bi-search tab-icon" aria-hidden="true"></i>Consultas</button>
                 <button class="tab-btn" data-tab="help" title="Ajuda rápida sobre como usar"><i
                         class="bi bi-question-circle tab-icon" aria-hidden="true"></i>Ajuda</button>
             </div>
-
-            <!-- ABA 0: PLANILHAS -->
+            <!-- <input type="" ABA 0: PLANILHAS -->
             <div id="planilhas" class="tab-content active">
                 <div class="tab-title">Planilhas de Trabalho</div>
                 <div class="tab-panel-body">
@@ -172,31 +176,40 @@
                         <!-- SUBTAB 2025 -->
                         <div id="sub-plan-2025" class="subtab-content">
                             <div class="sheet-grid">
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1aO11ZcWYhSLfV2nLPAUq6_8rwYD2o6yD3jr8bebyfRc/edit?usp=drive_link" 
-                                label="Contratos_2025" title="Contratos"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1lJhwg8f2C965TFhOQXL0RE1a9aWzpTqO_vfbbSfp6IQ/edit?usp=drive_link"  
-                                label="Convênios_2025" title="Convênios 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/19Mgypz4nsbnGjLVm8Mka1_sr0FOH6dgH5h7-OJMRlvo/edit?usp=drive_link"
-                                label="Cont.Convênios_2025" title="Controle de Convênios 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1r1G5QjlMbTaS3AHOUFXwMMjxL3JBOgWp_PkYDUeTXaU/edit?usp=drive_link"
-                                label="Cont.Loc_2025" title="Controle de Locação 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1C0zHZkd67TKJ81yZ0zcAN03a0uMAStV85y-1lk9ABFs/edit?usp=drive_link"
-                                label="Cont.Public_2025" title="Controle de Publicações 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1okliYB9lC9LHn49CROPXAjj7yDiggOl1tijRbz_BLEA/edit?usp=drive_link"
-                                label="Recisões_2025" title="Recisões 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/1CsJH55x6vvvk7yc_JB-EUGuLNzrrIipjB1w3lTiSuUY/edit?usp=drive_link"
-                                label="Aditivos_2025" title="Aditivos 2025"></sheet-card>
-                                <sheet-card href="https://docs.google.com/spreadsheets/d/10qPDz7ohDxjuMwN0XUru9B4Q_USwkTLrX9e1oLvHgP4/edit?usp=drive_link"
-                                label="Apostilamentos_2025" title="Apostilamentos 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1aO11ZcWYhSLfV2nLPAUq6_8rwYD2o6yD3jr8bebyfRc/edit?usp=drive_link"
+                                    label="Contratos_2025" title="Contratos"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1lJhwg8f2C965TFhOQXL0RE1a9aWzpTqO_vfbbSfp6IQ/edit?usp=drive_link"
+                                    label="Convênios_2025" title="Convênios 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/19Mgypz4nsbnGjLVm8Mka1_sr0FOH6dgH5h7-OJMRlvo/edit?usp=drive_link"
+                                    label="Cont.Convênios_2025" title="Controle de Convênios 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1r1G5QjlMbTaS3AHOUFXwMMjxL3JBOgWp_PkYDUeTXaU/edit?usp=drive_link"
+                                    label="Cont.Loc_2025" title="Controle de Locação 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1C0zHZkd67TKJ81yZ0zcAN03a0uMAStV85y-1lk9ABFs/edit?usp=drive_link"
+                                    label="Cont.Public_2025" title="Controle de Publicações 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1okliYB9lC9LHn49CROPXAjj7yDiggOl1tijRbz_BLEA/edit?usp=drive_link"
+                                    label="Recisões_2025" title="Recisões 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1CsJH55x6vvvk7yc_JB-EUGuLNzrrIipjB1w3lTiSuUY/edit?usp=drive_link"
+                                    label="Aditivos_2025" title="Aditivos 2025"></sheet-card>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/10qPDz7ohDxjuMwN0XUru9B4Q_USwkTLrX9e1oLvHgP4/edit?usp=drive_link"
+                                    label="Apostilamentos_2025" title="Apostilamentos 2025"></sheet-card>
                             </div>
                         </div>
                         <!-- VENCIDOS -->
                         <div id="sub-plan-vencidos" class="subtab-content">
                             <div class="sheet-grid">
-                            <sheet-card href="https://docs.google.com/spreadsheets/d/1LPwgKIMJYtyo8b046rYpasthgvke-1AfvCa5RwCXiRY/edit?usp=sharing" 
-                                label="VENCIDOS" title="Contratos Vencidos">
-                            </sheet-card>
-                               </div>
+                                <sheet-card
+                                    href="https://docs.google.com/spreadsheets/d/1LPwgKIMJYtyo8b046rYpasthgvke-1AfvCa5RwCXiRY/edit?usp=sharing"
+                                    label="VENCIDOS" title="Contratos Vencidos">
+                                </sheet-card>
+                            </div>
                         </div>
                     </div>
                 </div><!-- /tab-panel-body -->
@@ -212,12 +225,12 @@
                         <button class="subtab-btn" data-subtab="sub-doc-2025">
                             <i class="bi bi-calendar2" aria-hidden="true"></i><span>2025</span>
                         </button>
-                          <button class="subtab-btn" data-subtab="sub-doc-diversos">
+                        <button class="subtab-btn" data-subtab="sub-doc-diversos">
                             <i class="bi bi-archive" aria-hidden="true"></i><span>Docs Diversos</span>
-                        </button>                        
-                          <button class="subtab-btn" data-subtab="sub-doc-instituc">
+                        </button>
+                        <button class="subtab-btn" data-subtab="sub-doc-instituc">
                             <i class="bi bi-archive" aria-hidden="true"></i><span>Institucional</span>
-                        </button>                        
+                        </button>
                     </div>
                     <div class="subtab-contents">
                         <!-- SUBTAB 2026 -->
@@ -270,8 +283,8 @@
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1ojxrdOtHkHNtwn62qZEX-tsDoSK_AYsc?usp=sharing"
                                     label="RESCISÕES" title="Modelos de Recisão Contratual 2026">
-                                </folder-card>                                
-                               
+                                </folder-card>
+
                             </div>
                         </div>
                         <!-- SUBTAB 2025 -->
@@ -320,52 +333,52 @@
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1sRCdnhzMIUnmrFUF2M0O7bMVP7GiMTa6?usp=sharing"
                                     label="RECISÕES" title="Modelos de Recisões 2025">
-                                </folder-card>                                                              
-                               
+                                </folder-card>
+
                             </div>
                         </div>
                         <!-- SUBTAB ARQUIVO -->
                         <div id="sub-doc-diversos" class="subtab-content">
-                          <div class="sheet-grid">
+                            <div class="sheet-grid">
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1S-du9D3tj6zIIWq-6X_B76kp7lf0FYPR?usp=sharing"
                                     label="CONVÊNIOS" title="Modelos de Contratos de Convênios">
-                                </folder-card>  
+                                </folder-card>
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1xOVL65nAFhoPwwuiwKT7GMvYXOPZiNoJ?usp=sharing"
                                     label="DIVERSOS" title="Modelos de Documentos Diversos">
-                                </folder-card>  
+                                </folder-card>
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1XePohZAvcHcvrwtWv_Ah6keDdhR6F1F9?usp=sharing"
                                     label="OFÍCIOS" title="Modelos de Ofícios">
-                                </folder-card>  
+                                </folder-card>
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1vJE8axl3S0spV1m3Nw64s6jlKov4NAQz?usp=sharing"
                                     label="RELATÓRIOS" title="Modelos de Relatórios de Contratos por Força">
-                                </folder-card>  
-                            </div> 
+                                </folder-card>
+                            </div>
                         </div>
                         <!-- SUBTAB ORGANIZACIONAL -->
                         <div id="sub-doc-instituc" class="subtab-content">
-                          <div class="sheet-grid">
+                            <div class="sheet-grid">
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/1I11-sXcWpa8b-PCCVwMgB6K2mcsMF1LC?usp=sharing"
                                     label="ORGANOGRAMAS" title="Organograma e Hierarquia Institucionais SESP">
-                                </folder-card>  
+                                </folder-card>
                                 <folder-card
                                     href="https://drive.google.com/drive/folders/19y7QsyYp8ZktSDjfbPe4zy36fUD1gRiq?usp=sharing"
                                     label="DECRETOS" title="Decretos estaduais relacionados à SESP">
-                                </folder-card>  
-                                
-                            </div> 
+                                </folder-card>
+
+                            </div>
                         </div>
 
                     </div>
                 </div><!-- /tab-panel-body -->
             </div>
 
-            <!-- ABA 1.5: EDITOR -->
-            <div id="editor" class="tab-content">
+            <!-- ABA 1.5: EDITOR (temporariamente desabilitado) -->
+            <div id="editor" class="tab-content" style="display: none;">
                 <div class="tab-title">Editor de Documentos</div>
                 <div class="tab-panel-body">
                     <document-editor-panel></document-editor-panel>
@@ -490,14 +503,16 @@
             </div> <!-- /mascaras -->
 
             <div id="datas" class="tab-content">
-                <div class="tab-title">Transformador de Data de Vigência</div>
+                <div class="tab-title">Conversor Universal</div>
 
-                <!-- Subtab navigation: datas -->
-                <div class="subtab-nav" role="tablist" aria-label="Subtabs Datas">
+                <!-- Subtab navigation: conversor -->
+                <div class="subtab-nav" role="tablist" aria-label="Subtabs Conversor">
                     <button class="subtab-btn active" data-subtab="sub-data-final"><i
                             class="bi bi-calendar-plus"></i><span>Data Final</span></button>
                     <button class="subtab-btn" data-subtab="sub-dias-restantes"><i
                             class="bi bi-calendar-range"></i><span>Dias Restantes</span></button>
+                    <button class="subtab-btn" data-subtab="sub-por-extenso"><i class="bi bi-type"></i><span>Por
+                            Extenso</span></button>
                 </div>
 
                 <div class="subtab-contents">
@@ -579,6 +594,60 @@
                             </form>
                         </tool-panel>
                     </div> <!-- /sub-dias-restantes -->
+
+                    <!-- POR EXTENSO -->
+                    <div id="sub-por-extenso" class="subtab-content">
+                        <tool-panel heading="Escrever Por Extenso"
+                            desc="Converte números, datas e valores monetários para texto por extenso">
+                            <form class="tool-body form-tool" data-tool="escreverPorExtenso">
+                                <input type="hidden" name="case_mode" value="lowercase">
+                                <div class="case-toggle-group" role="group" aria-label="Modo de escrita por extenso">
+                                    <button type="button" class="btn icon-only case-mode-btn active"
+                                        data-case="lowercase" title="Minúsculas (padrão)" aria-pressed="true"
+                                        aria-label="Minúsculas">
+                                        <i class="bi bi-arrow-down-short"></i>
+                                    </button>
+                                    <button type="button" class="btn icon-only case-mode-btn" data-case="capitalize"
+                                        title="Primeira letra maiúscula" aria-pressed="false"
+                                        aria-label="Primeira letra maiúscula">
+                                        <i class="bi bi-text-paragraph"></i>
+                                    </button>
+                                    <button type="button" class="btn icon-only case-mode-btn" data-case="uppercase"
+                                        title="MAIÚSCULAS" aria-pressed="false" aria-label="MAIÚSCULAS">
+                                        <i class="bi bi-arrow-up-short"></i>
+                                    </button>
+                                </div>
+                                <div class="input-row">
+                                    <div class="input-group">
+                                        <label for="input-por-extenso-numero">Número inteiro</label>
+                                        <input type="text" id="input-por-extenso-numero" name="entrada_numero"
+                                            class="input-field" placeholder="Ex: 1234" title="Digite um número inteiro"
+                                            aria-label="Número inteiro para conversão por extenso">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="input-por-extenso-data">Data (DD/MM/YYYY)</label>
+                                        <input type="text" id="input-por-extenso-data" name="entrada_data"
+                                            class="input-field" data-behavior="date-format" placeholder="Ex: 01/01/2024"
+                                            title="Digite uma data no formato DD/MM/YYYY"
+                                            aria-label="Data para conversão por extenso">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="input-por-extenso-moeda">Valor monetário</label>
+                                    <input type="text" id="input-por-extenso-moeda" name="entrada_moeda"
+                                        class="input-field" data-behavior="currency-format"
+                                        placeholder="Ex: R$ 1.234,56"
+                                        title="Digite um valor monetário no formato R$ XXX,XX"
+                                        aria-label="Valor monetário para conversão por extenso">
+                                </div>
+                                <div class="input-note">Preencha apenas um campo. Use pontos para milhares e vírgula
+                                    para centavos.</div>
+                                <tool-result primary-icon="bi bi-type" primary-label="Converter"
+                                    result-id="extenso-result"></tool-result>
+                            </form>
+                        </tool-panel>
+                    </div> <!-- /sub-por-extenso -->
+
                 </div> <!-- /subtab-contents -->
 
             </div> <!-- /datas -->
@@ -595,8 +664,8 @@
                             <label for="input-cnpj">CNPJ:</label>
                             <input type="text" id="input-cnpj" name="cnpj"
                                 placeholder="Ex: 76.564.624/0003-65 ou 76564624000365" class="input-field"
-                                maxlength="18" inputmode="numeric" pattern="[0-9/.\-]*"
-                                title="Digite CNPJ com ou sem máscara" aria-label="CNPJ">
+                                maxlength="18" inputmode="numeric" title="Digite CNPJ com ou sem máscara"
+                                aria-label="CNPJ">
                         </div>
 
                         <tool-result primary-icon="bi bi-search" primary-label="Pesquisar"
@@ -628,6 +697,9 @@
                             </li>
                             <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer
                                 campo para acionar a ferramenta.</li>
+                            <li><strong>Prévia:</strong> use <code>Ctrl+'</code> para abrir a prévia e
+                                <strong>Esc</strong> para fechar.
+                            </li>
                         </ul>
 
                         <!-- Nota sobre botões de ação -->
@@ -681,11 +753,13 @@
             <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code>.</li>
             <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer campo para acionar a ferramenta.
             </li>
+            <li><strong>Prévia:</strong> use <code>Ctrl+'</code> para abrir a prévia e <strong>Esc</strong> para fechar.
+            </li>
         </ul>
     </div>
 
     <!-- scripts split for better organization -->
     <script type="module" src="../src/js/main.js?v=20260330"></script>
-    </body>
+</body>
 
 </html>

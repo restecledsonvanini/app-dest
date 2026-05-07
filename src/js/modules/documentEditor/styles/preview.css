@@ -1,27 +1,51 @@
 .document-editor__sidepanel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: min(50vw, 760px);
-    min-width: 420px;
-    max-width: 100%;
-    height: 100dvh;
+    position: relative;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    height: auto;
     display: flex;
     flex-direction: column;
     background: var(--card-bg, #fff);
     border-left: 1px solid var(--panel-border, #dbe3ee);
-    box-shadow: -16px 0 40px rgba(15, 23, 42, 0.16);
-    transform: translateX(104%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    z-index: 50;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: none;
+}
+
+.document-editor__sidepanel--hidden {
+    display: none;
 }
 
 .document-editor--preview-open .document-editor__sidepanel {
-    transform: translateX(0);
-    opacity: 1;
-    pointer-events: auto;
+    /* Sidepanel is now always in flow, no position changes needed */
+}
+
+@media (max-width: 1024px) {
+    .document-editor--preview-open .document-editor__layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .document-editor__splitter {
+        display: none;
+    }
+
+    .document-editor--preview-open .document-editor__sidepanel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(100vw, 760px);
+        min-width: 0;
+        height: 100dvh;
+        box-shadow: -16px 0 40px rgba(15, 23, 42, 0.16);
+        border-left: 1px solid var(--panel-border, #dbe3ee);
+        z-index: 50;
+    }
+
+    .document-editor--preview-open .document-editor__sidepanel--hidden {
+        display: none;
+    }
 }
 
 .document-editor__sidepanel-header {
@@ -72,6 +96,9 @@
     overflow: auto;
     background: #eef2f7;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .document-editor__preview-content {
@@ -86,6 +113,8 @@
     width: max-content;
     min-width: 100%;
     align-items: center;
+    transform-origin: top center;
+    transform: scale(var(--zoom-factor, 1));
 }
 
 .document-editor__preview-page {
@@ -98,31 +127,32 @@
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
     border: 1px solid rgba(15, 23, 42, 0.08);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .document-editor__preview-page-body {
     width: 100%;
-    min-height: 100%;
-    line-height: 1.65;
+    flex: 1 0 auto;
 }
 
 .document-editor__preview-page-body h1,
 .document-editor__preview-page-body h2,
 .document-editor__preview-page-body h3 {
-    color: #0b3d91;
+    color: inherit;
 }
 
 .document-editor__preview-page-body table {
-    width: 100%;
+    width: auto;
     border-collapse: collapse;
-    margin: 0.75rem 0;
+    margin: 0;
 }
 
 .document-editor__preview-page-body td,
 .document-editor__preview-page-body th {
-    border: 1px solid rgba(148, 163, 184, 0.7);
-    padding: 0.45rem 0.55rem;
-    vertical-align: top;
+    border: none;
+    padding: 0;
+    vertical-align: inherit;
 }
 
 .document-editor__fallback-header {
@@ -156,10 +186,22 @@
     font-weight: 700;
 }
 
+.document-editor__document-preamble {
+    width: 50%;
+    margin: 0.75rem 0 1rem auto;
+    clear: both;
+}
+
+.document-editor__document-preamble p,
+.document-editor__document-preamble span {
+    text-transform: none !important;
+    font-weight: inherit !important;
+    text-align: inherit !important;
+}
+
 .document-editor__placeholder {
-    font-weight: 600;
-    border-radius: 4px;
-    padding: 0 4px;
+    border-radius: 0;
+    padding: 0;
 }
 
 .document-editor__placeholder--filled {
@@ -176,15 +218,8 @@
     pointer-events: none;
 }
 
-.document-editor__preview-page-body p {
-    cursor: text;
-    transition: background-color 0.15s ease;
-    border-radius: 4px;
-    padding: 0.15rem 0.2rem;
-}
-
-.document-editor__preview-page-body p:hover {
-    background: rgba(11, 61, 145, 0.06);
+.document-editor__preview-page-body[contenteditable="true"] {
+    outline: 2px solid rgba(11, 61, 145, 0.18);
 }
 
 .document-editor__paragraph--editing {
@@ -194,11 +229,15 @@
 
 .document-editor--expanded {
     position: fixed;
-    inset: 16px;
+    inset: 0;
     z-index: 60;
+    width: 92%;
+    max-width: 1400px;
+    max-height: calc(100dvh - 32px);
+    margin: 16px auto;
     background: var(--card-bg, #fff);
     border-radius: 16px;
-    padding: 1rem;
+    padding: 2rem;
     box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
     overflow: auto;
 }

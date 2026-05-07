@@ -6,6 +6,12 @@ import { SettingsStore } from './services/SettingsStore.js';
 import { getDocumentEditorIcon } from './ui/iconSet.js';
 import { getDocumentEditorTemplate } from './ui/template.js';
 import { renderDynamicForm } from './ui/formFactory.js';
+import { DocumentEditorController } from './DocumentEditorController.js';
+import { ExportOrchestrator } from './ExportOrchestrator.js';
+import { togglePreview, toggleExpanded, setZoom } from './uiHelpers.js';
+import { handlePreviewEdit, handleSplitterPointerDown, handleDrop, handleGlobalKeydown } from './eventHandlers.js';
+import { updateActionState, saveSettings, resetForm, toggleSettingsPopover, updateConfiguredParameters, toggleConfiguredParameters, getConfiguredParameters } from './settingsHelpers.js';
+import { downloadAsWord, downloadAsPdf, buildExportMarkup } from './exportHelpers.js';
 
 const STYLESHEET_URL = new URL('./styles/main.css', import.meta.url).href;
 
@@ -16,17 +22,30 @@ export class DocumentEditorPanel extends HTMLElement {
         this.fileService = new TemplateFileService();
         this.exportService = new ExportService();
         this.settingsStore = new SettingsStore();
+        this.controller = new DocumentEditorController({ fileService: this.fileService });
+        this.exporter = new ExportOrchestrator({ exportService: this.exportService });
         this.parser = null;
         this.previewUpdater = null;
         this.currentFile = null;
-        this.zoom = 100;
+        this.zoom = 75;
         this.isPreviewOpen = false;
         this.isExpanded = false;
-        this.onKeydown = (event) => this.handleGlobalKeydown(event);
+        this.splitRatio = 0.5;
+        this.isResizing = false;
+        this.startX = 0;
+        this.onKeydown = (event) => handleGlobalKeydown(this, event);
     }
     connectedCallback() {
-        this.render(); this.loadStyles(); this.attachEventListeners(); this.updateActionState();
+        this.render(); this.loadStyles(); this.attachEventListeners(); updateActionState(this, this.getRefs());
         document.addEventListener('keydown', this.onKeydown);
+
+        // Configurar listeners dos controllers
+        this.controller.on('documentLoaded', (data) => this.onDocumentLoaded(data));
+        this.controller.on('documentError', (error) => this.onDocumentError(error));
+        this.controller.on('parsingStart', (file) => this.onParsingStart(file));
+
+        this.exporter.onExportComplete = (message) => this.showFeedback(message);
+        this.exporter.onExportError = (error) => this.showFeedback(`Erro no export: ${error.message}`);
     }
     disconnectedCallback() {
         document.removeEventListener('keydown', this.onKeydown);
@@ -48,29 +67,62 @@ export class DocumentEditorPanel extends HTMLElement {
         refs.dropzone.addEventListener('keydown', (event) => ['Enter', ' '].includes(event.key) && (event.preventDefault(), refs.fileInput.click()));
         ['dragenter', 'dragover'].forEach((name) => refs.dropzone.addEventListener(name, (event) => this.toggleDragState(event, true)));
         ['dragleave', 'dragend'].forEach((name) => refs.dropzone.addEventListener(name, (event) => this.toggleDragState(event, false)));
-        refs.dropzone.addEventListener('drop', (event) => this.handleDrop(event));
+        refs.dropzone.addEventListener('drop', (event) => handleDrop(this, event));
         refs.togglePreviewBtn.addEventListener('click', () => this.togglePreview());
         refs.closePreviewBtn.addEventListener('click', () => this.togglePreview(false));
         refs.toggleExpandBtn.addEventListener('click', () => this.toggleExpanded());
-        refs.downloadWordBtn.addEventListener('click', () => this.downloadAsWord());
-        refs.downloadPdfBtn.addEventListener('click', () => this.downloadAsPdf());
+        refs.downloadWordBtn.addEventListener('click', () => downloadAsWord(this));
+        refs.downloadPdfBtn.addEventListener('click', () => downloadAsPdf(this));
         refs.zoomRange.addEventListener('input', (event) => this.setZoom(event.target.value));
-        refs.previewContainer.addEventListener('dblclick', (event) => this.handlePreviewEdit(event));
+        refs.root.addEventListener('click', (event) => {
+            const action = event.target.closest('[data-action="toggle-configured-parameters"]');
+            if (action) {
+                event.preventDefault();
+                toggleConfiguredParameters(this, this.getRefs());
+            }
+        });
+        refs.previewContainer.addEventListener('dblclick', (event) => handlePreviewEdit(this, event));
+        refs.previewSplitter?.addEventListener('pointerdown', (event) => handleSplitterPointerDown(this, event));
         this.bindDynamicFormActions();
     }
 
     getRefs() {
         const root = this.shadowRoot;
-        return {
-            root: root.querySelector('.document-editor'), fileInput: root.getElementById('docUpload'),
-            pickFileBtn: root.getElementById('pickFileBtn'), dropzone: root.getElementById('dropzone'),
-            dynamicForm: root.getElementById('dynamicForm'), statusBox: root.getElementById('statusBox'),
-            previewContainer: root.getElementById('previewContainer'), previewSummary: root.getElementById('previewSummary'),
-            togglePreviewBtn: root.getElementById('togglePreviewBtn'), toggleExpandBtn: root.getElementById('toggleExpandBtn'),
-            closePreviewBtn: root.getElementById('closePreviewBtn'), downloadWordBtn: root.getElementById('downloadWordBtn'),
-            downloadPdfBtn: root.getElementById('downloadPdfBtn'), zoomRange: root.getElementById('zoomRange'),
-            zoomValue: root.getElementById('zoomValue'), previewDrawer: root.getElementById('previewDrawer')
+        if (!root) {
+            console.error('[DocumentEditorPanel.getRefs] shadowRoot não existe!');
+            return {};
+        }
+
+        const refs = {
+            root: root.querySelector('.document-editor'),
+            fileInput: root.getElementById('docUpload'),
+            pickFileBtn: root.getElementById('pickFileBtn'),
+            dropzone: root.getElementById('dropzone'),
+            dynamicForm: root.getElementById('dynamicForm'),
+            statusBox: root.getElementById('statusBox'),
+            previewContainer: root.getElementById('previewContainer'),
+            previewSummary: root.getElementById('previewSummary'),
+            togglePreviewBtn: root.getElementById('togglePreviewBtn'),
+            toggleExpandBtn: root.getElementById('toggleExpandBtn'),
+            closePreviewBtn: root.getElementById('closePreviewBtn'),
+            downloadWordBtn: root.getElementById('downloadWordBtn'),
+            downloadPdfBtn: root.getElementById('downloadPdfBtn'),
+            zoomRange: root.getElementById('zoomRange'),
+            zoomValue: root.getElementById('zoomValue'),
+            previewDrawer: root.getElementById('previewDrawer'),
+            previewSplitter: root.getElementById('previewSplitter')
         };
+
+        // Verificar se elementos críticos estão faltando
+        const missingElements = Object.entries(refs)
+            .filter(([key, el]) => !el && ['statusBox', 'dynamicForm', 'previewSummary', 'previewContainer'].includes(key))
+            .map(([key]) => key);
+
+        if (missingElements.length > 0) {
+            console.warn('[DocumentEditorPanel.getRefs] Elementos críticos faltando:', missingElements);
+        }
+
+        return refs;
     }
 
     async handleDocumentUpload(file) {
@@ -78,187 +130,156 @@ export class DocumentEditorPanel extends HTMLElement {
         if (!file) return;
         try {
             this.currentFile = file;
-            this.setStatus(`Processando ${file.name}...`, 'info');
             refs.dropzone.classList.add('is-disabled');
-            this.parser = new DocumentParser(await this.fileService.parseFile(file));
-            this.renderDynamicForm({});
-            this.initializePreview();
-            this.updatePreviewSummary();
-            this.setStatus(`${file.name} carregado com sucesso.`, 'success');
-            this.showFeedback('Documento carregado. Use “Abrir prévia” para revisar o resultado.');
+            await this.controller.handleFileUpload(file);
         } catch (error) {
-            this.parser = null;
-            this.previewUpdater = null;
-            this.setStatus(error.message, 'warning');
-            this.showFeedback(error.message);
+            // Erro já tratado pelo controller
         } finally {
             refs.dropzone.classList.remove('is-disabled');
             refs.fileInput.value = '';
-            this.updateActionState();
+            updateActionState(this, this.getRefs());
         }
     }
 
-    renderDynamicForm(savedData = this.previewUpdater?.getData() || {}) {
+    renderDynamicForm() {
+        const savedData = this.previewUpdater?.getData() || {};
         renderDynamicForm(this.getRefs().dynamicForm, this.parser?.getPlaceholders() || [], this.settingsStore, (fieldName, value) => this.previewUpdater?.updateField(fieldName, value));
         Object.entries(savedData).forEach(([fieldName, value]) => {
             const control = this.shadowRoot.querySelector(`[data-field-name="${fieldName}"]`);
             if (control) control.value = value;
         });
         this.bindDynamicFormActions();
-        this.updateActionState();
+        updateConfiguredParameters(this, this.getRefs());
+        updateActionState(this, this.getRefs());
     }
 
     bindDynamicFormActions() {
         const { dynamicForm } = this.getRefs();
-        dynamicForm.querySelector('[data-action="reset-fields"]')?.addEventListener('click', () => this.resetForm());
-        dynamicForm.querySelector('[data-action="save-settings"]')?.addEventListener('click', () => this.saveSettings());
-        dynamicForm.querySelector('[data-action="open-settings"]')?.addEventListener('click', () => this.toggleSettingsPopover(true));
-        dynamicForm.querySelector('[data-action="close-settings"]')?.addEventListener('click', () => this.toggleSettingsPopover(false));
-        dynamicForm.querySelector('[data-role="settings-backdrop"]')?.addEventListener('click', () => this.toggleSettingsPopover(false));
+        dynamicForm.querySelector('[data-action="reset-fields"]')?.addEventListener('click', () => resetForm(this));
+        dynamicForm.querySelector('[data-action="save-settings"]')?.addEventListener('click', () => saveSettings(this));
+        dynamicForm.querySelector('[data-action="open-settings"]')?.addEventListener('click', () => toggleSettingsPopover(this, this.getRefs(), true));
+        dynamicForm.querySelector('[data-role="settings-backdrop"]')?.addEventListener('click', () => toggleSettingsPopover(this, this.getRefs(), false));
+        dynamicForm.querySelector('[data-action="close-settings"]')?.addEventListener('click', () => toggleSettingsPopover(this, this.getRefs(), false));
     }
 
     initializePreview() {
-        this.previewUpdater = new PreviewUpdater(this.getRefs().previewContainer, this.parser, { debounceMs: 180, getLayoutSettings: () => this.settingsStore.getAll() });
-        this.previewUpdater.render();
-        this.setZoom(this.zoom);
-    }
-
-    togglePreview(force) {
-        if (!this.parser) return;
-        const { root, previewDrawer } = this.getRefs();
-        this.isPreviewOpen = typeof force === 'boolean' ? force : !this.isPreviewOpen;
-        root.classList.toggle('document-editor--preview-open', this.isPreviewOpen);
-        previewDrawer.setAttribute('aria-hidden', String(!this.isPreviewOpen));
-        this.updateActionState();
-    }
-    toggleExpanded(force) {
-        this.isExpanded = typeof force === 'boolean' ? force : !this.isExpanded;
-        this.getRefs().root.classList.toggle('document-editor--expanded', this.isExpanded);
-        document.documentElement.style.overflow = this.isExpanded ? 'hidden' : '';
-        this.updateActionState();
-    }
-
-    resetForm() {
-        this.shadowRoot.querySelectorAll('[data-field-name]').forEach((control) => { control.value = ''; });
-        this.previewUpdater?.clear();
-        this.shadowRoot.querySelector('[data-field-name]')?.focus();
-        this.setStatus('Campos redefinidos. O foco voltou ao primeiro campo.', 'info');
-    }
-
-    toggleSettingsPopover(force) {
-        const panel = this.shadowRoot.querySelector('.document-editor__settings-popover');
-        if (!panel) return;
-        const isOpen = typeof force === 'boolean' ? force : panel.hasAttribute('hidden');
-        panel.toggleAttribute('hidden', !isOpen);
-    }
-
-    saveSettings() {
-        const currentData = this.previewUpdater?.getData() || {};
-        this.shadowRoot.querySelectorAll('[data-setting-options]').forEach((control) => {
-            const options = control.value.split(/\r?\n/u).map((line) => line.trim()).filter(Boolean).map((line) => {
-                const [value, label] = line.split('|').map((part) => part.trim());
-                return { value: value || label || '', label: label || value || '' };
-            });
-            this.settingsStore.setFieldOptions(control.dataset.settingOptions, options);
-        });
-        this.settingsStore.setHeaderFallback({
-            logoUrl: this.shadowRoot.querySelector('[data-setting-header="logoUrl"]')?.value?.trim() || '',
-            headerText: this.shadowRoot.querySelector('[data-setting-header="headerText"]')?.value?.trim() || '',
-            preambleText: this.shadowRoot.querySelector('[data-setting-header="preambleText"]')?.value?.trim() || ''
-        });
-        this.renderDynamicForm(currentData);
-        Object.assign(this.previewUpdater?.currentData || {}, currentData);
-        this.previewUpdater?.render();
-        this.toggleSettingsPopover(false);
-        this.setStatus('Configurações salvas. A prévia foi atualizada com o cabeçalho auxiliar.', 'success');
-    }
-
-    updateActionState() {
-        const { togglePreviewBtn, toggleExpandBtn, downloadWordBtn, downloadPdfBtn } = this.getRefs();
-        const resetBtn = this.shadowRoot.querySelector('[data-action="reset-fields"]');
-        const saveSettingsBtn = this.shadowRoot.querySelector('[data-action="save-settings"]');
-        const hasDocument = Boolean(this.parser);
-        togglePreviewBtn.disabled = !hasDocument;
-        downloadWordBtn.disabled = !hasDocument;
-        downloadPdfBtn.disabled = !hasDocument;
-        if (resetBtn) resetBtn.disabled = !hasDocument;
-        if (saveSettingsBtn) saveSettingsBtn.disabled = !hasDocument;
-        togglePreviewBtn.innerHTML = `${getDocumentEditorIcon(this.isPreviewOpen ? 'eyeOff' : 'eye')}<span>${this.isPreviewOpen ? 'Ocultar prévia' : 'Abrir prévia'}</span>`;
-        toggleExpandBtn.innerHTML = `${getDocumentEditorIcon(this.isExpanded ? 'collapse' : 'expand')}<span>${this.isExpanded ? 'Restaurar' : 'Ampliar'}</span>`;
-    }
-
-    setZoom(value) {
-        this.zoom = Number(value);
-        const { zoomValue } = this.getRefs();
-        const pages = this.shadowRoot.querySelector('.document-editor__preview-pages');
-        if (zoomValue) zoomValue.textContent = `${this.zoom}%`;
-        if (pages) Object.assign(pages.style, { transform: `scale(${this.zoom / 100})`, transformOrigin: 'top left' });
-    }
-
-    async downloadAsWord() {
-        const fileName = (this.currentFile?.name || 'documento').replace(/\.[^.]+$/u, '');
         try {
-            const result = await this.exportService.downloadWord({
-                fileName,
-                markup: this.buildExportMarkup(),
-                originalFile: this.currentFile,
-                data: this.previewUpdater?.getData() || {}
+            if (!this.parser || !this.parser.placeholders) {
+                throw new Error('Parser inválido ou sem placeholders');
+            }
+
+            this.previewUpdater = new PreviewUpdater(this.getRefs().previewContainer, this.parser, {
+                debounceMs: 180,
+                getLayoutSettings: () => this.settingsStore.getAll()
             });
-            this.showFeedback(result.format === 'docx'
-                ? 'Arquivo .docx gerado preservando o modelo original do Word.'
-                : 'Arquivo Word gerado a partir da versão HTML da prévia.');
+
+            this.previewUpdater.render();
+            this.setZoom(this.zoom);
         } catch (error) {
-            this.showFeedback(`Falha ao gerar Word: ${error.message}`);
+            console.error('[DocumentEditorPanel.initializePreview] Erro:', error);
+            console.error('[DocumentEditorPanel.initializePreview] Stack:', error.stack);
+            throw error; // Re-throw para ser capturado por onDocumentLoaded
         }
     }
 
-    async downloadAsPdf() {
-        try {
-            const fileName = (this.currentFile?.name || 'documento').replace(/\.[^.]+$/u, '');
-            const result = await this.exportService.downloadPdf({ fileName, markup: this.buildExportMarkup() });
-            this.showFeedback(result.mode === 'download'
-                ? 'PDF baixado com base na versão editada do documento.'
-                : 'Seu navegador abriu a janela para salvar a versão editada em PDF.');
-        } catch (error) { this.showFeedback(`Falha ao gerar PDF: ${error.message}`); }
+    togglePreview(force) {
+        togglePreview(this, this.getRefs(), force);
+        updateActionState(this, this.getRefs());
     }
 
-    buildExportMarkup() {
-        const pagesMarkup = this.shadowRoot.querySelector('.document-editor__preview-pages')?.innerHTML || this.parser.render(this.previewUpdater?.getData() || {}, { highlightEmpty: true, escapeHtml: true });
-        return this.exportService.buildPrintableHtml(pagesMarkup);
+    toggleExpanded(force) {
+        toggleExpanded(this, this.getRefs(), force);
+        if (this.isExpanded) {
+            this.togglePreview(true);
+        } else {
+            this.togglePreview(false);
+        }
+        updateActionState(this, this.getRefs());
     }
+
+    resetForm() {
+        resetForm(this);
+    }
+
+    toggleDragState(event, active) {
+        event.preventDefault();
+        this.getRefs().dropzone?.classList.toggle('is-dragover', active);
+    }
+
+
+
+    saveSettings() {
+        saveSettings(this);
+    }
+
+
+
+    setZoom(value) {
+        setZoom(this, this.getRefs(), value);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     setStatus(message, kind = 'neutral') {
         const { statusBox } = this.getRefs();
+        if (!statusBox) {
+            console.warn('[DocumentEditorPanel.setStatus] statusBox não encontrado no DOM', this.getRefs());
+            return;
+        }
         statusBox.textContent = message; statusBox.dataset.kind = kind;
     }
     updatePreviewSummary() {
-        const total = this.parser?.getPlaceholders().length || 0;
-        this.getRefs().previewSummary.textContent = `${this.currentFile?.name || 'Documento'} • ${total} campo(s) detectado(s). Prévia lateral com cabeçalho auxiliar.`;
-    }
-    handlePreviewEdit(event) {
-        const paragraph = event.target.closest('.document-editor__preview-page-body p');
-        if (!paragraph || event.target.closest('.document-editor__placeholder')) return;
-        paragraph.contentEditable = paragraph.contentEditable === 'true' ? 'false' : 'true';
-        paragraph.classList.toggle('document-editor__paragraph--editing', paragraph.contentEditable === 'true');
+        const refs = this.getRefs();
+        if (!refs.previewSummary) {
+            console.warn('[DocumentEditorPanel.updatePreviewSummary] previewSummary não encontrado no DOM', refs);
+            return;
+        }
+        const total = this.parser?.getPlaceholders?.().length || 0;
+        refs.previewSummary.textContent = `${this.currentFile?.name || 'Documento'} • ${total} campo(s) detectado(s). Prévia lateral com cabeçalho auxiliar.`;
     }
 
-    handleDrop(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.getRefs().dropzone.classList.remove('is-dragover');
-        const [file] = event.dataTransfer?.files || [];
-        if (file) this.handleDocumentUpload(file);
+    onDocumentLoaded({ file, parser }) {
+        try {
+            if (!parser || !parser.placeholders) {
+                throw new Error('Parser inválido ou sem placeholders');
+            }
+
+            this.parser = parser;
+            this.renderDynamicForm();
+            this.initializePreview();
+            this.updatePreviewSummary();
+
+            this.toggleExpanded(true);
+            this.setStatus(`${file.name} carregado com sucesso.`, 'success');
+            this.showFeedback('Documento carregado. A prévia foi aberta automaticamente no modo ampliado.');
+        } catch (error) {
+            console.error('[DocumentEditorPanel.onDocumentLoaded] Erro durante processamento:', error);
+            console.error('[DocumentEditorPanel.onDocumentLoaded] Stack:', error.stack);
+            this.onDocumentError(new Error(`Erro ao processar documento: ${error.message}`));
+        }
     }
-    toggleDragState(event, isActive) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.getRefs().dropzone.classList.toggle('is-dragover', isActive);
+
+    onDocumentError(error) {
+        this.parser = null;
+        this.previewUpdater = null;
+        this.setStatus(error.message, 'warning');
+        this.showFeedback(error.message);
     }
-    handleGlobalKeydown(event) {
-        if (event.key !== 'Escape') return;
-        if (this.isPreviewOpen) this.togglePreview(false);
-        if (this.isExpanded) this.toggleExpanded(false);
+
+    onParsingStart(file) {
+        this.setStatus(`Processando ${file.name}...`, 'info');
     }
+
     showFeedback(message) {
         if (window.showGenericFeedback) window.showGenericFeedback(message);
         else console.log('DocumentEditor:', message);

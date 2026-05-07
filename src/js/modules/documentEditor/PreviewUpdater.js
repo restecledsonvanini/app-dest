@@ -20,20 +20,36 @@ export class PreviewUpdater {
 
     render() {
         const contentElement = this.previewElement.querySelector('.document-editor__preview-content');
-        if (!contentElement) return;
+        if (!contentElement) {
+            console.warn('[PreviewUpdater] Elemento .document-editor__preview-content não encontrado', this.previewElement);
+            return;
+        }
 
-        const html = this.parser.render(this.currentData, {
-            highlightEmpty: true,
-            escapeHtml: true
-        });
+        try {
+            const html = this.parser.render(this.currentData, {
+                highlightEmpty: true,
+                escapeHtml: true
+            });
 
-        const pagesMarkup = composePreviewPages(html, {
-            data: this.currentData,
-            settings: this.getLayoutSettings()
-        });
+            if (!html || typeof html !== 'string') {
+                console.error('[PreviewUpdater] HTML inválido recebido', html);
+                contentElement.innerHTML = '<p style="color: red;">Erro: HTML de prévia inválido</p>';
+                return;
+            }
 
-        contentElement.innerHTML = `<div class="document-editor__preview-pages">${pagesMarkup}</div>`;
-        this.isInitialized = true;
+            const pagesMarkup = composePreviewPages(html, {
+                data: this.currentData,
+                settings: this.getLayoutSettings()
+            });
+
+            contentElement.innerHTML = `<div class="document-editor__preview-pages">${pagesMarkup}</div>`;
+            this.isInitialized = true;
+        } catch (error) {
+            console.error('[PreviewUpdater] Erro geral no render:', error);
+            console.error('[PreviewUpdater] Stack:', error.stack);
+            contentElement.innerHTML = `<p style="color: red;">Erro na renderização da prévia: ${error.message}</p>`;
+            throw error; // Re-throw para que seja capturado pelo controller
+        }
     }
 
     clear() {

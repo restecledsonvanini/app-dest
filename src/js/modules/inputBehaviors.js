@@ -21,22 +21,45 @@ function autoFormatDate(e) {
  * Chamado uma vez pelo main.js no DOMContentLoaded.
  */
 export function initInputBehaviors() {
-    // Campos que aceitam somente dígitos
-    ['input-eprotocolo', 'input-gms-number', 'input-gms-year'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', function () {
+    const digitInputs = document.querySelectorAll('[data-behavior="digits-only"], #input-eprotocolo, #input-gms-number, #input-gms-year');
+    digitInputs.forEach(el => {
+        el.addEventListener('input', function () {
             this.value = this.value.replace(/\D/g, '');
         });
     });
 
-    // Campos de data: aceita apenas dígitos e barras, com auto-formatação DD/MM/YYYY
-    ['input-date-start', 'input-date-start-days', 'input-date-final'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
+    const dateInputs = document.querySelectorAll('[data-behavior="date-format"], #input-date-start, #input-date-start-days, #input-date-final');
+    dateInputs.forEach(el => {
         el.addEventListener('input', (e) => {
-            // sanitiza primeiro (remove caracteres inválidos)
             e.target.value = e.target.value.replace(/[^0-9/]/g, '');
-            // depois auto-formata
             autoFormatDate(e);
         });
+    });
+
+    function autoFormatCurrency(e) {
+        let digits = e.target.value.replace(/\D/g, '');
+        if (!digits) {
+            e.target.value = '';
+            return;
+        }
+
+        if (digits.length === 1) {
+            digits = '0' + digits;
+        }
+        if (digits.length === 2) {
+            e.target.value = `R$ 0,${digits}`;
+            return;
+        }
+
+        const cents = digits.slice(-2);
+        let reais = digits.slice(0, -2).replace(/^0+/, '');
+        if (!reais) reais = '0';
+        reais = reais.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        e.target.value = `R$ ${reais},${cents}`;
+    }
+
+    const currencyInputs = document.querySelectorAll('[data-behavior="currency-format"]');
+    currencyInputs.forEach(el => {
+        el.addEventListener('input', autoFormatCurrency);
     });
 }

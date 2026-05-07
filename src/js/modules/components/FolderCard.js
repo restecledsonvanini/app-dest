@@ -25,3 +25,17 @@ export class FolderCard extends HTMLElement {
         this.innerHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer" class="folder-card" title="${title}">${FOLDER_SVG}<span>${label}</span></a>`;
     }
 }
+
+/** VERSÃO ALTERNATIVA COM super() */
+// export class FolderCard extends HTMLElement {
+//     constructor() {
+//         // Cache dos atributos para evitar múltiplas chamadas getAttribute
+//         super()
+//         const href = this.getAttribute('href') || '#';
+//         const label = this.getAttribute('label') || '';
+//         const title = this.getAttribute('title') || label;
+
+//         // Template literal único para evitar concatenação desnecessária
+//         this.innerHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer" class="folder-card" title="${title}">${FOLDER_SVG}<span>${label}</span></a>`;
+//     }
+// }

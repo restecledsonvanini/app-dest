@@ -21,7 +21,8 @@ export function registerComponents() {
     if (!customElements.get('tool-panel')) {
         customElements.define('tool-panel', ToolPanel);
     }
-    if (!customElements.get('document-editor-panel')) {
-        customElements.define('document-editor-panel', DocumentEditorPanel);
-    }
+    // Temporariamente desabilitado para commit do Conversor
+    // if (!customElements.get('document-editor-panel')) {
+    //     customElements.define('document-editor-panel', DocumentEditorPanel);
+    // }
 }

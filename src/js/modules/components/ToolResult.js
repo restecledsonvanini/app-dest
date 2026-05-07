@@ -10,10 +10,10 @@
  */
 export class ToolResult extends HTMLElement {
     connectedCallback() {
-        const icon    = this.getAttribute('primary-icon')  || 'bi bi-check-circle';
-        const label   = this.getAttribute('primary-label') || 'Calcular';
-        const resultId = this.getAttribute('result-id')    || '';
-        const idAttr  = resultId ? ` id="${resultId}"` : '';
+        const icon = this.getAttribute('primary-icon') || 'bi bi-check-circle';
+        const label = this.getAttribute('primary-label') || 'Calcular';
+        const resultId = this.getAttribute('result-id') || '';
+        const idAttr = resultId ? ` id="${resultId}"` : '';
 
         this.innerHTML = `
             <div class="button-group">

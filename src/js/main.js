@@ -1,7 +1,7 @@
 import { handleCopyAction, handleClearAction } from './modules/ui.js';
 import { initTabs } from './modules/tabs.js';
 import { initInputBehaviors } from './modules/inputBehaviors.js';
-import { toolHandlerMap } from './modules/toolHandlers.js';
+import { toolHandlerMap } from './handlers/toolHandlers.js';
 import { initUIControls } from './uiControls.js';
 import { registerComponents } from './modules/components/index.js';
 
@@ -16,8 +16,24 @@ document.addEventListener('DOMContentLoaded', () => {
     initInputBehaviors();
     initUIControls();
 
-    // ── Delegador global: botões Copy e Clear ────────────────────────────────
+    // ── Delegador global: case toggle + botões Copy e Clear ─────────────────
     document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('button.case-mode-btn');
+        if (toggle) {
+            const group = toggle.closest('.case-toggle-group');
+            if (group) {
+                group.querySelectorAll('.case-mode-btn').forEach(btn => {
+                    const isActive = btn === toggle;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+                const form = toggle.closest('form');
+                const input = form?.querySelector('input[name="case_mode"]');
+                if (input) input.value = toggle.dataset.case || 'lowercase';
+            }
+            return;
+        }
+
         // Suporta data-action="copy"|"clear" explícito, além da classe .btn-copy
         const btn = e.target.closest('button[data-action], button.btn-copy');
         if (!btn || btn.disabled) return;

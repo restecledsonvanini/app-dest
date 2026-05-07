@@ -57,7 +57,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DEST">
     <link rel="apple-touch-icon" href="./src/images/icon-192.png">
+</head>
 
+<body>
     <header>
         <div class="logo">
             <img width="70" src="./src/images/logo-sesp-dest.png" alt="Logo Sesp DEST">
@@ -123,23 +125,25 @@
                 <span class="copied">Copiado!</span>
             </div>
             <div class="link-row">
-                <div class="link-row">
-                    <span class="link-name">Esquema Lógico</span>
-                    <!-- link removed -->
-                </div>
-
+                <span class="link-name">Esquema Lógico</span>
+                <button class="btn btn-open"
+                    onclick="openLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing')">Abrir</button>
+                <button class="btn btn-copy"
+                    onclick="copyLink('https://docs.google.com/spreadsheets/d/1x69xhWRlvTqZLvc2WSe5BycbTJOvhmKgu75T-55lY6A/edit?usp=sharing', this)">Copiar</button>
+                <span class="copied">Copiado!</span>
             </div>
         </div>
-        <script src="./src/js/links.js"></script>
-        <script type="module">
-            import { initUIControls } from './src/js/uiControls.js';
-            document.addEventListener('DOMContentLoaded', () => initUIControls());
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./sw.js').catch(err =>
-                    console.warn('[SW] Registro falhou:', err)
-                );
-            }
-        </script>
-        </body>
+    </div>
+    <script src="./src/js/links.js"></script>
+    <script type="module">
+        import { initUIControls } from './src/js/uiControls.js';
+        document.addEventListener('DOMContentLoaded', () => initUIControls());
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(err =>
+                console.warn('[SW] Registro falhou:', err)
+            );
+        }
+    </script>
+</body>
 
 </html>

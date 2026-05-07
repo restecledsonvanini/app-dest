@@ -1,13 +1,16 @@
-const DEFAULT_HEADER_TEXT = `SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA
-CENTRO DE CONTRATOS E CONVÊNIOS – TERMO DE APOSTILAMENTO Nº {{num_termo}}`;
-const DEFAULT_LOGO_URL = '/src/images/brasao_do_Parana.svg.png';
+import { INSTITUTION } from '../../../config/institution.js';
+
+const DEFAULT_HEADER_TEXT = `${INSTITUTION.defaultHeader.mainText}
+${INSTITUTION.defaultHeader.subtitle.replace('{{tipo_termo}}', 'DE APOSTILAMENTO')}`;
 
 export function composePreviewPages(html, options = {}) {
-    const { data = {}, settings = {} } = options;
-    const pages = html.split('<!-- PAGE_BREAK -->');
+    if (!html || typeof html !== 'string') {
+        throw new Error('HTML inválido para composição de páginas');
+    }
 
+    const pages = html.split('<!-- PAGE_BREAK -->');
     return pages
-        .map((pageHtml, index) => buildPageMarkup(pageHtml, index, { data, settings }))
+        .map((pageHtml, index) => buildPageMarkup(pageHtml, index, options))
         .join('');
 }
 
@@ -19,8 +22,11 @@ function buildPageMarkup(pageHtml, index, context) {
     }
 
     if (index === 0) {
+        enrichedHtml = applyDocumentPreambleLayout(enrichedHtml);
         enrichedHtml = applyPreambleLayout(enrichedHtml, context);
     }
+
+    enrichedHtml = `${enrichedHtml}${buildFooterHtml(context)}`;
 
     return `
         <section class="document-editor__preview-page">
@@ -35,7 +41,6 @@ function hasHeader(html) {
 
 function buildHeaderHtml({ data, settings }) {
     const headerConfig = settings.headerFallback || {};
-    const logoUrl = headerConfig.logoUrl || DEFAULT_LOGO_URL;
     const headerText = interpolateText(headerConfig.headerText || DEFAULT_HEADER_TEXT, data);
     const lines = headerText
         .split(/\r?\n/)
@@ -46,32 +51,90 @@ function buildHeaderHtml({ data, settings }) {
 
     return `
         <header class="document-editor__fallback-header" style="display:grid;justify-items:center;gap:8px;margin:0 0 18px;text-align:center;">
-            <img class="document-editor__fallback-logo" src="${logoUrl}" alt="Brasão do Paraná" style="width:68px;height:auto;object-fit:contain;">
             <div class="document-editor__fallback-title">${lines}</div>
         </header>
     `;
 }
 
-function applyPreambleLayout(html, { data, settings }) {
-    if (html.includes('document-editor__preamble')) return html;
+function buildFooterHtml({ data }) {
+    const footerText = `Protocolo nº [{{protocolo_termo}}] – Contrato nº {{num_contrato}} – GMS {{num_gms}} – [{{termo_extenso}}] Termo Aditivo`;
+    const interpolated = interpolateText(footerText, data);
+    return `
+        <footer class="document-editor__fallback-footer" style="margin-top: auto; padding-top: 18px; border-top: 1px solid #cbd5e1; text-align: center; font-size: 0.85rem; color: #64748b;">
+            <p style="margin:0;font-weight:600;text-transform:uppercase;">${interpolated}</p>
+        </footer>
+    `;
+}
 
-    const regex = /<p[^>]*>(?=[\s\S]{20,})(?=[\s\S]*(CONTRATO\s*Nº|REFERENTE|PRIMEIRO\s+TERMO))[\s\S]*?<\/p>/i;
-    if (regex.test(html)) {
-        return html.replace(regex, (match) => `<div class="document-editor__preamble" style="width:50%;max-width:8cm;margin:12px 0 20px auto;text-align:justify;">${match}</div>`);
+/**
+ * Envolve o bloco do preâmbulo do DOCUMENTO (de {{termo_extenso}} até antes de {{protocolo_termo}})
+ * com a classe .document-editor__document-preamble.
+ *
+ * Funciona tanto com placeholders vazios (--empty) quanto preenchidos (--filled)
+ * porque usa data-field ao invés de procurar {{...}} como texto literal.
+ */
+function applyDocumentPreambleLayout(html) {
+    if (html.includes('document-editor__document-preamble')) return html;
+
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+
+    const startField = temp.querySelector('[data-field="termo_extenso"]');
+    if (!startField) return html;
+
+    const startBlock = startField.closest('p') || startField.parentElement;
+    if (!startBlock?.parentNode) return html;
+
+    const endField = temp.querySelector('[data-field="protocolo_termo"]');
+    const endBlock = endField ? (endField.closest('p') || endField.parentElement) : null;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'document-editor__document-preamble';
+
+    if (!endBlock) {
+        // Sem marcador final: envolve apenas o bloco de início
+        startBlock.parentNode.insertBefore(wrapper, startBlock);
+        wrapper.appendChild(startBlock);
+    } else if (startBlock === endBlock) {
+        // Ambos no mesmo parágrafo
+        startBlock.parentNode.insertBefore(wrapper, startBlock);
+        wrapper.appendChild(startBlock);
+    } else {
+        // Intervalo: envolve do startBlock até antes do endBlock
+        startBlock.parentNode.insertBefore(wrapper, startBlock);
+        let current = wrapper.nextSibling;
+        while (current && current !== endBlock) {
+            const next = current.nextSibling;
+            wrapper.appendChild(current);
+            current = next;
+        }
     }
+
+    if (!wrapper.hasChildNodes()) {
+        wrapper.remove();
+        return html;
+    }
+
+    return temp.innerHTML;
+}
+
+function applyPreambleLayout(html, { data, settings }) {
+    html = html.replace(/<div class="document-editor__preamble"[^>]*>[\s\S]*?<\/div>/g, '');
 
     const preambleText = interpolateText(settings.headerFallback?.preambleText || '', data).trim();
     if (!preambleText) return html;
 
-    return `${buildHeaderSpacer()}<div class="document-editor__preamble" style="width:50%;max-width:8cm;margin:12px 0 20px auto;text-align:justify;"><p style="margin:0;font-weight:700;">${preambleText}</p></div>${html}`;
-}
+    const preambleHtml = `<div class="document-editor__preamble" style="width:50%;max-width:8cm;margin:0 0 16px auto;float:right;text-align:justify;clear:both;"><p style="margin:0;font-weight:700;">${preambleText}</p></div>`;
 
-function buildHeaderSpacer() {
-    return '<div class="document-editor__preamble-spacer" aria-hidden="true"></div>';
+    if (html.includes('</header>')) {
+        return html.replace('</header>', `</header>${preambleHtml}`);
+    }
+
+    return `${preambleHtml}${html}`;
 }
 
 function interpolateText(template, data) {
-    return String(template).replace(/\{\{\s*([^}\s]+)\s*\}\}/g, (_, key) => {
+    return String(template).replace(/\[?\{\{\s*([^}\s]+)\s*\}\}\]?/g, (_, key) => {
         const value = data[key];
         return value === undefined || value === null || value === '' ? `{{${key}}}` : value;
     });

@@ -1,12 +1,14 @@
+import { INSTITUTION } from '../../../config/institution.js';
+
 const STORAGE_KEY = 'dest-document-editor-settings';
 const DEFAULT_HEADER_FALLBACK = {
-    logoUrl: '/src/images/brasao_do_Parana.svg.png',
-    headerText: 'SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA\nCENTRO DE CONTRATOS E CONVÊNIOS – TERMO {{tipo_termo}} Nº {{num_termo}}',
-    preambleText: ''
+    logoUrl: INSTITUTION.logoUrl,
+    headerText: `${INSTITUTION.defaultHeader.mainText}\n${INSTITUTION.defaultHeader.subtitle}`,
+    preambleText: INSTITUTION.defaultPreamble
 };
 const LEGACY_HEADER_DEFAULTS = new Set([
-    'SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA\nCENTRO DE CONTRATOS E CONVÊNIOS – TERMO DE APOSTILAMENTO Nº {{num_termo}}',
-    'SECRETARIA DE ESTADO DA SEGURANÇA PÚBLICA\nCENTRO DE CONTRATOS E CONVÊNIOS – TERMO DE APOSTILAMENTO'
+    `${INSTITUTION.defaultHeader.mainText}\n${INSTITUTION.defaultHeader.subtitle.replace('{{tipo_termo}}', 'DE APOSTILAMENTO')}`,
+    `${INSTITUTION.defaultHeader.mainText}\n${INSTITUTION.defaultHeader.subtitle.replace('{{tipo_termo}}', 'DE APOSTILAMENTO').replace(' Nº {{num_termo}}', '')}`
 ]);
 
 export class SettingsStore {
