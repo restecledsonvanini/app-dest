@@ -58,6 +58,8 @@ async function handleCalculateDaysRemaining(data, resultBox) {
     const finalDate = parseBRDate(finalVal);
     if (!startDate || !finalDate) return err(resultBox, MSG.date.invalidFormat);
 
+    const { daysDiff, statusText, statusColor } = calcDaysStatus(startDate, finalDate);
+
     if (daysDiff < 0) {
         err(resultBox,
             `<div class="res-col"><small>Erro</small><strong>${MSG.date.reversedPeriod}: ${Math.abs(daysDiff)} dias</strong></div>`
