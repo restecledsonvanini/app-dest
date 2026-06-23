@@ -50,7 +50,21 @@ export class ExportOrchestrator {
      * Constrói markup para export
      */
     buildExportMarkup(parser, previewUpdater, exportService) {
-        const pagesMarkup = previewUpdater?.render?.() || parser.render(previewUpdater?.getData() || {}, { highlightEmpty: true, escapeHtml: true });
+        let pagesMarkup = '';
+
+        if (previewUpdater?.previewElement) {
+            previewUpdater.render();
+            const content = previewUpdater.previewElement.querySelector('.document-editor__preview-content');
+            pagesMarkup = content?.innerHTML || '';
+        }
+
+        if (!pagesMarkup && parser) {
+            pagesMarkup = parser.render(previewUpdater?.getData?.() || {}, {
+                highlightEmpty: true,
+                escapeHtml: true
+            });
+        }
+
         return exportService.buildPrintableHtml(pagesMarkup);
     }
     async exportAsPdf(options) {
@@ -60,7 +74,7 @@ export class ExportOrchestrator {
             const result = await this.exportService.downloadPdf({ fileName, markup });
 
             const message = result.mode === 'download'
-                ? MSG.export.pdfError
+                ? 'PDF gerado com sucesso.'
                 : MSG.export.printFallback;
 
             this._emitComplete(message);
@@ -73,19 +87,6 @@ export class ExportOrchestrator {
             }
             throw error;
         }
-    }
-
-    /**
-     * Constrói markup exportável
-     */
-    buildExportMarkup(previewPages, parser, data) {
-        if (!previewPages && parser) {
-            return parser.render(data, {
-                highlightEmpty: false,
-                escapeHtml: true
-            });
-        }
-        return previewPages;
     }
 
     _emitComplete(message) {

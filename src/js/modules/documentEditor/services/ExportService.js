@@ -1,4 +1,5 @@
 import { OdtParserService } from './OdtParserService.js';
+import { expandExtensoVariables, removeExcludedBlocks } from '../../extenso.js';
 
 export class ExportService {
     async downloadWord({ fileName = 'documento', markup, originalFile, data = {}, settings = {} }) {
@@ -33,7 +34,7 @@ export class ExportService {
             }
         });
 
-        const safeData = Object.fromEntries(Object.entries(data || {}).map(([key, value]) => [key, value ?? '']));
+        const safeData = Object.fromEntries(Object.entries(expandExtensoVariables(data || {})).map(([key, value]) => [key, value ?? '']));
         doc.render(safeData);
 
         return doc.getZip().generate({
@@ -50,7 +51,7 @@ export class ExportService {
 
     normalizeTemplateZip(zip) {
         zip.file(/word\/(document|header\d+|footer\d+|footnotes|endnotes)\.xml/).forEach((entry) => {
-            const content = entry.asText()
+            const content = removeExcludedBlocks(entry.asText())
                 .replace(/\[([\s\S]*?\{\{[^}]+\}\}[\s\S]*?)\]/g, '$1')
                 .replace(/\{\{\s*([^}]+?)\s*\}\}/g, '{{$1}}');
             zip.file(entry.name, content);
@@ -67,29 +68,44 @@ export class ExportService {
     }
 
     async downloadPdf({ fileName = 'documento', markup }) {
-        if (window.html2pdf) {
-            const host = document.createElement('div');
-            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:210mm;background:#fff;z-index:-1;';
-            host.innerHTML = this.extractPrintableBody(markup);
-            document.body.appendChild(host);
+        this.openPdfWindow(markup);
+        return { mode: 'print-fallback' };
+    }
 
-            try {
-                await window.html2pdf().set({
-                    margin: [0, 0, 0, 0],
-                    filename: `${fileName}-preenchido.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['css', 'legacy'] }
-                }).from(host).save();
-                return { mode: 'download' };
-            } finally {
-                host.remove();
+    async ensureHtml2PdfLibrary() {
+        if (typeof window.html2pdf === 'function') {
+            return window.html2pdf;
+        }
+
+        const existingScript = document.querySelector('script[data-html2pdf-loader="true"]');
+        if (existingScript) {
+            await new Promise((resolve, reject) => {
+                existingScript.addEventListener('load', resolve, { once: true });
+                existingScript.addEventListener('error', () => reject(new Error('Falha ao carregar a biblioteca de PDF.')), { once: true });
+            });
+
+            if (typeof window.html2pdf === 'function') {
+                return window.html2pdf;
             }
         }
 
-        this.openPdfWindow(markup);
-        return { mode: 'print-fallback' };
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.async = true;
+        script.defer = true;
+        script.dataset.html2pdfLoader = 'true';
+
+        await new Promise((resolve, reject) => {
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('Falha ao carregar a biblioteca de PDF.'));
+            document.head.appendChild(script);
+        });
+
+        if (typeof window.html2pdf !== 'function') {
+            throw new Error('A biblioteca de PDF não ficou disponível no navegador.');
+        }
+
+        return window.html2pdf;
     }
 
     extractPrintableBody(markup) {
@@ -97,22 +113,34 @@ export class ExportService {
     }
 
     openPdfWindow(markup) {
-        const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=820');
-        if (!printWindow) {
-            throw new Error('Não foi possível abrir a janela de impressão do PDF.');
-        }
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:0;height:0;border:0;opacity:0;pointer-events:none;';
+        iframe.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(iframe);
 
-        printWindow.document.write(markup);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.addEventListener('load', () => printWindow.print(), { once: true });
+        const tryPrint = () => {
+            try {
+                const frameWindow = iframe.contentWindow || iframe.contentDocument?.defaultView;
+                if (!frameWindow) {
+                    throw new Error('Janela de impressão não disponível.');
+                }
+                frameWindow.focus();
+                frameWindow.print();
+            } catch {
+                setTimeout(tryPrint, 250);
+            }
+        };
+
+        iframe.addEventListener('load', tryPrint, { once: true });
+        iframe.srcdoc = markup;
+
         setTimeout(() => {
             try {
-                printWindow.print();
+                iframe.remove();
             } catch {
                 /* noop */
             }
-        }, 350);
+        }, 1200);
     }
 
     addHeaderToDocx(zip, headerText, data) {
@@ -169,26 +197,42 @@ export class ExportService {
             <meta charset="UTF-8">
             <title>Documento preenchido</title>
             <style>
-                body { margin: 0; background: #fff; font-family: Arial, Helvetica, sans-serif; color: #0f172a; }
+                @page { size: A4 portrait; margin: 0; }
+                html, body { margin: 0; padding: 0; background: #fff; font-family: Arial, Helvetica, sans-serif; color: #0f172a; }
                 .pages { display: flex; flex-direction: column; gap: 0; padding: 0; align-items: center; background: #fff; }
-                .page, .document-editor__preview-page { width: 210mm; min-height: 297mm; background: #fff; box-sizing: border-box; padding: 16mm 14mm; box-shadow: none; }
-                .page-body, .document-editor__preview-page-body { line-height: 1.65; }
-                .page-body h1, .page-body h2, .page-body h3, .document-editor__preview-page-body h1, .document-editor__preview-page-body h2, .document-editor__preview-page-body h3 { color: #0b3d91; }
-                .document-editor__fallback-header { display: grid; justify-items: center; gap: 8px; margin-bottom: 18px; text-align: center; }
-                .document-editor__fallback-logo { width: 68px; height: auto; }
+                .page, .document-editor__preview-page {
+                    width: 210mm;
+                    min-height: 297mm;
+                    background: #fff;
+                    color: #0f172a;
+                    box-sizing: border-box;
+                    padding: 16mm 14mm;
+                    box-shadow: none;
+                    border: 1px solid rgba(15, 23, 42, 0.08);
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .page-body, .document-editor__preview-page-body { width: 100%; flex: 1 0 auto; line-height: 1.65; }
+                .page-body h1, .page-body h2, .page-body h3,
+                .document-editor__preview-page-body h1, .document-editor__preview-page-body h2, .document-editor__preview-page-body h3 { color: #0b3d91; }
+                .document-editor__fallback-header { display: grid; justify-items: center; gap: 8px; margin: 0 0 18px; text-align: center; }
                 .document-editor__fallback-title p { margin: 0; font-weight: 700; text-transform: uppercase; }
-                .document-editor__preamble { width: 50%; max-width: 8cm; margin: 12px 0 20px auto; text-align: justify; }
+                .document-editor__fallback-footer { margin-top: auto; padding-top: 18px; border-top: 1px solid #cbd5e1; text-align: center; font-size: 0.85rem; color: #64748b; }
+                .document-editor__fallback-footer p { margin: 0; font-weight: 600; text-transform: uppercase; }
+                .document-editor__preamble { width: 50%; max-width: 8cm; margin: 0 0 16px auto; text-align: justify; clear: both; }
                 .document-editor__preamble p { margin: 0; font-weight: 700; }
-                .document-editor__document-preamble { width: 50%; margin: 12px 0 20px auto; text-align: justify; text-transform: uppercase; }
+                .document-editor__document-preamble { width: 50%; margin: 0 0 16px auto; text-align: justify; text-transform: uppercase; }
                 .document-editor__document-preamble p { margin: 0; font-weight: 700; }
                 .document-editor__preview-page table, .page table { width: 100%; border-collapse: collapse; margin: 12px 0; }
                 .document-editor__preview-page td, .document-editor__preview-page th, .page td, .page th { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
                 .document-editor__placeholder--filled { background: transparent; border-bottom: 0; padding: 0; }
                 .document-editor__placeholder--empty { background: transparent; border-bottom: 0; padding: 0; }
                 @media print {
-                    body { background: #fff; }
+                    html, body { height: auto; }
                     .pages { padding: 0; }
                     .page, .document-editor__preview-page { margin: 0; page-break-after: always; }
+                    .page:last-child, .document-editor__preview-page:last-child { page-break-after: auto; }
                 }
             </style>
         </head>

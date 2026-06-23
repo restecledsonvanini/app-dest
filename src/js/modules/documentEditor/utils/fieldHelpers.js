@@ -11,6 +11,10 @@ export function formatFieldLabel(name) {
 export function getFieldMask(fieldName = '') {
     const normalized = fieldName.toLowerCase();
 
+    if (normalized.endsWith('_extenso')) {
+        return null;
+    }
+
     if (normalized.includes('protocolo') || normalized.includes('procolo')) {
         return 'protocol';
     }

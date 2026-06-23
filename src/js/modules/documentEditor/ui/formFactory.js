@@ -1,6 +1,7 @@
 import { applyFieldMask, formatFieldLabel, getFieldMask, getFieldOptions, getFieldPlaceholder } from '../utils/fieldHelpers.js';
 import { getDocumentEditorIcon } from './iconSet.js';
 import { INSTITUTION } from '../../../config/institution.js';
+import { escreverPorExtenso } from '../../extenso.js';
 
 export function renderDynamicForm(container, placeholders, settingsStore, onFieldValueChange) {
     const headerFallback = settingsStore.getHeaderFallback();
@@ -8,16 +9,18 @@ export function renderDynamicForm(container, placeholders, settingsStore, onFiel
 
     container.innerHTML = `
         <div class="document-editor__form-toolbar">
-            <div class="document-editor__form-intro">
-                <strong>${placeholders.length}</strong> campo(s) detectado(s). Campos com <code>[{{nome}}]</code> usam opções salvas.
-            </div>
-            <div class="document-editor__form-toolbar-actions">
-                <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--small" data-action="open-settings">
-                    ${getDocumentEditorIcon('info')}<span>Configurações</span>
-                </button>
-                <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--small" data-action="reset-fields">
-                    ${getDocumentEditorIcon('reset')}<span>Redefinir</span>
-                </button>
+            <div class="document-editor__form-summary">
+                <div class="document-editor__form-summary-text">
+                    <strong>${placeholders.length}</strong>&nbsp;campo(s) detectado(s). Campos com&nbsp;<code>[{{nome}}]</code>&nbsp;usam opções salvas.
+                </div>
+                <div class="document-editor__form-summary-actions">
+                    <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--small" data-action="open-settings">
+                        <span class="document-editor__btn-icon">${getDocumentEditorIcon('info')}</span><span>Configurações</span>
+                    </button>
+                    <button type="button" class="document-editor__btn document-editor__btn--ghost document-editor__btn--small" data-action="reset-fields">
+                        <span class="document-editor__btn-icon">${getDocumentEditorIcon('reset')}</span><span>Redefinir</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -61,7 +64,9 @@ export function renderDynamicForm(container, placeholders, settingsStore, onFiel
     `;
 
     const grid = container.querySelector('.document-editor__form-grid');
-    placeholders.forEach((field) => grid.appendChild(createField(field, settingsStore, onFieldValueChange)));
+    // Map lowercased placeholder name -> original-cased name, for extenso lookup
+    const placeholderNameMap = new Map(placeholders.map((p) => [p.name.toLowerCase(), p.name]));
+    placeholders.forEach((field) => grid.appendChild(createField(field, settingsStore, onFieldValueChange, placeholderNameMap)));
     container.querySelector('[data-field-name]')?.focus();
 }
 
@@ -89,7 +94,7 @@ function formatOptions(options = []) {
         .join('\n');
 }
 
-function createField(field, settingsStore, onFieldValueChange) {
+function createField(field, settingsStore, onFieldValueChange, placeholderNameMap) {
     const wrapper = document.createElement('div');
     wrapper.className = 'document-editor__field';
 
@@ -103,15 +108,36 @@ function createField(field, settingsStore, onFieldValueChange) {
             ? createTextarea(field)
             : createInput(field);
 
+    // Resolve the actual-cased name of the _extenso counterpart, if it exists in the template
+    const extensoCounterpartName = isExtensoSource(field.name)
+        ? placeholderNameMap?.get(`${field.name}_extenso`.toLowerCase()) ?? null
+        : null;
+
     control.addEventListener(control.tagName === 'SELECT' ? 'change' : 'input', () => {
         if (control.tagName === 'INPUT') {
             control.value = applyFieldMask(field.name, control.value);
         }
         onFieldValueChange(field.name, control.value);
+
+        // Auto-fill _EXTENSO counterpart declared in the template
+        if (extensoCounterpartName) {
+            const computed = escreverPorExtenso(control.value);
+            if (computed && computed !== 'Campo obrigatório') {
+                const extensoInput = wrapper.closest('.document-editor__form-grid')
+                    ?.querySelector(`[data-field-name="${extensoCounterpartName}"]`);
+                if (extensoInput) extensoInput.value = computed;
+                onFieldValueChange(extensoCounterpartName, computed);
+            }
+        }
     });
 
     wrapper.append(label, control);
     return wrapper;
+}
+
+/** Returns true when the field can be the source of an _EXTENSO derivation. */
+function isExtensoSource(fieldName) {
+    return /valor|total_dias|total_meses/i.test(fieldName) && !/_extenso$/i.test(fieldName);
 }
 
 function createInput(field) {
@@ -159,6 +185,8 @@ function createSelect(field, settingsStore) {
     const placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = 'Escolha um campo';
+    placeholder.selected = true;
+    placeholder.disabled = true;
     select.appendChild(placeholder);
 
     getFieldOptions(field, settingsStore.getFieldOptions(field.name)).forEach((option) => {

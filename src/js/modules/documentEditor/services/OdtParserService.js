@@ -4,6 +4,8 @@
  * e DOMParser para parsear o XML ODF.
  */
 
+import { expandExtensoVariables, removeExcludedBlocks } from '../../extenso.js';
+
 const NS = {
     office: 'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
     text: 'urn:oasis:names:tc:opendocument:xmlns:text:1.0',
@@ -43,7 +45,8 @@ export class OdtParserService {
             throw new Error('Arquivo ODT inválido: corpo do texto não encontrado.');
         }
 
-        return this.convertElement(body);
+        const html = this.convertElement(body);
+        return this.normalizeSplitPlaceholders(html);
     }
 
     parseStylesFromZip(zip) {
@@ -216,14 +219,16 @@ export class OdtParserService {
      */
     fillTemplate(arrayBuffer, data) {
         const zip = new window.PizZip(arrayBuffer);
+        const expandedData = expandExtensoVariables(data);
         const filesToProcess = ['content.xml', ...this.getHeaderFooterFiles(zip)];
 
         for (const fileName of filesToProcess) {
             const entry = zip.file(fileName);
             if (!entry) continue;
 
-            let content = entry.asText();
-            for (const [key, value] of Object.entries(data)) {
+            let content = removeExcludedBlocks(entry.asText());
+            content = this.normalizeSplitPlaceholdersInXml(content);
+            for (const [key, value] of Object.entries(expandedData)) {
                 if (value === undefined || value === null || value === '') continue;
                 const safeValue = this.escapeXml(String(value));
                 const patterns = [
@@ -262,5 +267,101 @@ export class OdtParserService {
 
     escapeRegex(str) {
         return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    normalizeSplitPlaceholdersInXml(xmlContent) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlContent, 'application/xml');
+        if (xmlDoc.getElementsByTagName('parsererror').length) {
+            return xmlContent;
+        }
+
+        const walker = xmlDoc.createTreeWalker(xmlDoc, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        let currentNode;
+        let position = 0;
+
+        while ((currentNode = walker.nextNode())) {
+            const text = currentNode.nodeValue || '';
+            textNodes.push({ node: currentNode, text, start: position, end: position + text.length });
+            position += text.length;
+        }
+
+        const combinedText = textNodes.map((entry) => entry.text).join('');
+        const placeholderRegex = /\[\{\{\s*[^}]+?\s*\}\}\]|\{\{\s*[^}]+?\s*\}\}/g;
+        const replacements = [];
+        let match;
+
+        while ((match = placeholderRegex.exec(combinedText)) !== null) {
+            replacements.push({ start: match.index, end: match.index + match[0].length, text: match[0] });
+        }
+
+        if (!replacements.length) {
+            return xmlContent;
+        }
+
+        for (let i = replacements.length - 1; i >= 0; i -= 1) {
+            const { start, end, text } = replacements[i];
+            const startEntry = textNodes.find((entry) => entry.start <= start && start < entry.end);
+            const endEntry = textNodes.find((entry) => entry.start < end && end <= entry.end);
+            if (!startEntry || !endEntry) continue;
+
+            const range = xmlDoc.createRange();
+            const startOffset = start - startEntry.start;
+            const endOffset = end - endEntry.start;
+            range.setStart(startEntry.node, startOffset);
+            range.setEnd(endEntry.node, endOffset);
+            range.deleteContents();
+            range.insertNode(xmlDoc.createTextNode(text));
+        }
+
+        return new XMLSerializer().serializeToString(xmlDoc);
+    }
+
+    normalizeSplitPlaceholders(html) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+
+        const walker = document.createTreeWalker(wrapper, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        let currentNode;
+        let position = 0;
+
+        while ((currentNode = walker.nextNode())) {
+            const text = currentNode.textContent || '';
+            textNodes.push({ node: currentNode, text, start: position, end: position + text.length });
+            position += text.length;
+        }
+
+        const combinedText = textNodes.map((entry) => entry.text).join('');
+        const placeholderRegex = /\[\{\{\s*[^}]+?\s*\}\}\]|\{\{\s*[^}]+?\s*\}\}/g;
+        const replacements = [];
+        let match;
+
+        while ((match = placeholderRegex.exec(combinedText)) !== null) {
+            replacements.push({ start: match.index, end: match.index + match[0].length, text: match[0] });
+        }
+
+        if (!replacements.length) {
+            return html;
+        }
+
+        // Process from last to first to preserve node offsets
+        for (let i = replacements.length - 1; i >= 0; i -= 1) {
+            const { start, end, text } = replacements[i];
+            const startEntry = textNodes.find((entry) => entry.start <= start && start < entry.end);
+            const endEntry = textNodes.find((entry) => entry.start < end && end <= entry.end);
+            if (!startEntry || !endEntry) continue;
+
+            const range = document.createRange();
+            const startOffset = start - startEntry.start;
+            const endOffset = end - endEntry.start;
+            range.setStart(startEntry.node, startOffset);
+            range.setEnd(endEntry.node, endOffset);
+            range.deleteContents();
+            range.insertNode(document.createTextNode(text));
+        }
+
+        return wrapper.innerHTML;
     }
 }

@@ -319,6 +319,13 @@
     color: var(--label-color, #374151);
 }
 
+.document-editor__field-hint {
+    font-size: 0.78rem;
+    color: var(--hint-color, #6b7280);
+    font-style: italic;
+    margin-top: -0.1rem;
+}
+
 .document-editor__label--required::after {
     content: ' *';
     color: #dc2626;

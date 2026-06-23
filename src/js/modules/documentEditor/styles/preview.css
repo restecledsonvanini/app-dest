@@ -18,9 +18,6 @@
     display: none;
 }
 
-.document-editor--preview-open .document-editor__sidepanel {
-    /* Sidepanel is now always in flow, no position changes needed */
-}
 
 @media (max-width: 1024px) {
     .document-editor--preview-open .document-editor__layout {
@@ -76,6 +73,192 @@
     justify-content: flex-end;
     gap: 0.45rem;
     flex-wrap: wrap;
+}
+
+/* Clear button in dropzone (hidden by default, shown on hover when a file is present) */
+.document-editor__dropzone {
+    position: relative
+}
+
+.document-editor__dropzone.has-file {
+    transition: background-color .12s ease
+}
+
+.document-editor__dropzone.has-file:hover {
+    background-color: rgba(2, 6, 23, 0.06)
+}
+
+.document-editor__dropzone-clear {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    background: #ff4d4f;
+    /* red */
+    display: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 28px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+}
+
+.document-editor__dropzone.has-file:hover .document-editor__dropzone-clear {
+    display: inline-flex
+}
+
+.document-editor__dropzone-clear svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff
+}
+
+/* Disabled button appearance */
+.document-editor__btn[disabled] {
+    opacity: 0.5;
+    pointer-events: none
+}
+
+/* Buttons: keep the section subtle and restore the icon colors */
+.document-editor__btn--ghost.document-editor__btn--small[data-action="open-settings"],
+.document-editor__btn--ghost.document-editor__btn--small[data-action="reset-fields"] {
+    background: var(--card-bg, #ffffff) !important;
+    color: var(--body-text, #222222) !important;
+    border: 1px solid var(--ctrl-bar-border, #e2e8f0) !important;
+    box-shadow: none;
+    font-weight: 600;
+}
+
+.document-editor__btn--ghost.document-editor__btn--small[data-action="open-settings"]:hover,
+.document-editor__btn--ghost.document-editor__btn--small[data-action="reset-fields"]:hover {
+    background: var(--row-hover, #eef0f2) !important;
+    transform: translateY(-1px);
+}
+
+.document-editor__btn--ghost.document-editor__btn--small[data-action="open-settings"] .document-editor__btn-icon {
+    color: var(--primary, #0b63ff);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-right: 4px;
+}
+
+.document-editor__btn--ghost.document-editor__btn--small[data-action="reset-fields"] .document-editor__btn-icon {
+    color: #e53935;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-right: 4px;
+}
+
+.document-editor__btn--ghost.document-editor__btn--small[data-action="open-settings"] .document-editor__btn-icon svg,
+.document-editor__btn--ghost.document-editor__btn--small[data-action="reset-fields"] .document-editor__btn-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* summary row: keep the section border and use the app surface color */
+.document-editor__form-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--panel-border, #dbe3ee);
+    box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+    .document-editor__form-summary {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .document-editor__form-summary-text {
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    .document-editor__form-summary-actions {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+}
+
+.document-editor__form-summary-text {
+    color: var(--body-text, #222222);
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
+.document-editor__form-summary-text code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: .92rem
+}
+
+.document-editor__form-summary-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+.document-editor__form-summary-actions .document-editor__btn {
+    padding: 6px 10px;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center
+}
+
+
+.document-editor__btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: var(--card-bg, #ffffff);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    padding: 5px;
+    margin-right: 6px;
+    flex: 0 0 auto;
+    border: 1px solid var(--ctrl-bar-border, #e2e8f0);
+}
+
+.document-editor__btn-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.document-editor__btn--ghost.document-editor__btn--small[data-action="open-settings"]:hover,
+.document-editor__btn--ghost.document-editor__btn--small[data-action="reset-fields"]:hover {
+    transform: translateY(-1px)
+}
+
+/* Fix subtitle wrapping */
+.document-editor__subtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40ch
 }
 
 .document-editor__zoom-label,
@@ -229,12 +412,15 @@
 
 .document-editor--expanded {
     position: fixed;
-    inset: 0;
+    top: 5vh;
+    left: 5vw;
+    right: 5vw;
+    bottom: 5vh;
     z-index: 60;
-    width: 92%;
-    max-width: 1400px;
-    max-height: calc(100dvh - 32px);
-    margin: 16px auto;
+    width: 90vw;
+    max-width: none;
+    max-height: none;
+    margin: 0;
     background: var(--card-bg, #fff);
     border-radius: 16px;
     padding: 2rem;

@@ -1,3 +1,5 @@
+import { expandExtensoVariables, removeExcludedBlocks } from '../extenso.js';
+
 const TOKEN_REGEX = /\[\s*\{\{\s*([^}]+)\s*\}\}\s*\]|\{\{\s*([^}]+)\s*\}\}/g;
 
 function debugRegex(html) {
@@ -23,14 +25,16 @@ export class DocumentParser {
         debugRegex(htmlContent);
 
         this.originalHtml = htmlContent;
+        this.cleanedHtml = removeExcludedBlocks(htmlContent);
         this.placeholders = this.extractPlaceholders();
     }
 
     extractPlaceholders() {
         const placeholderMap = new Map();
         let match;
+        const htmlToScan = this.cleanedHtml || this.originalHtml;
 
-        while ((match = TOKEN_REGEX.exec(this.originalHtml)) !== null) {
+        while ((match = TOKEN_REGEX.exec(htmlToScan)) !== null) {
             const content = match[1] || match[2];
             const isSelect = Boolean(match[1]);
 
@@ -101,16 +105,18 @@ export class DocumentParser {
 
     render(data, options = {}) {
         const { highlightEmpty = true, escapeHtml = true } = options;
-        let html = this.originalHtml;
+        const placeholderNames = this.placeholders.map(({ name }) => name);
+        const renderedData = expandExtensoVariables(data, placeholderNames);
+        let html = this.cleanedHtml || this.originalHtml;
 
         try {
             this.placeholders.forEach(({ name }) => {
-                const value = data[name] ?? '';
+                const value = renderedData[name] ?? '';
                 const safeValue = escapeHtml ? this.escapeHtml(value) : value;
 
                 try {
                     const escapedName = escapeRegExp(name);
-                    const pattern = new RegExp(`(?:\\[\\s*)?\\{\\{${escapedName}[^}]*\\}\\}(?:\\s*\\])?`, 'g');
+                    const pattern = new RegExp(`(?:\\[\\s*)?\\{\\{${escapedName}(?=[?:\\s}])[^}]*\\}\\}(?:\\s*\\])?`, 'g');
 
                     if (String(value).trim()) {
                         html = html.replace(

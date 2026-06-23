@@ -21,6 +21,7 @@ export function getDocumentEditorTemplate() {
                     <section class="document-editor__editor-panel" aria-label="Formulário do documento">
                         <div class="document-editor__dropzone" id="dropzone" tabindex="0" role="button" aria-describedby="docSupportHint">
                             <div class="document-editor__dropzone-icon">${getDocumentEditorIcon('upload')}</div>
+                            <button type="button" class="document-editor__dropzone-clear" id="clearFileBtn" title="Remover arquivo" aria-label="Remover arquivo">${getDocumentEditorIcon('close')}</button>
                             <div class="document-editor__dropzone-copy">
                                 <strong>Arraste o documento aqui</strong>
                                 <span>ou selecione um arquivo para detectar os campos parametrizados.</span>

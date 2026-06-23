@@ -4,7 +4,7 @@
  * Ou integrar com Vitest futuramente
  */
 
-import { numberToWords, dateToWords, currencyToWords, escreverPorExtenso } from './extenso.js';
+import { numberToWords, dateToWords, currencyToWords, escreverPorExtenso, expandExtensoVariables } from './extenso.js';
 
 // ─── Funções auxiliares de teste ────────────────────────────────────────────────
 
@@ -95,6 +95,20 @@ assertEmpty(currencyToWords('abc'), 'Formato inválido');
 assertEmpty(currencyToWords('R$ 1,000'), 'Centavos inválidos');
 
 // ─── Testes para escreverPorExtenso ───────────────────────────────────────────
+
+console.log('\n🧪 Testando expandExtensoVariables...');
+
+const extensoData = expandExtensoVariables({
+    valor_mensal: '1250,00',
+    total_dias: '30',
+    total_meses: '6',
+    outro: 'texto'
+}, ['valor_mensal_extenso', 'total_dias_extenso', 'total_meses_extenso']);
+
+assertEqual(extensoData.valor_mensal_extenso, 'um mil duzentos e cinquenta reais', 'Campo valor_* gera extenso monetário quando placeholder é declarado');
+assertEqual(extensoData.total_dias_extenso, 'trinta', 'Campo total_dias gera extenso numérico quando placeholder é declarado');
+assertEqual(extensoData.total_meses_extenso, 'seis', 'Campo total_meses gera extenso numérico quando placeholder é declarado');
+assertEqual(extensoData.outro, 'texto', 'Campo sem regra é preservado');
 
 console.log('\n🧪 Testando escreverPorExtenso...');
 

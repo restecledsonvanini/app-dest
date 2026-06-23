@@ -79,6 +79,16 @@ function applyDocumentPreambleLayout(html) {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
+    const isDocx = Boolean(temp.querySelector('.document-editor__docx-header-markers'));
+
+    if (isDocx) {
+        return applyDocxPreambleLayout(temp, html);
+    }
+
+    return applyDefaultPreambleLayout(temp, html);
+}
+
+function applyDefaultPreambleLayout(temp, html) {
     const startField = temp.querySelector('[data-field="termo_extenso"]');
     if (!startField) return html;
 
@@ -88,19 +98,48 @@ function applyDocumentPreambleLayout(html) {
     const endField = temp.querySelector('[data-field="protocolo_termo"]');
     const endBlock = endField ? (endField.closest('p') || endField.parentElement) : null;
 
+    return wrapPreamble(startBlock, endBlock, html, temp);
+}
+
+function applyDocxPreambleLayout(temp, html) {
+    function isVisible(el) {
+        if (!el) return false;
+        if (el.hasAttribute('hidden')) return false;
+        let node = el;
+        while (node && node.nodeType === Node.ELEMENT_NODE) {
+            const style = node.getAttribute && node.getAttribute('style');
+            if (style && /display\s*:\s*none|visibility\s*:\s*hidden/.test(style)) return false;
+            if (node.classList && node.classList.contains('document-editor__docx-header-markers')) return false;
+            node = node.parentElement;
+        }
+        return true;
+    }
+
+    const visibleFields = Array.from(temp.querySelectorAll('[data-field]')).filter(isVisible);
+    if (!visibleFields.length) return html;
+
+    const startField = findDocxStartField(visibleFields);
+    if (!startField) return html;
+    const startBlock = startField.closest('p') || startField.parentElement;
+    if (!startBlock?.parentNode) return html;
+
+    const endField = findDocxEndField(visibleFields);
+    const endBlock = endField ? (endField.closest('p') || endField.parentElement) : null;
+
+    return wrapPreamble(startBlock, endBlock, html, temp);
+}
+
+function wrapPreamble(startBlock, endBlock, html, temp) {
     const wrapper = document.createElement('div');
     wrapper.className = 'document-editor__document-preamble';
 
     if (!endBlock) {
-        // Sem marcador final: envolve apenas o bloco de início
         startBlock.parentNode.insertBefore(wrapper, startBlock);
         wrapper.appendChild(startBlock);
     } else if (startBlock === endBlock) {
-        // Ambos no mesmo parágrafo
         startBlock.parentNode.insertBefore(wrapper, startBlock);
         wrapper.appendChild(startBlock);
     } else {
-        // Intervalo: envolve do startBlock até antes do endBlock
         startBlock.parentNode.insertBefore(wrapper, startBlock);
         let current = wrapper.nextSibling;
         while (current && current !== endBlock) {
@@ -116,6 +155,29 @@ function applyDocumentPreambleLayout(html) {
     }
 
     return temp.innerHTML;
+}
+
+function findDocxStartField(fields) {
+    const prioritized = fields.find((field) => /termo.*(?:extenso|ordinal|ordina|numero)|^(?:num_termo|tipo_termo)$/i.test(getFieldName(field)));
+    if (prioritized) return prioritized;
+
+    const firstNonProtocol = fields.find((field) => !/protocolo/i.test(getFieldName(field)));
+    return firstNonProtocol || fields[0];
+}
+
+function findDocxEndField(fields) {
+    const explicit = fields.find((field) => /protocolo|eprotocolo|num_.*protocolo/i.test(getFieldName(field)));
+    if (explicit) return explicit;
+
+    const paragraphMatch = fields.find((field) => {
+        const paragraph = field.closest('p');
+        return paragraph && /protocolo/i.test(paragraph.textContent || '');
+    });
+    return paragraphMatch || null;
+}
+
+function getFieldName(field) {
+    return field.getAttribute('data-field') || '';
 }
 
 function applyPreambleLayout(html, { data, settings }) {

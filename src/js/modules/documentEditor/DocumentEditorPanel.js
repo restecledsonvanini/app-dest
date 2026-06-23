@@ -9,7 +9,7 @@ import { renderDynamicForm } from './ui/formFactory.js';
 import { DocumentEditorController } from './DocumentEditorController.js';
 import { ExportOrchestrator } from './ExportOrchestrator.js';
 import { togglePreview, toggleExpanded, setZoom } from './uiHelpers.js';
-import { handlePreviewEdit, handleSplitterPointerDown, handleDrop, handleGlobalKeydown } from './eventHandlers.js';
+import { handlePreviewEdit, handleSplitterPointerDown, handleDrop, handleGlobalKeydown, handleDocumentUpload, clearUploadedFile } from './eventHandlers.js';
 import { updateActionState, saveSettings, resetForm, toggleSettingsPopover, updateConfiguredParameters, toggleConfiguredParameters, getConfiguredParameters } from './settingsHelpers.js';
 import { downloadAsWord, downloadAsPdf, buildExportMarkup } from './exportHelpers.js';
 
@@ -62,7 +62,8 @@ export class DocumentEditorPanel extends HTMLElement {
     attachEventListeners() {
         const refs = this.getRefs();
         refs.pickFileBtn.addEventListener('click', () => refs.fileInput.click());
-        refs.fileInput.addEventListener('change', (event) => this.handleDocumentUpload(event.target.files?.[0]));
+        refs.fileInput.addEventListener('change', (event) => handleDocumentUpload(this, event.target.files?.[0]));
+        refs.clearFileBtn?.addEventListener('click', () => clearUploadedFile(this));
         refs.dropzone.addEventListener('click', (event) => !event.target.closest('button') && refs.fileInput.click());
         refs.dropzone.addEventListener('keydown', (event) => ['Enter', ' '].includes(event.key) && (event.preventDefault(), refs.fileInput.click()));
         ['dragenter', 'dragover'].forEach((name) => refs.dropzone.addEventListener(name, (event) => this.toggleDragState(event, true)));
@@ -73,7 +74,7 @@ export class DocumentEditorPanel extends HTMLElement {
         refs.toggleExpandBtn.addEventListener('click', () => this.toggleExpanded());
         refs.downloadWordBtn.addEventListener('click', () => downloadAsWord(this));
         refs.downloadPdfBtn.addEventListener('click', () => downloadAsPdf(this));
-        refs.zoomRange.addEventListener('input', (event) => this.setZoom(event.target.value));
+        refs.zoomRange.addEventListener('input', (event) => setZoom(this, this.getRefs(), event.target.value));
         refs.root.addEventListener('click', (event) => {
             const action = event.target.closest('[data-action="toggle-configured-parameters"]');
             if (action) {
@@ -88,16 +89,14 @@ export class DocumentEditorPanel extends HTMLElement {
 
     getRefs() {
         const root = this.shadowRoot;
-        if (!root) {
-            console.error('[DocumentEditorPanel.getRefs] shadowRoot não existe!');
-            return {};
-        }
+        if (!root) return {};
 
         const refs = {
             root: root.querySelector('.document-editor'),
             fileInput: root.getElementById('docUpload'),
             pickFileBtn: root.getElementById('pickFileBtn'),
             dropzone: root.getElementById('dropzone'),
+            clearFileBtn: root.getElementById('clearFileBtn'),
             dynamicForm: root.getElementById('dynamicForm'),
             statusBox: root.getElementById('statusBox'),
             previewContainer: root.getElementById('previewContainer'),
@@ -113,32 +112,9 @@ export class DocumentEditorPanel extends HTMLElement {
             previewSplitter: root.getElementById('previewSplitter')
         };
 
-        // Verificar se elementos críticos estão faltando
-        const missingElements = Object.entries(refs)
-            .filter(([key, el]) => !el && ['statusBox', 'dynamicForm', 'previewSummary', 'previewContainer'].includes(key))
-            .map(([key]) => key);
 
-        if (missingElements.length > 0) {
-            console.warn('[DocumentEditorPanel.getRefs] Elementos críticos faltando:', missingElements);
-        }
 
         return refs;
-    }
-
-    async handleDocumentUpload(file) {
-        const refs = this.getRefs();
-        if (!file) return;
-        try {
-            this.currentFile = file;
-            refs.dropzone.classList.add('is-disabled');
-            await this.controller.handleFileUpload(file);
-        } catch (error) {
-            // Erro já tratado pelo controller
-        } finally {
-            refs.dropzone.classList.remove('is-disabled');
-            refs.fileInput.value = '';
-            updateActionState(this, this.getRefs());
-        }
     }
 
     renderDynamicForm() {
@@ -174,10 +150,8 @@ export class DocumentEditorPanel extends HTMLElement {
             });
 
             this.previewUpdater.render();
-            this.setZoom(this.zoom);
+            setZoom(this, this.getRefs(), this.zoom);
         } catch (error) {
-            console.error('[DocumentEditorPanel.initializePreview] Erro:', error);
-            console.error('[DocumentEditorPanel.initializePreview] Stack:', error.stack);
             throw error; // Re-throw para ser capturado por onDocumentLoaded
         }
     }
@@ -197,53 +171,17 @@ export class DocumentEditorPanel extends HTMLElement {
         updateActionState(this, this.getRefs());
     }
 
-    resetForm() {
-        resetForm(this);
-    }
-
     toggleDragState(event, active) {
         event.preventDefault();
         this.getRefs().dropzone?.classList.toggle('is-dragover', active);
-    }
-
-
-
-    saveSettings() {
-        saveSettings(this);
-    }
-
-
-
-    setZoom(value) {
-        setZoom(this, this.getRefs(), value);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    setStatus(message, kind = 'neutral') {
+    }    setStatus(message, kind = 'neutral') {
         const { statusBox } = this.getRefs();
-        if (!statusBox) {
-            console.warn('[DocumentEditorPanel.setStatus] statusBox não encontrado no DOM', this.getRefs());
-            return;
-        }
+        if (!statusBox) return;
         statusBox.textContent = message; statusBox.dataset.kind = kind;
     }
     updatePreviewSummary() {
         const refs = this.getRefs();
-        if (!refs.previewSummary) {
-            console.warn('[DocumentEditorPanel.updatePreviewSummary] previewSummary não encontrado no DOM', refs);
-            return;
-        }
+        if (!refs.previewSummary) return;
         const total = this.parser?.getPlaceholders?.().length || 0;
         refs.previewSummary.textContent = `${this.currentFile?.name || 'Documento'} • ${total} campo(s) detectado(s). Prévia lateral com cabeçalho auxiliar.`;
     }
@@ -259,12 +197,15 @@ export class DocumentEditorPanel extends HTMLElement {
             this.initializePreview();
             this.updatePreviewSummary();
 
+            const refs = this.getRefs();
+            // mark dropzone as having a file so UI shows clear button on hover
+            refs.pickFileBtn.disabled = true;
+            refs.dropzone.classList.add('has-file');
+
             this.toggleExpanded(true);
             this.setStatus(`${file.name} carregado com sucesso.`, 'success');
             this.showFeedback('Documento carregado. A prévia foi aberta automaticamente no modo ampliado.');
         } catch (error) {
-            console.error('[DocumentEditorPanel.onDocumentLoaded] Erro durante processamento:', error);
-            console.error('[DocumentEditorPanel.onDocumentLoaded] Stack:', error.stack);
             this.onDocumentError(new Error(`Erro ao processar documento: ${error.message}`));
         }
     }
@@ -274,6 +215,10 @@ export class DocumentEditorPanel extends HTMLElement {
         this.previewUpdater = null;
         this.setStatus(error.message, 'warning');
         this.showFeedback(error.message);
+        // re-enable pick button on error and remove file marker
+        const refs = this.getRefs();
+        refs.pickFileBtn && (refs.pickFileBtn.disabled = false);
+        refs.dropzone && refs.dropzone.classList.remove('has-file');
     }
 
     onParsingStart(file) {
@@ -282,6 +227,5 @@ export class DocumentEditorPanel extends HTMLElement {
 
     showFeedback(message) {
         if (window.showGenericFeedback) window.showGenericFeedback(message);
-        else console.log('DocumentEditor:', message);
     }
 }

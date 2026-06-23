@@ -198,6 +198,82 @@ export function currencyToWords(currencyStr) {
  * @param {string} input — Entrada do usuário (número, data ou moeda)
  * @returns {string} — Texto por extenso ou string vazia se inválido
  */
+export function removeExcludedBlocks(text) {
+    if (typeof text !== 'string') return '';
+    // Raw HTML/XML form: <excluir>...</excluir>
+    let result = text.replace(/<\s*excluir\b[^>]*>[\s\S]*?<\s*\/\s*excluir\s*>/gi, '');
+    // HTML-escaped form (produced by Mammoth/ODT parsers): &lt;excluir&gt;...&lt;/excluir&gt;
+    result = result.replace(/&lt;excluir(?:[^&]|&(?!gt;))*&gt;[\s\S]*?&lt;\/excluir\s*&gt;/gi, '');
+    return result;
+}
+
+export function normalizePlaceholderName(token) {
+    let name = String(token || '').trim();
+    if (!name) return '';
+
+    if (name.endsWith('?')) {
+        name = name.slice(0, -1).trim();
+    }
+
+    if (name.includes(':')) {
+        name = name.split(':', 1)[0].trim();
+    }
+
+    return name;
+}
+
+export function extractPlaceholderNames(text) {
+    if (typeof text !== 'string') return [];
+
+    const placeholderNames = new Set();
+    const regex = /\[\s*\{\{\s*([^}]+?)\s*\}\}\s*\]|\{\{\s*([^}]+?)\s*\}\}/g;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        const token = match[1] || match[2];
+        const name = normalizePlaceholderName(token);
+        if (name) placeholderNames.add(name);
+    }
+
+    return [...placeholderNames];
+}
+
+export function expandExtensoVariables(data = {}, placeholderNames = []) {
+    const normalized = { ...(data || {}) };
+    const allowed = new Set((placeholderNames || []).map((name) => String(name || '').toLowerCase()));
+
+    for (const [key, value] of Object.entries(normalized)) {
+        if (typeof value !== 'string' && value !== null && value !== undefined) {
+            normalized[key] = String(value);
+        }
+    }
+
+    const expanded = { ...normalized };
+
+    for (const key of Object.keys(normalized)) {
+        const rawValue = normalized[key];
+        if (typeof rawValue !== 'string') continue;
+
+        const trimmed = rawValue.trim();
+        if (!trimmed) continue;
+
+        const extensoField = `${key}_extenso`;
+        if (!allowed.has(extensoField.toLowerCase())) continue;
+
+        if (/valor/i.test(key) || /total_dias|total_meses/i.test(key)) {
+            const extenso = escreverPorExtenso(trimmed);
+            if (!extenso || extenso === 'Campo obrigatório') continue;
+
+            if (/valor/i.test(key) && /^Valor monetário inválido/i.test(extenso)) continue;
+            if (/total_dias|total_meses/i.test(key) && /^Formato não reconhecido/i.test(extenso)) continue;
+
+            expanded[extensoField] = extenso;
+        }
+    }
+
+    return expanded;
+}
+
 export function escreverPorExtenso(input) {
     if (typeof input !== 'string') return '';
 

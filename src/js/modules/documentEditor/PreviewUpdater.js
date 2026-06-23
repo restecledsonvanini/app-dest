@@ -26,9 +26,12 @@ export class PreviewUpdater {
         }
 
         try {
+            // Para pré-visualização queremos preservar a marcação gerada
+            // pelo conversor (mammoth / odt parser). Não escapar HTML aqui
+            // para manter estilos inline e a estrutura original do documento.
             const html = this.parser.render(this.currentData, {
                 highlightEmpty: true,
-                escapeHtml: true
+                escapeHtml: false
             });
 
             if (!html || typeof html !== 'string') {

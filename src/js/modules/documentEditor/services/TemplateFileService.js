@@ -132,11 +132,27 @@ export class TemplateFileService {
 
         try {
             const hiddenPlaceholders = this.extractDocxHeaderPlaceholders(arrayBuffer);
-            const systemVars = '{{num_termo}} {{tipo_termo}} {{protocolo_termo}} {{num_contrato}} {{num_gms}} {{termo_extenso}}';
-            const hiddenHtml = `${systemVars} ${hiddenPlaceholders.map((name) => `{{${name}}}`).join(' ')}`;
+            const allPlaceholders = hiddenPlaceholders.map((n) => `{{${n}}}`);
 
-            return `${htmlContent}
-<div hidden aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;clip:rect(0,0,0,0);pointer-events:none;">${hiddenHtml}</div>`;
+            // Se houver placeholders de header, pré-pendemos marcadores invisíveis
+            // no topo do HTML. Isso permite que o layoutComposer encontre os
+            // tokens (ex.: termo_extenso) no local esperado para montar o
+            // preâmbulo sem alterar o conteúdo visual do documento.
+            if (hiddenPlaceholders.length > 0) {
+                // Inserir parágrafos ocultos contendo os tokens ({{nome}})
+                // no topo do documento. Assim o DocumentParser consegue
+                // detectar os placeholders como se estivessem presentes no
+                // corpo, sem afetar a renderização visual.
+                const markers = allPlaceholders.map((token) => {
+                    const nameMatch = token.match(/\{\{\s*([^}]+)\s*\}\}/);
+                    const name = nameMatch ? nameMatch[1] : token;
+                    return `<p aria-hidden="true" style="display:none;margin:0;padding:0;">{{${name}}}</p>`;
+                }).join('');
+
+                return `<div class="document-editor__docx-header-markers" aria-hidden="true" style="display:none">${markers}</div>\n${htmlContent}`;
+            }
+
+            return htmlContent;
         } catch (error) {
             console.warn('[TemplateFileService] Erro em appendHiddenPlaceholderMarkers:', error);
             return htmlContent;
