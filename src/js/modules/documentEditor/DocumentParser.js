@@ -2,6 +2,18 @@ import { expandExtensoVariables, removeExcludedBlocks } from '../extenso.js';
 
 const TOKEN_REGEX = /\[\s*\{\{\s*([^}]+)\s*\}\}\s*\]|\{\{\s*([^}]+)\s*\}\}/g;
 
+function sanitizeMarkup(value) {
+    if (typeof value !== 'string') return '';
+
+    return value
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/gi, '')
+        .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '')
+        .replace(/<object\b[^>]*>[\s\S]*?<\/object>/gi, '')
+        .replace(/\s+on[a-zA-Z0-9_-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+        .replace(/javascript\s*:/gi, '');
+}
+
 function debugRegex(html) {
     const matches = [];
     let match;
@@ -24,8 +36,8 @@ export class DocumentParser {
         // Debug regex
         debugRegex(htmlContent);
 
-        this.originalHtml = htmlContent;
-        this.cleanedHtml = removeExcludedBlocks(htmlContent);
+        this.originalHtml = sanitizeMarkup(htmlContent || '');
+        this.cleanedHtml = sanitizeMarkup(removeExcludedBlocks(htmlContent || ''));
         this.placeholders = this.extractPlaceholders();
     }
 

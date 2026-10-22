@@ -31,7 +31,7 @@ export class PreviewUpdater {
             // para manter estilos inline e a estrutura original do documento.
             const html = this.parser.render(this.currentData, {
                 highlightEmpty: true,
-                escapeHtml: false
+                escapeHtml: true
             });
 
             if (!html || typeof html !== 'string') {

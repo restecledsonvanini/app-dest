@@ -22,7 +22,7 @@ Dois painéis acessíveis diretamente pelo browser, sem instalação, servidor o
 | Página | Caminho | Função |
 |---|---|---|
 | **Links Úteis** | `index.html` | Acesso rápido a planilhas e documentos do setor |
-| **Ferramentas** | `ferramentas/index.html` | Máscaras, cálculos de datas e consulta de CNPJ |
+| **Ferramentas** | `ferramentas/index.html` | Máscaras, cálculos de vigência, calendário de feriados SESP e consulta de CNPJ |
 
 ---
 
@@ -40,8 +40,9 @@ Dois painéis acessíveis diretamente pelo browser, sem instalação, servidor o
 ### 📅 Datas
 | Ferramenta | `data-tool` | Descrição |
 |---|---|---|
-| Calcular Data Final | `calculateDateValidity` | Data início + quantidade de dias → data de vencimento |
+| Data Final | `calculateDateValidity` | Calcula por meses, anos ou dias corridos com contagem inclusiva configurável |
 | Dias Restantes | `calculateDaysRemaining` | Intervalo entre duas datas com status de vigência |
+| Calendário SESP | popover no Conversor | Consulta feriados por ano; edição e importação ficam em Configurações |
 
 ### 🔍 Consultas
 | Ferramenta | `data-tool` | Descrição |
@@ -80,10 +81,10 @@ ferramentas/index.html          ← Camada 1: View (zero lógica)
     ├── initTabs()
     ├── initInputBehaviors()
     ├── Event Delegation: click  → ui.js (copy / clear)
-    └── Event Delegation: submit → toolHandlers.js[data-tool]
+    └── Event Delegation: submit → handlers/toolHandlers.js[data-tool]
                 │
                 ▼
-    modules/toolHandlers.js     ← Camada 3: Handlers
+    handlers/toolHandlers.js    ← Camada 3: Handlers
     ├── handleRemoveMask
     ├── handleAddMaskEprotocolo
     ├── handleAddMaskGMS
@@ -94,14 +95,20 @@ ferramentas/index.html          ← Camada 1: View (zero lógica)
     └── handleSearchCNPJ
                 │
                 ▼
-    modules/                    ← Camada 4: Utilitários Puros (sem DOM)
+    modules/                    ← Camada 4: Utilitários e UI modular
     ├── validators.js    isValidCNPJ()
     ├── formatters.js    formatCNPJ · formatCPF · formatGMS · stripMask …
     ├── dateUtils.js     parseBRDate · formatBRDate · calcEndDate · calcDaysStatus
+    ├── CalendarTextParser.js importação e validação dos feriados SESP
+    ├── dateValidityUI.js  campos condicionais para unidade Dias
+    ├── holidayCalendarUI.js consulta e edição do calendário anual
+    ├── settingsUI.js      preferências de cálculo e acesso ao calendário
     ├── inputBehaviors.js   autoFormatDate · sanitizeNumeric
     ├── ui.js            handleCopyAction · handleClearAction · updateActionButtons
     └── tabs.js          initTabs (abas principais + subabas + hamburguer mobile)
 ```
+
+`HolidayCalendarStore` persiste os calendários anuais em `localStorage`; `ExpirationSettingsStore` persiste a convenção inclusiva.
 
 ### Princípios aplicados
 
@@ -125,15 +132,20 @@ app-dest/
 │   │   └── logo-sesp-dest.png
 │   ├── js/
 │   │   ├── links.js            ← openLink / copyLink (usado por index.html)
-│   │   ├── main.js             ← Ponto de entrada das ferramentas
-│   │   └── modules/
-│   │       ├── dateUtils.js
-│   │       ├── formatters.js
-│   │       ├── inputBehaviors.js
-│   │       ├── tabs.js
-│   │       ├── toolHandlers.js
-│   │       ├── ui.js
-│   │       └── validators.js
+│       ├── main.js             ← Ponto de entrada das ferramentas
+│       ├── modules/
+│       │   ├── CalendarTextParser.js
+│       │   ├── dateUtils.js
+│       │   ├── dateValidityUI.js
+│       │   ├── holidayCalendarUI.js
+│       │   ├── settingsUI.js
+│       │   ├── tabs.js
+│       │   └── ...
+│       ├── handlers/
+│       │   └── toolHandlers.js
+│       └── services/
+│           ├── ExpirationSettingsStore.js
+│           └── HolidayCalendarStore.js
 │   └── styles/
 │       ├── global.css          ← Tokens, reset, header, cards — escopo global
 │       └── ferramentas.css     ← Layout de abas, tool-panel, result-box

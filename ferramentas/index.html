@@ -23,6 +23,8 @@
 
     <!-- Privacidade: nenhuma URL interna vaza para serviços externos -->
     <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; img-src 'self' data: https: blob:; font-src 'self' https://cdn.jsdelivr.net data:; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' https://brasilapi.com.br;">
 
     <!-- ═══ Open Graph — compartilhamento interno (Teams, e-mail, etc.) ════ -->
     <meta property="og:type" content="website">
@@ -46,13 +48,15 @@
         })();
     </script>
     <link rel="stylesheet" href="../src/styles/ferramentas.css?v=20260330">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+        crossorigin="anonymous">
     <!-- Mammoth: converter DOCX → HTML -->
-    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js" crossorigin="anonymous"></script>
     <!-- PizZip: manipular ZIP/DOCX (necessário para DocxTemplater e headers/footers) -->
-    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.2.0/dist/pizzip.min.js" crossorigin="anonymous"></script>
     <!-- DocxTemplater: preencher placeholders mantendo formatação DOCX original -->
-    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.67.3/build/docxtemplater.js"
+        crossorigin="anonymous"></script>
     <!-- em ferramentas/index.html -->
     <link rel="manifest" href="../manifest.json">
 
@@ -113,8 +117,8 @@
                         class="bi bi-arrow-repeat tab-icon" aria-hidden="true"></i>Conversor</button>
                 <button class="tab-btn" data-tab="consultas" title="Consultas públicas (CNPJ)"><i
                         class="bi bi-search tab-icon" aria-hidden="true"></i>Consultas</button>
-                <button class="tab-btn" data-tab="help" title="Ajuda rápida sobre como usar"><i
-                        class="bi bi-question-circle tab-icon" aria-hidden="true"></i>Ajuda</button>
+                <button class="tab-btn" data-tab="settings" title="Configurações gerais"><i class="bi bi-gear tab-icon"
+                        aria-hidden="true"></i>Configurações</button>
             </div>
             <!-- <input type="" ABA 0: PLANILHAS -->
             <div id="planilhas" class="tab-content active">
@@ -450,11 +454,9 @@
                                     result-id="gms-result"></tool-result>
                             </form>
                         </tool-panel>
-                    </div> <!-- FECHAMENTO DO sub-gms faltante -->
+                    </div>
+                </div> <!-- /subtab-contents -->
 
-                </div> <!-- end subtab-contents -->
-
-                <!-- ADD MASKES POR CATEGORIA -->
                 <div class="section-title">Dados Pessoais / Empresa</div>
                 <div class="subtab-nav" role="tablist" aria-label="Subtabs Dados">
                     <button class="subtab-btn active" data-subtab="sub-cpf"><i
@@ -496,15 +498,20 @@
 
             <div id="datas" class="tab-content">
                 <div class="tab-title">Conversor Universal</div>
-
-                <!-- Subtab navigation: conversor -->
-                <div class="subtab-nav" role="tablist" aria-label="Subtabs Conversor">
-                    <button class="subtab-btn active" data-subtab="sub-data-final"><i
-                            class="bi bi-calendar-plus"></i><span>Data Final</span></button>
-                    <button class="subtab-btn" data-subtab="sub-dias-restantes"><i
-                            class="bi bi-calendar-range"></i><span>Dias Restantes</span></button>
-                    <button class="subtab-btn" data-subtab="sub-por-extenso"><i class="bi bi-type"></i><span>Por
-                            Extenso</span></button>
+                <div class="converter-subtab-bar">
+                    <div class="subtab-nav" role="tablist" aria-label="Subtabs Conversor">
+                        <button class="subtab-btn active" data-subtab="sub-data-final"><i
+                                class="bi bi-calendar-plus"></i><span>Data Final</span></button>
+                        <button class="subtab-btn" data-subtab="sub-dias-restantes"><i
+                                class="bi bi-calendar-range"></i><span>Dias Restantes</span></button>
+                        <button class="subtab-btn" data-subtab="sub-por-extenso"><i class="bi bi-type"></i><span>Por
+                                Extenso</span></button>
+                    </div>
+                    <button class="calendar-tab-trigger" type="button" popovertarget="calendar-view-popover"
+                        aria-haspopup="dialog" title="Exibir calendário SESP configurado"
+                        aria-label="Exibir calendário SESP configurado">
+                        <i class="bi bi-calendar2-check" aria-hidden="true"></i>
+                    </button>
                 </div>
 
                 <div class="subtab-contents">
@@ -512,32 +519,48 @@
                     <!-- TRANSFORMADOR DE DATA -->
                     <div id="sub-data-final" class="subtab-content active">
                         <tool-panel heading="Calcular Data Final de Vigência"
-                            desc="Recebe data inicial (DD/MM/YYYY) e calcula a data final conforme unidade">
+                            desc="Calcule a data final por meses, anos ou dias corridos.">
                             <form class="tool-body form-tool" data-tool="calculateDateValidity">
 
-                                <!-- Botão info só no mobile — abre popover centralizado -->
-                                <button type="button" class="btn-info-toggle" popovertarget="regras-popover"
-                                    aria-label="Ver regras de cálculo">
-                                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                    Regras de cálculo
-                                </button>
+                                <details class="rules-accordion">
+                                    <summary><i class="bi bi-info-circle" aria-hidden="true"></i> Regras de cálculo
+                                    </summary>
+                                    <div class="info-box regras-box">
+                                        <ul>
+                                            <li>Data-base: assinatura quando o vínculo estiver ativo; caso contrário,
+                                                início da vigência informado manualmente.</li>
+                                            <li>Dias: a data-base não muda. Marcada, ela conta como dia 1; desmarcada,
+                                                o dia 1 é o dia seguinte. Exemplo: 180 dias desde 01/01/2026 terminam
+                                                em 29/06/2026 na contagem inclusiva ou 30/06/2026 na exclusiva.</li>
+                                            <li>Meses: data-base + duração em meses - 1 dia (período inclusivo).</li>
+                                            <li>Anos: data-base + duração em anos (mesmo dia).</li>
+                                        </ul>
+                                    </div>
+                                </details>
 
-                                <!-- Box de regras visível no desktop -->
-                                <div class="info-box regras-box" style="margin-bottom: 20px;">
-                                    <p><strong>Regras:</strong></p>
-                                    <ul>
-                                        <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração
-                                            meses - 1 dia (período inclusivo)</li>
-                                        <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos
-                                            (mesmo dia)</li>
-                                    </ul>
+                                <div class="expiration-start-toolbar">
+                                    <label class="expiration-checkbox-label" for="input-start-matches-signature">
+                                        <input type="checkbox" id="input-start-matches-signature"
+                                            name="start_matches_signature" value="on" checked>
+                                        <span class="expiration-switch" aria-hidden="true"></span>
+                                        <span>Data de início igual à assinatura</span>
+                                    </label>
                                 </div>
 
-                                <div class="input-group">
-                                    <label for="input-date-start">Data de Início (DD/MM/YYYY):</label>
-                                    <input type="text" id="input-date-start" name="date_start" class="input-field"
-                                        placeholder="01/01/2026" title="Digite a data no formato DD/MM/YYYY"
-                                        aria-label="Data de início">
+                                <div class="input-row expiration-date-row">
+                                    <div class="input-group">
+                                        <label for="input-expiration-signature">Data da Assinatura:</label>
+                                        <input type="text" id="input-expiration-signature" name="signature_date"
+                                            class="input-field" data-behavior="date-format" inputmode="numeric"
+                                            maxlength="10" placeholder="DD/MM/AAAA" aria-label="Data da assinatura"
+                                            disabled>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="input-date-start">Data de Início:</label>
+                                        <input type="text" id="input-date-start" name="date_start" class="input-field"
+                                            data-behavior="date-format" inputmode="numeric" maxlength="10"
+                                            placeholder="DD/MM/AAAA" aria-label="Data de início">
+                                    </div>
                                 </div>
 
                                 <div class="input-row">
@@ -546,14 +569,15 @@
                                         <select id="select-unit" name="time_unit" class="input-field"
                                             aria-label="Unidade de tempo">
                                             <option value="">Selecione...</option>
-                                            <option value="months">Meses</option>
                                             <option value="years">Anos</option>
+                                            <option value="months">Meses</option>
+                                            <option value="days">Dias</option>
                                         </select>
                                     </div>
                                     <div class="input-group">
                                         <label for="input-duration">Duração:</label>
                                         <input type="number" id="input-duration" name="duration" placeholder="Ex: 12"
-                                            class="input-field" min="1" aria-label="Duração">
+                                            class="input-field" min="1" max="36500" step="1" aria-label="Duração">
                                     </div>
                                 </div>
 
@@ -667,54 +691,111 @@
                 </tool-panel>
             </div>
 
-            <!-- ABA Ajuda -->
-            <div id="help" class="tab-content">
-                <div class="tab-title">Ajuda Rápida</div>
-                <tool-panel heading="Dicas de Uso" desc="Ferramentas de produtividade para a equipe DEST">
-                    <div class="tool-body">
-
-                        <!-- Botão só visível no mobile — abre popover com instruções -->
-                        <button type="button" class="btn-info-toggle" popovertarget="ajuda-popover"
-                            aria-label="Ver instruções de uso">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                            Instruções de uso
+            <div id="settings" class="tab-content">
+                <div class="tab-title">Configurações</div>
+                <tool-panel heading="Contagem de prazos" desc="Defina a convenção padrão usada no cálculo de vigência.">
+                    <div class="tool-body settings-section">
+                        <label class="expiration-checkbox-label" for="settings-include-start-date">
+                            <input type="checkbox" id="settings-include-start-date" checked>
+                            <span class="expiration-switch" aria-hidden="true"></span>
+                            <span>Contar a data-base como dia 1 do prazo</span>
+                        </label>
+                        <p class="settings-help-text" id="settings-help-text">A data-base escolhida no Conversor
+                            permanece a mesma. Marcado, ela conta como dia 1; desmarcado, a contagem começa no dia
+                            seguinte. Exemplo: 180 dias desde 01/01/2026 resultam em 29/06/2026 com contagem inclusiva
+                            ou 30/06/2026 com contagem exclusiva.</p>
+                        <p class="settings-save-status" id="settings-save-status" role="status" aria-live="polite"></p>
+                    </div>
+                </tool-panel>
+                <tool-panel heading="Calendário de feriados SESP" desc="Importe e revise os feriados para cada ano.">
+                    <div class="tool-body settings-section">
+                        <p>O calendário é informativo e pode ser atualizado a qualquer momento.</p>
+                        <button type="button" class="calendar-config-btn" id="settings-open-calendar">
+                            <i class="bi bi-calendar2-check" aria-hidden="true"></i>
+                            <span>Configurar feriados SESP</span>
                         </button>
-
-                        <!-- Instruções inline — visíveis no desktop, ocultas no mobile -->
-                        <ul class="ajuda-instrucoes">
-                            <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas
-                                dígitos. As pontuações são removidas ou aplicadas automaticamente.</li>
-                            <li><strong>Formatos de data:</strong> digite no padrão brasileiro
-                                <code>DD/MM/YYYY</code>.
-                            </li>
-                            <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer
-                                campo para acionar a ferramenta.</li>
-                            <li><strong>Prévia:</strong> use <code>Ctrl+'</code> para abrir a prévia e
-                                <strong>Esc</strong> para fechar.
-                            </li>
-                        </ul>
-
-                        <!-- Nota sobre botões de ação -->
-                        <div class="help-note">
-                            <span class="help-note-icon"><i class="bi bi-info-circle-fill"
-                                    aria-hidden="true"></i></span>
-                            <div>
-                                <p>Determinadas ferramentas possuem botões de ação ativados automaticamente após o uso:
-                                </p>
-                                <ul>
-                                    <li><i class="bi bi-clipboard" aria-hidden="true"></i> <strong>Copiar</strong> —
-                                        copia o resultado para a área de transferência</li>
-                                    <li><i class="bi bi-x-circle" aria-hidden="true"></i> <strong>Limpar</strong> —
-                                        apaga o resultado e reseta o formulário</li>
-                                </ul>
-                            </div>
-                        </div>
-
                     </div>
                 </tool-panel>
             </div>
 
         </div>
+    </div>
+
+    <div id="calendar-view-popover" popover class="info-popover calendar-view-popover" role="dialog"
+        aria-label="Calendário configurado de feriados e pontos facultativos">
+        <button type="button" class="popover-close-btn" popovertarget="calendar-view-popover" popovertargetaction="hide"
+            aria-label="Fechar calendário">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+        <div class="calendar-view-heading">
+            <p class="info-popover-title"><strong>Feriados e pontos facultativos SESP</strong></p>
+            <div class="calendar-view-controls">
+                <div class="input-group calendar-view-year-control">
+                    <label for="calendar-view-year">Ano:</label>
+                    <select id="calendar-view-year" class="input-field" aria-label="Ano do calendário exibido"></select>
+                </div>
+                <button type="button" class="calendar-config-btn" id="calendar-view-config">
+                    <i class="bi bi-gear" aria-hidden="true"></i><span>Configurar</span>
+                </button>
+            </div>
+        </div>
+        <p class="calendar-config-status" id="calendar-view-status" role="status" aria-live="polite"></p>
+        <div class="calendar-view-summary">
+            <p class="calendar-legend-text">
+                <span class="legend-item feriado">Feriado/Recesso</span>
+                <span class="legend-item facultativo">Ponto facultativo</span>
+                <span class="legend-item fim-semana">Fim de semana</span>
+            </p>
+            <div class="calendar-view-year-meta">
+                <small id="calendar-view-leap-indicator" class="calendar-leap-indicator" aria-live="polite" hidden>
+                    Bissexto
+                </small>
+            </div>
+        </div>
+        <div class="calendar-grid-wrap calendar-view-grid" id="calendar-view-grid" role="group"
+            aria-label="Calendário anual de feriados configurados"></div>
+    </div>
+
+    <div id="calendario-config-popover" popover class="info-popover calendar-config-popover" role="dialog"
+        aria-label="Configuração do calendário de feriados da SESP">
+        <button type="button" class="popover-close-btn" popovertarget="calendario-config-popover"
+            popovertargetaction="hide" aria-label="Fechar configuração do calendário">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+        <div class="calendar-config-header-row">
+            <p class="info-popover-title"><strong>Calendário de Feriados SESP</strong></p>
+        </div>
+        <div id="calendar-config-fields" class="calendar-config-fields">
+            <div class="input-group">
+                <label for="calendar-source-year">Ano:
+                    <small id="calendar-config-leap-indicator" class="calendar-leap-indicator" aria-live="polite"
+                        hidden>Bissexto</small>
+                </label>
+                <select id="calendar-source-year" class="input-field"
+                    aria-label="Ano do calendário a configurar"></select>
+            </div>
+            <div class="input-group">
+                <label for="calendar-source-text">Calendário oficial de feriados:</label>
+                <textarea id="calendar-source-text" class="input-field calendar-source-text"
+                    placeholder="I - Feriado nacional: 1º de janeiro&#10;II - Recesso administrativo: 24 de dezembro&#10;III - Recesso facultativo: 31 de dezembro"
+                    aria-describedby="calendar-source-hint"></textarea>
+                <small id="calendar-source-hint">Confira as datas importadas e ajuste o calendário manualmente se
+                    necessário.</small>
+            </div>
+            <div class="button-group calendar-config-actions">
+                <button type="button" class="btn btn-primary" id="calendar-import-btn">
+                    <i class="bi bi-upload" aria-hidden="true"></i><span class="btn-label">Importar</span>
+                </button>
+                <button type="button" class="btn btn-clear" id="calendar-clear-btn">
+                    <i class="bi bi-trash" aria-hidden="true"></i><span class="btn-label">Limpar</span>
+                </button>
+            </div>
+            <p class="calendar-last-import" id="calendar-last-import">Sem importação registrada para este ano.</p>
+        </div>
+        <div class="calendar-grid-wrap calendar-editor-grid" id="calendar-editor-grid" role="group"
+            aria-label="Calendário editável do ano selecionado"></div>
+        <p class="calendar-config-status" id="calendar-config-status" role="status" aria-live="polite"></p>
+        <p class="calendar-popover-hint">A consulta do calendário não altera os cálculos de vigência.</p>
     </div>
 
     <!-- Toast de feedback nativo (Popover API) -->
@@ -727,26 +808,11 @@
         </button>
         <p class="info-popover-title"><strong>Regras de Cálculo</strong></p>
         <ul>
-            <li>Se unidade = <strong>Meses</strong>: data final = data inicial + duração meses − 1 dia (período
-                inclusivo)</li>
-            <li>Se unidade = <strong>Anos</strong>: data final = data inicial + duração anos (mesmo dia)</li>
-        </ul>
-    </div>
-
-    <!-- Popover centralizado: Instruções de uso (aba Ajuda) -->
-    <div id="ajuda-popover" popover class="info-popover" role="dialog" aria-label="Instruções de uso">
-        <button class="popover-close-btn" popovertarget="ajuda-popover" popovertargetaction="hide" aria-label="Fechar">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
-        </button>
-        <p class="info-popover-title"><strong>Instruções de Uso</strong></p>
-        <ul>
-            <li><strong>Somente números:</strong> campos de máscaras e CNPJ aceitam apenas dígitos.
-                As pontuações são removidas ou aplicadas automaticamente.</li>
-            <li><strong>Formatos de data:</strong> digite no padrão brasileiro <code>DD/MM/YYYY</code>.</li>
-            <li><strong>Atalhos:</strong> pressione <strong>Enter</strong> em qualquer campo para acionar a ferramenta.
-            </li>
-            <li><strong>Prévia:</strong> use <code>Ctrl+'</code> para abrir a prévia e <strong>Esc</strong> para fechar.
-            </li>
+            <li>A data-base é a assinatura com o vínculo ativo; sem vínculo, é o início da vigência manual.</li>
+            <li>Em <strong>Dias</strong>, a preferência define se a data-base conta como dia 1. Exemplo inclusivo:
+                180 dias desde 01/01/2026 terminam em 29/06/2026.</li>
+            <li>Em <strong>Meses</strong>: data-base + duração em meses − 1 dia (período inclusivo).</li>
+            <li>Em <strong>Anos</strong>: data-base + duração em anos (mesmo dia).</li>
         </ul>
     </div>
 

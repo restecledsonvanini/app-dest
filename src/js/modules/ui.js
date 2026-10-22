@@ -19,34 +19,48 @@ export function handleCopyAction(button) {
     const box = panel.querySelector('.result-box');
     if (!box) return;
     const value = box.dataset?.result || box.innerText || '';
-    if (value) { 
-       navigator.clipboard.writeText(value); 
-       showGenericFeedback('Copiado!');
+    if (value) {
+        navigator.clipboard.writeText(value);
+        showGenericFeedback('Copiado!');
     }
 }
 
 export function handleClearAction(button) {
     const panel = button.closest('.tool-panel');
     if (!panel) return;
-    
+    const form = panel.querySelector('.form-tool');
+
     // Clear result box
     const box = panel.querySelector('.result-box');
     if (box) {
         box.innerHTML = '';
-        try { delete box.dataset.result; } catch (e) {}
+        try { delete box.dataset.result; } catch (e) { }
         box.className = 'result-box';
     }
-    
+
     // Clear form fields
-    const inputs = panel.querySelectorAll('input, select, textarea');
+    const inputs = panel.querySelectorAll('input:not([type="hidden"]), select, textarea');
     if (inputs.length) {
-        inputs.forEach(i => i.value = '');
-        inputs[0].focus();
+        inputs.forEach((input) => {
+            if (input.type === 'checkbox' || input.type === 'radio') input.checked = input.defaultChecked;
+            else input.value = '';
+        });
+
+        // UX: foco contextual por ferramenta apos limpar.
+        let focusTarget = inputs[0];
+        const tool = form?.dataset?.tool;
+        if (tool === 'calculateDateValidity') {
+            focusTarget = form.querySelector('#input-expiration-signature') || focusTarget;
+            form.querySelector('#select-unit')?.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (tool === 'escreverPorExtenso') {
+            focusTarget = form.querySelector('#input-por-extenso-numero') || focusTarget;
+        }
+        focusTarget?.focus();
     }
-    
+
     // Disable action buttons
     panel.querySelectorAll('.btn-copy, .btn-clear').forEach(b => b.setAttribute('disabled', 'true'));
-    
+
     // Optionally trigger a custom event for specific cleanups if needed
     panel.dispatchEvent(new CustomEvent('tool::cleared', { bubbles: true }));
 }

@@ -1,6 +1,17 @@
 import { OdtParserService } from './OdtParserService.js';
 import { expandExtensoVariables, removeExcludedBlocks } from '../../extenso.js';
 
+function sanitizeMarkupForPrint(markup) {
+    if (typeof markup !== 'string') return '';
+
+    return markup
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/gi, '')
+        .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '')
+        .replace(/\s+on[a-zA-Z0-9_-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+        .replace(/href\s*=\s*(?:"|')?\s*javascript\s*:/gi, 'href="#"');
+}
+
 export class ExportService {
     async downloadWord({ fileName = 'documento', markup, originalFile, data = {}, settings = {} }) {
         if (originalFile && /\.odt$/iu.test(originalFile.name) && window.PizZip) {
@@ -109,10 +120,15 @@ export class ExportService {
     }
 
     extractPrintableBody(markup) {
-        return new DOMParser().parseFromString(markup, 'text/html').body.innerHTML;
+        const safeMarkup = sanitizeMarkupForPrint(String(markup ?? ''));
+        if (typeof DOMParser === 'undefined') {
+            return safeMarkup;
+        }
+        return new DOMParser().parseFromString(safeMarkup, 'text/html').body.innerHTML;
     }
 
     openPdfWindow(markup) {
+        const safeMarkup = sanitizeMarkupForPrint(String(markup ?? ''));
         const iframe = document.createElement('iframe');
         iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:0;height:0;border:0;opacity:0;pointer-events:none;';
         iframe.setAttribute('aria-hidden', 'true');
@@ -132,7 +148,7 @@ export class ExportService {
         };
 
         iframe.addEventListener('load', tryPrint, { once: true });
-        iframe.srcdoc = markup;
+        iframe.srcdoc = safeMarkup;
 
         setTimeout(() => {
             try {

@@ -105,7 +105,10 @@ export class DocumentEditorController {
         }
 
         if (!html || typeof html !== 'string') {
-            console.error('[DocumentEditorController] parseFile retornou valor inválido:', html);
+            console.error('[DocumentEditorController] parseFile retornou valor inválido:', {
+                type: typeof html,
+                length: html?.length ?? 0
+            });
             throw new AppError(ERROR_TYPE.PARSE, MSG.document.parseError);
         }
 
@@ -115,9 +118,10 @@ export class DocumentEditorController {
             parser = new DocumentParser(html);
             console.log(`[DocumentEditorController] DocumentParser criado com sucesso: ${parser.placeholders?.length || 0} placeholders`);
         } catch (error) {
-            console.error('[DocumentEditorController] Erro ao criar DocumentParser:', error);
-            console.error('[DocumentEditorController] Stack:', error.stack);
-            console.error('[DocumentEditorController] HTML que causou erro (primeiros 500 chars):', html?.substring(0, 500));
+            console.error('[DocumentEditorController] Erro ao criar DocumentParser:', {
+                message: error instanceof Error ? error.message : String(error),
+                length: html.length
+            });
             throw new AppError(ERROR_TYPE.PARSE, 'Erro ao processar placeholders do documento.', { originalError: error });
         }
 

@@ -10,9 +10,11 @@
 
 import { stripMask, formatCNPJ, formatCPF, formatEProtocolo, formatGMS } from '../modules/formatters.js';
 import { isValidCNPJ } from '../modules/validators.js';
-import { parseBRDate, formatBRDate, calcEndDate, calcDaysStatus } from '../modules/dateUtils.js';
+import { parseBRDate, parseDateInput, formatBRDate, calcEndDate, calcDaysStatus, calcEndDateByDays } from '../modules/dateUtils.js';
 import { createMaskHandler, createRemoveMaskHandler } from './MaskHandlerFactory.js';
 import { BrasilAPIService } from '../services/BrasilAPIService.js';
+import { ExpirationSettingsStore } from '../services/ExpirationSettingsStore.js';
+import { syncDateValidityFields } from '../modules/dateValidityUI.js';
 import { AppError, logError } from '../services/ErrorHandler.js';
 import { MSG } from '../config/messages.js';
 import { ok, err, ioHtml } from '../modules/resultRenderer.js';
@@ -23,29 +25,90 @@ import { escreverPorExtenso } from '../modules/extenso.js';
 // ─── Serviços ────────────────────────────────────────────────────────────────
 
 const brasilAPI = new BrasilAPIService({ timeout: 10000 });
+const expirationSettings = new ExpirationSettingsStore();
+
+function resetDateValidityForm(resultBox) {
+    const form = resultBox.closest('form');
+    if (!form) return;
+
+    form.reset();
+    syncDateValidityFields(form);
+
+    const firstAvailableField = form.querySelector(
+        'input:not([type="hidden"]):not([type="checkbox"]):not(:disabled):not([hidden]), select:not(:disabled):not([hidden])'
+    );
+    if (firstAvailableField) setTimeout(() => firstAvailableField.focus(), 0);
+}
 
 // ─── Data Calculation Handlers ────────────────────────────────────────────────
 
 async function handleCalculateDateValidity(data, resultBox) {
-    const startValue = (data.get('date_start') || '').trim();
     const unit = data.get('time_unit') || '';
-    const duration = parseInt(data.get('duration'), 10);
+    const durationValue = (data.get('duration') || '').trim();
+    const duration = Number(durationValue);
+    const durationUnitLabel = { days: 'Dias', months: 'Meses', years: 'Anos' }[unit];
 
+    if (!unit) return err(resultBox, MSG.date.selectUnit);
+    if (!/^[1-9]\d*$/.test(durationValue) || !Number.isInteger(duration)) {
+        return err(resultBox, unit === 'days' ? MSG.date.daysInvalid : MSG.date.durationInvalid);
+    }
+
+    const signatureValue = (data.get('signature_date') || '').trim();
+    const startMatchesSignature = data.get('start_matches_signature') === 'on';
+    const startValue = startMatchesSignature
+        ? signatureValue
+        : (data.get('date_start') || '').trim();
+
+    if (!signatureValue) return err(resultBox, MSG.date.signatureRequired);
     if (!startValue) return err(resultBox, MSG.date.startRequired);
 
-    const startDate = parseBRDate(startValue);
-    if (!startDate) return err(resultBox, MSG.date.invalidFormat);
-    if (!unit) return err(resultBox, MSG.date.selectUnit);
-    if (!duration || duration < 1) return err(resultBox, MSG.date.durationInvalid);
+    const signatureDate = parseDateInput(signatureValue);
+    const startDate = parseDateInput(startValue);
+    if (!signatureDate || !startDate) return err(resultBox, MSG.date.invalidFormat);
+
+    if (unit === 'days') {
+        if (duration > 36500) return err(resultBox, MSG.date.daysTooLarge);
+
+        const { includeStartDate } = expirationSettings.load();
+        const endDate = calcEndDateByDays(startDate, duration, includeStartDate);
+        const formattedResult = formatBRDate(endDate);
+        const startDateFormatted = formatBRDate(startDate);
+        const signatureDateFormatted = formatBRDate(signatureDate);
+        const countingRule = includeStartDate ? 'Incluído' : 'Não incluído';
+
+        ok(resultBox,
+            `<div class="res-col"><small>Assinatura</small><strong>${signatureDateFormatted}</strong></div>` +
+            `<div class="res-sep"></div>` +
+            `<div class="res-col"><small>Início da vigência</small><strong>${startDateFormatted}</strong></div>` +
+            `<div class="res-sep"></div>` +
+            `<div class="res-col"><small>${durationUnitLabel}</small><strong>${duration}</strong></div>` +
+            `<div class="res-sep"></div>` +
+            `<div class="res-col res-col-compact"><small>Dia inicial</small><strong>${countingRule}</strong></div>` +
+            `<div class="res-sep"></div>` +
+            `<div class="res-col"><small>Vencimento</small><strong>${formattedResult}</strong></div>`,
+            formattedResult
+        );
+
+        resetDateValidityForm(resultBox);
+        return;
+    }
+
+    if (unit !== 'months' && unit !== 'years') return err(resultBox, MSG.date.selectUnit);
 
     const endDate = calcEndDate(startDate, unit, duration);
     const formattedResult = formatBRDate(endDate);
     ok(resultBox,
-        `<div class="res-col"><small>Data Inicial</small><strong>${startValue}</strong></div>` +
+        `<div class="res-col"><small>Assinatura</small><strong>${formatBRDate(signatureDate)}</strong></div>` +
         `<div class="res-sep"></div>` +
-        `<div class="res-col"><small>Data Final</small><strong>${formattedResult}</strong></div>`,
+        `<div class="res-col"><small>Início da Vigência</small><strong>${formatBRDate(startDate)}</strong></div>` +
+        `<div class="res-sep"></div>` +
+        `<div class="res-col"><small>${durationUnitLabel}</small><strong>${duration}</strong></div>` +
+        `<div class="res-sep"></div>` +
+        `<div class="res-col"><small>Vencimento</small><strong>${formattedResult}</strong></div>`,
         formattedResult
     );
+
+    resetDateValidityForm(resultBox);
 }
 
 async function handleCalculateDaysRemaining(data, resultBox) {

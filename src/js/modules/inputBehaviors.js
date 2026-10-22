@@ -4,16 +4,36 @@
  * Centraliza os listeners que antes estavam espalhados em utils.js e dates.js.
  */
 
-/** Auto-formata campo de texto para DD/MM/YYYY enquanto o usuário digita. */
-function autoFormatDate(e) {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length > 8) v = v.substring(0, 8);
-    if (v.length >= 5) {
-        v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
-    } else if (v.length >= 3) {
-        v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+export function formatDateInputValue(value, caretPosition = String(value || '').length) {
+    const source = String(value || '');
+    const digitsBeforeCursor = source.slice(0, caretPosition).replace(/\D/g, '').length;
+    const digits = source.replace(/\D/g, '').slice(0, 8);
+    let formatted = digits;
+
+    if (digits.length > 4) {
+        formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    } else if (digits.length > 2) {
+        formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
     }
-    e.target.value = v;
+
+    let digitCount = 0;
+    let caret = 0;
+    while (caret < formatted.length && digitCount < digitsBeforeCursor) {
+        if (/\d/.test(formatted[caret])) digitCount += 1;
+        caret += 1;
+    }
+
+    return { value: formatted, caret };
+}
+
+function autoFormatDate(event) {
+    const input = event.target;
+    const selectionStart = input.selectionStart ?? input.value.length;
+    const formatted = formatDateInputValue(input.value, selectionStart);
+    if (input.value === formatted.value) return;
+
+    input.value = formatted.value;
+    input.setSelectionRange(formatted.caret, formatted.caret);
 }
 
 /**
@@ -28,12 +48,11 @@ export function initInputBehaviors() {
         });
     });
 
-    const dateInputs = document.querySelectorAll('[data-behavior="date-format"], #input-date-start, #input-date-start-days, #input-date-final');
+    const dateInputs = document.querySelectorAll(
+        '[data-behavior="date-format"], #input-date-start, #input-expiration-signature, #input-date-start-days, #input-date-final'
+    );
     dateInputs.forEach(el => {
-        el.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/[^0-9/]/g, '');
-            autoFormatDate(e);
-        });
+        el.addEventListener('input', autoFormatDate);
     });
 
     function autoFormatCurrency(e) {

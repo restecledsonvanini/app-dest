@@ -9,7 +9,10 @@
  * @returns {Date|null}
  */
 export function parseBRDate(dateStr) {
-    const parts = dateStr.trim().split('/');
+    const normalized = String(dateStr || '').trim();
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(normalized)) return null;
+
+    const parts = normalized.split('/');
     if (parts.length !== 3) return null;
 
     const day = parseInt(parts[0], 10);
@@ -20,7 +23,80 @@ export function parseBRDate(dateStr) {
     if (day < 1 || day > 31 || month < 1 || month > 12) return null;
     if (year < 1900 || year > 2100) return null;
 
-    return new Date(year, month - 1, day);
+    const date = new Date(year, month - 1, day);
+    // Evita normalizacoes silenciosas como 31/02 -> 03/03
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+    return date;
+}
+
+/**
+ * Converte valor de input date ISO (YYYY-MM-DD) ou data brasileira em Date local.
+ * @param {string} value
+ * @returns {Date|null}
+ */
+export function parseDateInput(value) {
+    const normalized = String(value || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+        const [year, month, day] = normalized.split('-').map(Number);
+        return parseDateParts(day, month, year);
+    }
+    return parseBRDate(normalized);
+}
+
+function parseDateParts(day, month, year) {
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) return null;
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+    return date;
+}
+
+/**
+ * Retorna true se o ano for bissexto.
+ * @param {number} year
+ * @returns {boolean}
+ */
+export function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
+/**
+ * Converte Date local para timestamp UTC (00:00 do mesmo dia de calendario).
+ * @param {Date} date
+ * @returns {number}
+ */
+export function toUTCMidnight(date) {
+    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/**
+ * Converte timestamp UTC para Date local mantendo o dia calendario UTC.
+ * @param {number} utcMillis
+ * @returns {Date}
+ */
+export function fromUTCMidnight(utcMillis) {
+    const d = new Date(utcMillis);
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+}
+
+/**
+ * Soma dias corridos em UTC.
+ * @param {Date} startDate
+ * @param {number} days - Quantidade de dias, incluindo o dia inicial por padrão.
+ * @param {boolean} includeStartDate - Se false, soma a quantidade total de dias.
+ * @returns {Date}
+ */
+export function calcEndDateByDays(startDate, days, includeStartDate = true) {
+    const dayMs = 1000 * 60 * 60 * 24;
+    const startUTC = toUTCMidnight(startDate);
+    const daysToAdd = days - (includeStartDate ? 1 : 0);
+    const endUTC = startUTC + (daysToAdd * dayMs);
+    return fromUTCMidnight(endUTC);
 }
 
 /**
@@ -78,8 +154,8 @@ export function calcDaysStatus(startDate, finalDate) {
     } else {
         statusText = `Vence em ${daysUntilExpiration} dia(s)`;
         statusColor = daysUntilExpiration <= 30 ? '#ea580c'
-                    : daysUntilExpiration <= 60 ? '#eab308'
-                    : '#16a34a';
+            : daysUntilExpiration <= 60 ? '#eab308'
+                : '#16a34a';
     }
 
     return { daysDiff, daysUntilExpiration, statusText, statusColor };

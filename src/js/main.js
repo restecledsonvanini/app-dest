@@ -4,6 +4,9 @@ import { initInputBehaviors } from './modules/inputBehaviors.js';
 import { toolHandlerMap } from './handlers/toolHandlers.js';
 import { initUIControls } from './uiControls.js';
 import { registerComponents } from './modules/components/index.js';
+import { initSettingsUI } from './modules/settingsUI.js';
+import { initDateValidityUI } from './modules/dateValidityUI.js';
+import { initHolidayCalendarUI } from './modules/holidayCalendarUI.js';
 
 // Registra Custom Elements antes do DOMContentLoaded para que o upgrade
 // de elementos já no DOM ocorra com children disponíveis.
@@ -15,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initInputBehaviors();
     initUIControls();
+    initSettingsUI();
+    initDateValidityUI();
+    initHolidayCalendarUI();
 
     // ── Delegador global: case toggle + botões Copy e Clear ─────────────────
     document.addEventListener('click', (e) => {

@@ -1,10 +1,22 @@
-const CACHE = 'dest-v2-20260324';
+const CACHE = 'dest-v2-20261005';
 const SHELL = [
   './',
   './ferramentas/',
   './src/styles/global.css',
   './src/styles/ferramentas.css'
 ];
+
+function shouldBypassCache(requestUrl) {
+  if (!requestUrl) return true;
+
+  const url = new URL(requestUrl, self.location.origin);
+  const isExternal = url.origin !== self.location.origin;
+  const isBrasilApi = url.hostname.includes('brasilapi') || url.pathname.includes('/cnpj/');
+  const isDocumentRoute = /\.(docx|odt|pdf|zip)$/i.test(url.pathname);
+  const isApiRoute = url.pathname.includes('/api/') || url.pathname.includes('/proxy');
+
+  return isExternal || isBrasilApi || isDocumentRoute || isApiRoute;
+}
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -52,14 +64,12 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
 
-  // CNPJ lookup: sempre rede (nunca cachear dados externos)
-  if (req.url.includes('brasilapi')) return;
-
   const url = new URL(req.url);
   const sameOrigin = url.origin === self.location.origin;
 
-  // Não intercepta CDN e outros domínios (ex: bootstrap icons)
-  if (!sameOrigin) return;
+  if (!sameOrigin || shouldBypassCache(req.url)) {
+    return;
+  }
 
   const isNavigation = req.mode === 'navigate';
   const isCriticalAsset = req.destination === 'script' || req.destination === 'style';

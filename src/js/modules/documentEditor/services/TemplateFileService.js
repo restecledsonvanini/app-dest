@@ -3,27 +3,52 @@ import { FileLoader } from '../utils/FileLoader.js';
 import { HtmlNormalizer } from '../utils/HtmlNormalizer.js';
 
 export class TemplateFileService {
+    constructor(options = {}) {
+        this.maxFileSize = options.maxFileSize ?? 50 * 1024 * 1024;
+        this.allowedExtensions = new Set(['docx', 'odt']);
+    }
+
     getExtension(fileName = '') {
         return fileName.split('.').pop()?.toLowerCase() || '';
     }
 
+    validateFile(file) {
+        if (!file || typeof file !== 'object') {
+            throw new Error('Selecione um arquivo .docx ou .odt para continuar.');
+        }
+
+        const extension = this.getExtension(file.name || '');
+        if (!this.allowedExtensions.has(extension)) {
+            throw new Error('Formato não suportado. Use .docx ou .odt.');
+        }
+
+        const size = Number(file.size ?? 0);
+        if (!Number.isFinite(size) || size <= 0) {
+            throw new Error('Arquivo vazio ou inválido.');
+        }
+
+        if (size > this.maxFileSize) {
+            const sizeMb = (size / 1024 / 1024).toFixed(2);
+            const maxMb = (this.maxFileSize / 1024 / 1024).toFixed(0);
+            throw new Error(`Arquivo muito grande: ${sizeMb}MB (máximo: ${maxMb}MB).`);
+        }
+
+        return extension;
+    }
+
     async parseFile(file, signal) {
         if (!file) {
-            throw new Error('Selecione um arquivo .docx para continuar.');
+            throw new Error('Selecione um arquivo .docx ou .odt para continuar.');
         }
 
         if (signal?.aborted) {
             throw new Error('Processamento abortado pelo usuário ou timeout.');
         }
 
-        const extension = this.getExtension(file.name);
+        const extension = this.validateFile(file);
 
         if (extension === 'odt') {
             return this.parseOdtFile(file, signal);
-        }
-
-        if (extension !== 'docx') {
-            throw new Error('Formato não suportado. Use .docx ou .odt.');
         }
 
         return this.parseDocxFile(file, signal);

@@ -15,6 +15,10 @@ export class FileLoader {
             throw new Error('Processamento abortado pelo usuário ou timeout.');
         }
 
+        if (typeof file.arrayBuffer !== 'function') {
+            throw new Error('Arquivo inválido para leitura.');
+        }
+
         try {
             const buffer = await file.arrayBuffer();
             if (signal?.aborted) {

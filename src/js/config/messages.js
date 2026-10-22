@@ -49,10 +49,14 @@ export const MSG = {
 
     // Date Operations
     date: {
+        signatureRequired: 'Digite a data da assinatura.',
         startRequired: 'Digite a data de início.',
         endRequired: 'Selecione data inicial e final.',
         invalidFormat: 'Data inválida (formato DD/MM/YYYY).',
         invalidDates: 'Datas inválidas (use DD/MM/YYYY).',
+        daysRequired: 'Digite a quantidade de dias de vigência.',
+        daysInvalid: 'Digite um número inteiro de dias maior que 0.',
+        daysTooLarge: 'Quantidade de dias muito alta. Use no máximo 36500.',
         selectUnit: 'Selecione a unidade de tempo (Meses ou Anos).',
         durationInvalid: 'Digite uma duração válida (maior que 0).',
         reversedPeriod: 'Período invertido',
